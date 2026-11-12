@@ -1,9 +1,10 @@
 # AGENTS.md
 
-This is the CS 6180 final project of Jingyi Fu and Shiran Wang, about vision-language-action models (VLAs). As of
-2026-11-11 the team has submitted a candidate question (does π0.5 read the instruction on LIBERO?), learned that much of
-it is already published, and is choosing what to do instead. No code has been written yet. The work right now is
-learning the field, through the chapters in `docs/learn/` (also a website, https://blueif16.github.io/vla_final/).
+This is the CS 6180 final project of Jingyi Fu and Shiran Wang, about vision-language-action models (VLAs). On
+2026-11-11 the team chose a direction: small experiments on what π0.5 actually goes by (the words, its cameras, the
+layout it remembers), first in LIBERO's kitchen scenes and then on laundry folding in simulation. `topic.md` has the
+question, the stages, the experiments and the steps. No code has been written yet. The chapters in `docs/learn/` (also
+a website, https://blueif16.github.io/vla_final/) teach the background.
 
 ## If someone asks you to teach them this
 
@@ -38,5 +39,8 @@ ones.
 
 - `pi05_libero` gets two camera images and the instruction, and no robot joint readings (`discrete_state_input=False`
   in openpi's `pi05_libero` config). Chapter 2 explains how we read this from the code.
-- Only LIBERO-Goal has all ten tasks starting from the same scene. In the other suites the scene identifies the task.
+- Only LIBERO-Goal has all ten tasks starting from the same scene. In the other suites the scene identifies the task
+  for all but two pairs. In LIBERO-Spatial, "the bowl on the stove" and "the bowl on the wooden cabinet" share a
+  starting table, and in LIBERO-10 so do the two "put both … in the basket" tasks in LIVING_ROOM_SCENE2 (checked in
+  LIBERO's task files, 2026-11-11; chapter 3).
 - The blank-instruction numbers for `pi05_libero` are already published (LIBERO-CF, Table I). See chapter 5.

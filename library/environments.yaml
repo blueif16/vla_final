@@ -1,0 +1,66 @@
+# Simulators, benchmarks and robots we've looked at as places to run experiments. Checked 2026-11-11 unless noted.
+# A fact goes here only after we read it in the source; "(search summary)" marks things we haven't opened yet.
+
+environments:
+  - key: libero
+    what: "tabletop kitchen and household tasks, simulated Franka Panda, MuJoCo via robosuite"
+    model_we_can_run: "pi05_libero (openpi)"
+    needs: "any GPU with more than 8 GB for pi0.5 inference; MuJoCo itself runs on CPU"
+    real_world_link: "household objects (bowl, stove, drawer, wine bottle), but toy scenes"
+    notes: "already the setup our chapters describe; see papers.yaml for its numbers"
+
+  - key: lehome
+    what: "LeHome Challenge 2026 (ICRA 2026): bimanual garment folding with two SO-ARM101 arms in simulation, plus a real-world final"
+    repo: https://github.com/lehome-official/lehome-challenge
+    site: https://lehome-challenge.com/
+    license: Apache-2.0
+    facts:
+      - "built on Isaac Lab 2.3.1 and LeRobot 0.4.2, Python 3.11; docs point to Isaac Sim 5.1.0 for OS and GPU settings (repo README)"
+      - "README: 'the simulation currently only supports CPU devices' (the eval --device option accepts only cpu)"
+      - "garment categories top_long, top_short, pant_long, pant_short; garments load at random and the category label is hidden during evaluation"
+      - "datasets on Hugging Face: lehome/dataset_challenge_merged, lehome/dataset_challenge (with depth), assets in lehome/asset_challenge; sizes not stated in the README"
+      - "baseline training configs: ACT, DP, SmolVLA (LeRobot); no pi0 baseline in the repo"
+      - "eval defaults: 5 episodes per garment, max 600 steps"
+    needs: "Isaac Sim, whose docs say GPUs without RT cores (A100, H100) are not supported, so it needs an RTX-class GPU"
+    isaac_sim_5_1_requirements: "minimum GeForce RTX 4080, 16 GB VRAM, 32 GB RAM, 50 GB SSD, 4 cores; good RTX 5080 16 GB, 64 GB RAM; OS Ubuntu 22.04/24.04 or Windows 10/11; WSL not mentioned (docs.isaacsim.omniverse.nvidia.com/5.1.0/installation/requirements.html)"
+    known_issue: "a forum report says camera-enabled scripts fail on a headless L40S server with Isaac Sim 5.1.0 + Isaac Lab 2.3.1, the versions LeHome uses (search summary; forums.developer.nvidia.com/t/366918)"
+
+  - key: lehome-sim-policy
+    what: "1st of 62 teams in the LeHome online round: a pi0.5-based VLA trained with RL + DAgger in Isaac Sim (Ilia Larchenko)"
+    model: https://huggingface.co/IliaLarchenko/lehome_sim
+    real_policy: https://huggingface.co/IliaLarchenko/lehome_real
+    code: https://github.com/IliaLarchenko/lehome_solution
+    report: https://arxiv.org/abs/2606.27163
+    license: Apache-2.0 (model card)
+    facts:
+      - "JAX, flow matching, tagged pi0.5-based; started from the author's team's BEHAVIOR-1K challenge version of pi0.5 (blog)"
+      - "sim success 79.63% overall; short pants 93.5%, long pants 80.5%, long tops 74.5%, short tops 70.0% (blog)"
+      - "three RGB cameras; the only task input the blog mentions is a garment-type token, inferred at the start of each episode"
+      - "trained on one H200; real final 2nd place, 865 of 1080 points (blog)"
+    blog: https://ilialarchenko.com/projects/lehome2026
+    running_it: "repo README: run_eval.py starts the policy server itself and launches N Isaac Sim workers on the same machine; 'most of rollouts on RTX PRO 6000'; '500+ GB disk for data + checkpoints' (setup.sh --no-data skips the data); expect '80%+ average success rate on seen garments'; uses upstream openpi pinned at commit c23745b"
+
+compute:
+  - "pi0.5 in openpi: inference more than 8 GB GPU memory, LoRA fine-tuning more than 22.5 GB, full fine-tuning more than 70 GB (openpi README)"
+  - "cloud, RunPod pricing page (search summary, Nov 2026): RTX 6000 Ada 48 GB about $0.74/hr community, $0.99/hr secure; L40S 48 GB about $0.79/hr community, $1.09/hr secure"
+  - "Isaac Sim on AWS: NVIDIA announced it on EC2 G6e instances (L40S) at re:Invent 2024 (blogs.nvidia.com/blog/physical-ai-robotics-isaac-sim-aws)"
+
+  - key: so101-real
+    what: "LeRobot SO-101 low-cost arm; community towel and cloth folding with ACT, SmolVLA and pi0.5"
+    facts:
+      - "one single-arm project: ACT on 267 teleoperated folding demos, best deployment success 40-60% (search summary)"
+      - "community pi0.5 towel-folding checkpoints exist on Hugging Face (e.g. Cache-SCA/pi05_teleop_fold_towel), without reported success rates (search summary)"
+    needs: "the hardware (leader + follower arms), our own demonstrations, and a GPU for fine-tuning"
+
+  - key: robotwin2
+    what: "RoboTwin 2.0: 50 dual-arm tasks in simulation, 731 objects"
+    facts: ["a community pi0.5 checkpoint motus-robotics/pi0.5_robotwin2 runs through RoboTwin's eval script (search summary)"]
+
+  - key: simplerenv
+    what: "SimplerEnv: simulated copies of real Google Robot and WidowX setups whose results track real-robot results"
+    site: https://simpler-env.github.io
+    facts: ["validated with about 1,500 paired real and sim episodes (project page)", "no pi0.5 checkpoint found for it"]
+
+  - key: robocasa
+    what: "RoboCasa: realistic simulated kitchens"
+    facts: ["no published pi0.5 success table found; only a community eval script (search summary)"]

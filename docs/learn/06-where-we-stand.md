@@ -10,11 +10,22 @@ Needs: chapters 1 to 5. Last updated: 2026-11-11.
 |---|---|---|
 | Team: Jingyi Fu and Shiran Wang | sign-up, November 2026 | both |
 | The project is about VLAs | sign-up, November 2026; Shiran restated it on 2026-11-11 | both |
+| The direction: stage 1 runs experiments on `pi05_libero` in LIBERO's kitchen scenes on our desktop GPU; stage 2 moves to laundry folding in simulation (the LeHome Challenge) on a rented GPU if a trial run works; a real SO-101 arm is parked. [`topic.md`](../../topic.md) has the details. | 2026-11-11 | Shiran, with Claude; Jingyi not asked yet |
 
 ## Open
 
 - **The research question.** Shiran (2026-11-11): "The research topic can be changed. Whatever the research topic is,
-  it should focus on VLA-related knowledge." The submitted plan below is our current candidate.
+  it should focus on VLA-related knowledge." The wording of the question and the list of experiments in
+  [`topic.md`](../../topic.md) are a first draft (2026-11-11) that the team hasn't reviewed yet.
+- **What we want from the project.** Shiran (2026-11-11): "we don't really care about whether we are reproducing, as
+  long as it's not producing very obvious things. The most important thing is that we can try to get an
+  understanding, and we're explaining what we are doing so that other people can easily understand. We are actually
+  teaching other people." And: "It just needs to be fun and intuitive, just a bit different, like fun science
+  experiments on these models." Later the same day: "Just think a bit about a topic that has a bit of real-world
+  implications. Think about what environment and what kind of task. For example, even something as simple as folding
+  clothing and stuff",
+  adding "I know folding clothing may be a little hard in simulation environments." Folding is one example to weigh,
+  not the choice. Jingyi hasn't weighed in yet.
 - **The model and benchmark.** The submitted plan names `pi05_libero` and LIBERO. This holds for every option below,
   and it is still open until we agree on the question.
 
@@ -34,9 +45,10 @@ From the CS 6180 sign-up sheet, in our words at the time.
 Chapter 5 shows that the blank and different-task arms have since been published for this checkpoint, and the
 paraphrase arm at benchmark scale. That doesn't rule the plan out, but it changes what would be new.
 
-## Options to weigh
+## Options we weighed first
 
-None of these is chosen. Each row says what we'd measure, the nearest published work we found, and what it would
+On 2026-11-11 we chose the stage plan in [`topic.md`](../../topic.md) over these options. Option A lives on as its
+experiment 1, and the others stay possible later. The table is kept as it was, so you can see how we got here. Each row says what we'd measure, the nearest published work we found, and what it would
 cost. The notes are our reading.
 
 | Option | What we'd measure | Nearest published work | Cost | Note |
@@ -52,8 +64,8 @@ for other directions.
 
 ## A first step that helps every option
 
-This is a proposal, not a decision. Each step is needed whichever option we pick, and together they give us a working
-setup, one reproduced number and a clear choice for what's next.
+We wrote this before choosing the stage plan. Its steps 1 to 3 became steps 1, 2 and 5 of stage 1 in
+[`topic.md`](../../topic.md), which is now the list to follow.
 1. Serve `pi05_libero` on the cluster and run the openpi LIBERO client.
 2. Run the original instruction on one suite (500 episodes). Compare with the published 98.8 (Spatial) or 98.0 (Goal),
    and time one episode so we can price the rest.

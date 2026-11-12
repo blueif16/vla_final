@@ -29,6 +29,28 @@ papers:
   - { key: features, title: "Not All Features Are Created Equal: A Mechanistic Study of VLA Models", authors: "Grant, Zhao and Wang", year: 2026, arxiv: 2603.19233, venue: "ICLR 2026",
       facts: ["language matters only when vision doesn't settle the goal", "prompts distinguishable internally at 99.3% while behaviour unchanged (abstract/project page)"] }
   - { key: steering, title: "Mechanistic Interpretability for Steering Vision-Language-Action Models", authors: "Haon et al.", year: 2025, arxiv: 2509.00328, venue: "CoRL 2025", facts: ["steer pi0 and OpenVLA via FFN directions in LIBERO and on a UR5"] }
+  - { key: pi07, title: "pi0.7: a Steerable Generalist Robotic Foundation Model with Emergent Capabilities", authors: "Physical Intelligence", year: 2026, arxiv: 2604.15483, license: arxiv-default,
+      facts: ["submitted 2026-04-16", "abstract: 'can follow diverse language instructions in unseen environments'", "abstract: zero-shot cross-embodiment, 'enabling a robot to fold laundry without seeing the task before'", "conditioned on a language command plus metadata about task performance and subgoal images ('diverse context conditioning')"] }
+  - { key: 1x-neo, title: "1X NEO order page (context, not a paper)", url: https://www.1x.tech/order,
+      facts: ["$20,000 early access or $499/mo; 'US Deliveries start 2026'", "example tasks 'Get the door' and 'Laundry'", "'speak naturally to NEO'", "for tasks it can't do yet 'an Expert from 1X can remotely supervise its actions at scheduled times'", "runs 'Redwood AI', 1X's generalist model", "checked 2026-11-11; independent reports disagree on whether customer deliveries have started"] }
+  # Found 2026-11-11 while checking whether the chapter 6 options are still open.
+  - { key: flatness, title: "Flatness Preserves Instruction Following in Vision-Language-Action Models", authors: "Zhang and Bisk", year: 2026, arxiv: 2606.23641,
+      facts: ["calls the failure 'instruction blindness'; fine-tunes pi0.5 on LIBERO with sharpness-aware minimization (SAM), 30,000 steps, batch 16, 4x A100 80GB",
+              "pi0.5 vanilla -> SAM: LIBERO-PRO Task avg 26.6 -> 42.6, LangGap avg 24.5 -> 41.7, LIBERO-CF avg 13.2 -> 47.8, real robot 13.8% -> 36.3%",
+              "reports final checkpoints only, no grounding curve over training steps; blank instruction not evaluated",
+              "read through a summary of the arXiv HTML; the paper's text and tables disagree in places, so recheck Table 2 before quoting"] }
+  - { key: selfdemo, title: "Fine-Tuning VLAs with Self-Demonstrated Generative Control for Multi-Task Manipulation", authors: "Garg et al.", year: 2026, arxiv: 2608.19490,
+      facts: ["fine-tuning pi0.5 on expert data from a new embodiment loses its original instruction following (abstract)", "real ALOHA and a new RoboTwin benchmark"] }
+  - { key: notact, title: "VLA Policies Do Not Know When Not to Act: Unintended Task Execution and Start Suppression", authors: "Jang et al.", year: 2026, arxiv: 2610.41609,
+      facts: ["LIBERO-Goal, six checkpoints, initial state fixed, only the instruction varied", "empty instruction: the robot moved in every episode for all six (abstract)", "a 'do not move' prompt prefix stopped none of the six; a gate comparing the first chunk with the empty-instruction chunk held five of six"] }
+  - { key: pirl, title: "piRL: Online RL Fine-tuning for Flow-based Vision-Language-Action Models", year: 2025, arxiv: 2510.25889,
+      facts: ["online RL for pi0 and pi0.5 (Flow-Noise, Flow-SDE); LIBERO, ManiSkill, MetaWorld (abstract). Numbers not yet read in the paper"] }
+  - { key: vlm2vla, title: "Actions as Language: Fine-Tuning VLMs into VLAs Without Catastrophic Forgetting", year: 2025, arxiv: 2509.22195, venue: "ICLR 2026", facts: ["found, not read"] }
+  - { key: droid, title: "DROID: A Large-Scale In-The-Wild Robot Manipulation Dataset", authors: "Khazatsky et al.", year: 2024, arxiv: 2403.12945, license: CC-BY-4.0,
+      facts: ["76k demonstration trajectories or 350 hours, 564 scenes, 86 tasks, 50 data collectors, 12 months (abstract)", "18 robots, 13 institutions (introduction)",
+              "platform: Franka Panda 7DoF arm, two adjustable Zed 2 stereo cameras, a wrist-mounted Zed Mini, an Oculus Quest 2 headset with controllers for teleoperation (Fig. 0 caption)",
+              "dataset released under CC-BY 4.0; actions recorded at 15 Hz"] }
+  - { key: attn-recal, title: "Restoring Linguistic Grounding in VLA Models via Train-Free Attention Recalibration", year: 2026, arxiv: 2603.06001, facts: ["found, not read"] }
 
 code:
   - key: openpi
@@ -39,6 +61,24 @@ code:
       - "pi0.5 adds joint state only as text in the prompt ('Task: ..., State: ...;\\nAction: '); with discrete_state_input=False it gets no state (models/pi0.py, transforms.py)"
       - "eval script examples/libero/main.py: replan_steps=5, num_trials_per_task=50, seed=7, num_steps_wait=10, max steps 220/280/300/520/400 (spatial/object/goal/10/90), images resized to 224"
       - "GPU: inference >8 GB, LoRA fine-tune >22.5 GB (JAX only), full fine-tune >70 GB"
+      - "examples/libero/main.py turns both camera images 180 degrees ([::-1, ::-1]) before the model sees them, commented 'IMPORTANT: rotate 180 degrees to match train preprocessing' (checked 2026-11-11). So the physical-intelligence/libero frames are mirrored left-right against the LIBERO paper's figures (cabinet right in the dataset, left in the paper's LIBERO-Goal figure)"
   - key: libero-dataset
     url: https://huggingface.co/datasets/physical-intelligence/libero
-    facts: ["1,693 episodes, 273,465 frames, 40 tasks (Spatial, Object, Goal, 10), 10 fps", "image + wrist_image 256x256, state 8-D, action 7-D", "converted from OpenVLA's modified LIBERO RLDS"]
+    facts: ["1,693 episodes, 273,465 frames, 40 tasks (Spatial, Object, Goal, 10), 10 fps", "image + wrist_image 256x256, state 8-D, action 7-D", "converted from OpenVLA's modified LIBERO RLDS",
+            "card licence cc-by-4.0 (HF API, 2026-11-11)",
+            "task_index 10-19 LIBERO-Goal, 20-29 Object, 30-39 Spatial (tasks.jsonl); task 10 = 'put the bowl on the plate'",
+            "episode 379: task 10, 112 frames (length 112), global row offset 101469, timestamps 0.0 to 11.1 s",
+            "episode 379 gripper action (7th number): -1 at frames 0 and 35, +1 at frames 50 and 65, -1 at frame 111 (rows re-fetched 2026-11-11); -1 = open, +1 = close",
+            "episode 379 frame 65 action: [0.643, 0.0, 0.897, 0.0, 0.123, -0.0, 1.0] (moving up with the gripper closed)",
+            "rows are read with https://datasets-server.huggingface.co/rows?dataset=physical-intelligence/libero&config=default&split=train&offset=N&length=1 (sometimes 502; retry)"]
+  - key: libero-bddl
+    url: https://github.com/Lifelong-Robot-Learning/LIBERO/tree/master/libero/libero/bddl_files/libero_spatial
+    facts: ["the (:init) block of each Spatial task file says where the two black bowls start; the other objects sit in the same regions in all ten (checked 2026-11-11)",
+            "'pick up the black bowl on the stove ...' and '... on the wooden cabinet ...' start from the same arrangement: one bowl on flat_stove_1_cook_region, one on wooden_cabinet_1_top_side. Only the instruction tells these two apart",
+            "the other eight Spatial tasks each start from their own arrangement",
+            "all four suites checked by comparing each task file's (:init) block, then diffing the shared pairs in full (2026-11-11): Goal 10 tasks / 1 layout; Spatial 10 / 9; Object 10 / 10; LIBERO-10 10 / 9",
+            "LIBERO-10 pair: LIVING_ROOM_SCENE2 'put both the alphabet soup and the tomato sauce in the basket' and '... the cream cheese box and the butter ...' differ only in language, objects of interest and goal",
+            "the Spatial pair's files differ only in language and which of the two identical bowls starts where"]
+  - key: behapi-ckpts
+    url: https://huggingface.co/xuewei-huang/BehaPi-ckpts
+    facts: ["holds only step-30000 checkpoints (combined_all_a800_train, libero_baseline_a800_train), no intermediate steps (file listing, 2026-11-11)"]

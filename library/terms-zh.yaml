@@ -1,0 +1,48 @@
+# Chinese names for the glossary's concept terms, shown next to each term on the web pages (glossary.js `zh`) and in
+# the 中文 column of docs/learn/glossary.md. Checked 2026-11-11 against Chinese technical writing on VLAs and robot
+# learning (sources below). Names (LIBERO, MuJoCo, openpi, Gemma, PaliGemma, SigLIP, Llama 2, RT-2, OpenVLA, π0, π0.5,
+# Physical Intelligence, Google DeepMind, Franka Panda, FAST, Open X-Embodiment, LoRA, CAG) stay in Latin letters.
+# `open: true` marks a choice where usage really splits; the team picks, and the other forms are listed.
+
+terms:
+  neural-network:    { zh: 神经网络 }
+  parameters:        { zh: 参数 }
+  vla:               { zh: 视觉-语言-动作模型, alt: [视觉语言动作模型], note: "both spellings are common; the hyphens match the English" }
+  vlm:               { zh: 视觉-语言模型, alt: [视觉语言模型], note: "视觉语言模型 without hyphens is at least as common; kept hyphenated to match VLA" }
+  policy:            { zh: 策略 }
+  action:            { zh: 动作 }
+  action-chunk:      { zh: 动作块, alt: [动作分块, 动作片段, "action chunk (kept in English)"], open: true,
+                       note: "动作块 is the chunk itself and 动作分块 the technique (action chunking); both appear in the pi0 notes below" }
+  benchmark:         { zh: 基准测试, alt: [基准, 评测基准], open: true }
+  simulator:         { zh: 仿真器, alt: [模拟器, 仿真平台] }
+  teleoperation:     { zh: 遥操作, alt: [远程操作] }
+  demonstration:     { zh: 演示, alt: [示范, 示教, "demo (kept in English)"], open: true,
+                       note: "演示/示范 in ML writing (从演示中学习, 每任务演示数); 示教 comes from industrial robotics (示教数据) and is common in Chinese embodied-AI industry" }
+  token:             { zh: 词元, alt: ["token (kept in English, still the most common in practice)", 标记], open: true,
+                       note: "全国科学技术名词审定委员会 recommended 词元 for trial use on 2026-03-25; Chinese VLA notes in 2026 still mostly write 动作 token" }
+  action-expert:     { zh: 动作专家 }
+  diffusion:         { zh: 扩散模型, alt: [扩散], note: "the glossary entry names the method; 扩散 alone reads as the physical process" }
+  flow-matching:     { zh: 流匹配 }
+  behaviour-cloning: { zh: 行为克隆 }
+  pretraining:       { zh: 预训练 }
+  fine-tuning:       { zh: 微调 }
+  joint-readings:    { zh: 关节状态, alt: [本体感知, 本体状态, 关节角], open: true,
+                       note: "'joint readings' is our plain English for state / proprioception; 关节读数 is not a phrase people use. 本体感知(状态) is the usual term in VLA papers" }
+  episode:           { zh: 回合, alt: ["episode (kept in English)", 轨迹, 幕], open: true,
+                       note: "回合 in RL textbooks and blogs; 幕 in the Chinese translation of Sutton and Barto; dataset write-ups often keep 'episode' or count 轨迹 (recorded runs)" }
+
+# Terms only in docs/learn/glossary.md (later chapters)
+md_only:
+  checkpoint:                 { zh: 检查点 }
+  counterfactual-instruction: { zh: 反事实指令 }
+  shortcut:                   { zh: 捷径, note: "as in 捷径学习 (shortcut learning)" }
+  success-rate:               { zh: 成功率 }
+  not_chosen: [grounding, grounding rate, knowledge insulation, faithful / biased success]
+
+sources:
+  - "全国科学技术名词审定委员会, 关于发布试用人工智能领域名词token中文名“词元”的公告, 2026-03-25, http://www.cnterm.cn/news/tzgg/202603/t20260325_827999.html"
+  - "Seeed Studio Wiki, π0：流匹配如何连接视觉语言与机器人动作, https://wiki.seeedstudio.com/cn/robotics/paper_reading_pi0/ (动作专家, 流匹配, 动作块, 动作分块)"
+  - "具身星图, π0 细读, https://zhuyun97.github.io/embodied-ai-learning/vla/papers/pi0 (视觉-语言模型, 动作专家, 动作块(action chunk), 流匹配)"
+  - "LLM Paper Notes, π₀ 原理详解, https://llm-paper-notes.jiabingyang.cn/papers/06-embodied-ai/vla/foundation/pi0_2024.html (本体感知状态)"
+  - "技术栈, 《VLA 系列》π0, 2026-08-15, https://jishuzhan.net/article/2088481340340453378 (本体状态, 关节角, 动作 token)"
+  - "Embodied AI: Zero to One, LIBERO 与 Ch21 数据集全景, https://estelledc.github.io/embodied-ai-reading-station/ (示范数据采集, 每任务演示数, 遥操作, 基准)"

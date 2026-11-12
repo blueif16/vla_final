@@ -62,6 +62,14 @@ The words on the page are written with `de-ai-writing` loaded, and the chapter's
   left contents with scroll-spy, shown from 1400 px), `.progress` bar.
 - `.prose` blocks between full-width `.fig` figures; wide SVGs sit in `.pan` so phones pan instead of shrinking them.
 - `button.term[data-term]` → shared popover; works on hover, focus and tap; Esc closes.
+- Chinese next to core terms (user, 2026-11-11): a glossary entry's `zh` field is shown in small grey type right after
+  the term's first use (term and Chinese kept on one line by a `.term-zh` wrapper) and in the popover's label. Concepts
+  get `zh`, names (models, companies, datasets, robots) don't. Use the word Chinese technical writing uses today,
+  never a made-up one, and record the choice and its alternatives in the project's `library/terms-zh.yaml`. The
+  `.zh` font stack is system CJK fonts only, so no web font is downloaded.
+- Real frames: `.frame.film` (style `--cols:N`) is a grid of photos with HTML row labels (`.film-row`, e.g. one per
+  camera) and column labels (`.film-col`, e.g. the time); put it in `.pan` so phones pan. `.shots` > `.shot` pairs a
+  picture with the sentence it comes with. `.fig.narrow` keeps a tall photo at text width.
 - `.rail` > `.rail-head` (`.label`, `.rail-title`, prev/next) + `.rail-track` of `article.card`; clip cards use
   `<div class="media" data-yt="ID" data-start="s" data-end="s" data-title="…">` (thumbnail first, then a
   youtube-nocookie iframe that starts at `start`, stops at `end`); figure cards use `.media.pic`; `.card.text` for notes.
@@ -93,7 +101,7 @@ The words on the page are written with `de-ai-writing` loaded, and the chapter's
   every figure and rail. Headless Chrome screenshots of our own pages are fine; don't use it to get around a site's bot
   protection (the classifier refused that, 2026-11-11).
 - Drive the page through the DevTools protocol (Node's built-in `WebSocket`, `--remote-debugging-port`): every
-  `data-term` has a glossary entry, a popover opens, a clip's iframe has the right `start` and `end`, each widget
+  `data-term` has a glossary entry, every Chinese label sits on its term's line, a popover opens, a clip's iframe has the right `start` and `end`, each widget
   responds, rails scroll, and the page has no horizontal overflow. The script used for chapter 1 is in
   `references/cdp-check.mjs`.
 - Every number on the page matches `library/papers.yaml`.

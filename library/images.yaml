@@ -30,6 +30,35 @@ downloaded:
     license: CC BY 4.0
     shows: datasets, scenes and trajectories per robot type; common skills and objects
     used: [ch1 rail learning]
+  - file: docs/assets/img/droid-setup.jpg
+    source: https://arxiv.org/html/2403.12945v2/droid_setup.png
+    paper: DROID (Khazatsky et al. 2024), Fig. 0 "The DROID robot platform" (arXiv page licence CC BY 4.0, checked 2026-11-11)
+    license: CC BY 4.0
+    shows: a real Franka Panda arm on a portable desk with two Zed 2 side cameras, a Zed Mini wrist camera, a Robotiq
+      2F-85 gripper, a control laptop and an Oculus Quest 2 headset for teleoperation; English labels baked in
+    converted: PNG 1352x1026 -> JPG q3, same size
+    used: [ch1 figure 1.4 (teleoperation, why-vlm section)]
+  - files: docs/assets/img/libero-ep379/{table,wrist}-{000,035,065,111}.jpg
+    source: Hugging Face datasets-server rows API, dataset physical-intelligence/libero (card licence cc-by-4.0, checked
+      2026-11-11), https://datasets-server.huggingface.co/rows?dataset=physical-intelligence/libero&config=default&split=train&offset=N&length=1
+    license: CC BY 4.0
+    shows: episode 379, task_index 10 "put the bowl on the plate" (LIBERO-Goal), frames 0, 35, 65, 111 (global row
+      offset 101469 + frame); table camera (column image) and wrist camera (column wrist_image), 256x256 JPG as served
+    moments: 0.0 s start; 3.5 s gripper over the bowl; 6.5 s bowl lifted (action dz +0.897); 11.1 s bowl on the plate
+    note: libero-ep379/table-000.jpg is also the first frame of that LIBERO-Goal task (ch1 figure 1.10)
+    used: [ch1 figure 1.1 (what the two cameras see), ch1 figure 1.10 right panel, first row]
+  - files: docs/assets/img/libero-first/{spatial-ep1262,spatial-ep1264,spatial-ep1283,goal-ep392,goal-ep388}.jpg
+    source: same dataset and API as above, frame_index 0 of each episode (checked row by row 2026-11-11)
+    license: CC BY 4.0
+    shows: first table-camera frame of one run per task. spatial-ep1262 task 31 "pick up the black bowl in the top drawer
+      of the wooden cabinet and place it on the plate" (offset 220605); spatial-ep1264 task 32 "... on the ramekin ..."
+      (220870); spatial-ep1283 task 38 "... from table center ..." (222995); goal-ep392 task 17 "put the bowl on the
+      stove" (103296); goal-ep388 task 16 "turn on the stove" (102876)
+    note: first frames of all ten Spatial tasks and three Goal tasks were fetched (episodes and offsets in the
+      2026-11-11 session's scratch pick.json, reproduced here for the ones used). By eye the Goal frames show one
+      arrangement; the Spatial frames differ, except "on the stove" (ep1267) and "on the wooden cabinet" (ep1290),
+      which start from the same arrangement (see papers.yaml code libero-bddl)
+    used: [ch1 figure 1.10 (both cases in LIBERO)]
 
 available_cc_by:   # not downloaded yet; base URL + file
   - paper: LIBERO (arXiv 2306.03310, CC BY 4.0)
@@ -53,11 +82,22 @@ available_cc_by:   # not downloaded yet; base URL + file
 
 link_only:   # arXiv default licence: do not copy figures
   - { paper: "RT-2 (2307.15818)", note: "action string figure on the DeepMind blog; draw our own" }
-  - { paper: "pi0 (2410.24164)", note: "architecture figure; draw our own (done in ch1 figure 1.4)" }
+  - { paper: "pi0 (2410.24164)", note: "architecture figure; draw our own (done in ch1 figure 1.6)" }
   - { paper: "pi0.5 (2504.16054)", note: "draw our own" }
   - { paper: "ALOHA / ACT (2304.13705)", note: "teleoperation photos; link to tonyzhaozh.github.io/aloha" }
   - { paper: "Physical Intelligence blog posts", note: "style reference only; never copy their SVGs or photos" }
 
+available_cc_by_more:   # found 2026-11-11, not downloaded
+  - paper: DROID (arXiv 2403.12945, CC BY 4.0)
+    base: https://arxiv.org/html/2403.12945v2/
+    figures:
+      - { file: droid_gui.png, caption: "data collection GUI", for: optional }
+  - paper: PaliGemma (arXiv 2407.07726, CC BY 4.0)
+    base: https://arxiv.org/html/2407.07726v2/figures/tasks/
+    note: example task images (a VLM answering about a photo); could illustrate what a VLM does before robot training
+
 still_needed:
-  - "a teleoperation photo or short video with a clear licence (leader arms driving a follower arm)"
-  - "LIBERO wrist-camera and table-camera frames at 224 px, to show exactly what pi05_libero sees (we can render our own once LIBERO runs)"
+  - "a teleoperation photo or short video with a clear licence that shows a person at work (leader arms driving a
+    follower arm); DROID Fig. 0 shows the hardware but no person"
+  - "LIBERO frames as pi05_libero receives them at evaluation (224 px, rendered by the simulator); the dataset frames we
+    hold are 256 px training frames"

@@ -24,8 +24,16 @@ LIBERO suites.
 
 Other groups have since measured part of this. With the instruction removed, the same π0.5 checkpoint still succeeds
 68.2% of the time on LIBERO-Spatial. On LIBERO-Goal, the one suite where all ten tasks start from the same scene, it
-falls to 10.2% ([Fang et al., 2026](https://arxiv.org/abs/2602.17659)). Our topic is still open, and we're working out
-what we can add. [Where we stand](docs/learn/06-where-we-stand.md) lists the options.
+falls to 10.2% ([Fang et al., 2026](https://arxiv.org/abs/2602.17659)).
+
+## What we're studying now
+
+We kept the question and widened it. When π0.5 does a household task, what is it actually going by: the words, what
+each camera shows, or the layout it remembers from training? Each experiment changes one of these the way a real home
+would. We erase the instruction, reword it, black out a camera, bump it, or move the plate, and then count how often
+the robot still succeeds and record videos of what it does. We start in LIBERO's kitchen scenes, and if a trial run
+works we move on to a π0.5 model that folds laundry in simulation. [`topic.md`](topic.md) has the question, the
+experiments and the steps, and [where we stand](docs/learn/06-where-we-stand.md) records what we've decided.
 
 ## Learn the background
 
@@ -46,6 +54,7 @@ what's still open.
 
 | Path | What it holds |
 |---|---|
+| `topic.md` | our research question, the three stages, the experiments and the steps |
 | `docs/learn/` | the learning chapters as markdown and web pages, the glossary and our status ([chapter 6](docs/learn/06-where-we-stand.md)) |
 | `docs/assets/` | the website's styles, scripts, shared glossary of terms and images |
 | `library/` | every clip time, image licence and checked number we've found, so later chapters reuse them |

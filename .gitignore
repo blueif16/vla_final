@@ -5,3 +5,6 @@ checkpoints/
 wandb/
 *.mp4
 .DS_Store
+
+# stage 1 run outputs: videos stay local; episodes.jsonl files are small and kept
+stage1/runs/**/videos/

@@ -1,4 +1,5 @@
-/* Learning-site behaviour: term side notes, horizontal rails, YouTube clips that start at a set second,
+/* Learning-site behaviour: term side notes (with the term's Chinese name when the glossary has a zh field),
+   horizontal rails, YouTube clips that start at a set second,
    contents with scroll-spy, hover groups in diagrams, and two small explorables (refine, chunks).
    Canonical copy: ~/.claude/skills/teaching-web/assets/site.js */
 (function () {
@@ -32,7 +33,8 @@
     const e = G[btn.dataset.term];
     if (!e) return;
     if (openTerm && openTerm !== btn) openTerm.setAttribute("aria-expanded", "false");
-    pop.innerHTML = `<div class="label">${e.t}</div><div>${e.d}</div>` +
+    const zh = e.zh ? ` <span class="zh" lang="zh-CN">${e.zh}</span>` : "";
+    pop.innerHTML = `<div class="label">${e.t}${zh}</div><div>${e.d}</div>` +
       (e.more ? `<div class="more">${e.more}</div>` : "");
     pop.hidden = false;
     place(btn);
@@ -45,7 +47,21 @@
     now ? go() : (hideTimer = setTimeout(go, 160));
   }
   $$(".term").forEach((btn) => {
-    if (!G[btn.dataset.term]) console.warn("No glossary entry for", btn.dataset.term);
+    const entry = G[btn.dataset.term];
+    if (!entry) console.warn("No glossary entry for", btn.dataset.term);
+    // the Chinese name sits right after the term; terms are wrapped on first use only, so it shows once per page
+    if (entry && entry.zh && !(btn.nextElementSibling && btn.nextElementSibling.classList.contains("zh"))) {
+      const z = document.createElement("span");
+      z.className = "zh";
+      z.lang = "zh-CN";
+      z.textContent = "\u00a0" + entry.zh;
+      // a button is an atomic inline, so a line may break between it and the next span; a nowrap wrapper keeps
+      // the term and its Chinese name on one line
+      const pair = document.createElement("span");
+      pair.className = "term-zh";
+      btn.before(pair);
+      pair.append(btn, z);
+    }
     btn.type = "button";
     btn.setAttribute("aria-describedby", "term-pop");
     btn.setAttribute("aria-expanded", "false");

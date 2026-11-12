@@ -10,6 +10,7 @@ const ev = async (expr) => (await send('Runtime.evaluate', { expression: expr, a
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 await sleep(2500);
 console.log('terms:', await ev(`(() => { const ks=[...document.querySelectorAll('.term')].map(b=>b.dataset.term); const miss=ks.filter(k=>!window.GLOSSARY[k]); return ks.length+' used, '+new Set(ks).size+' distinct, missing: '+JSON.stringify(miss); })()`));
+console.log('zh:', await ev(`(() => { const z=[...document.querySelectorAll('.term-zh')]; const off=z.filter(p=>{ const a=p.querySelector('.term').getBoundingClientRect(), b=p.querySelector('.zh').getClientRects()[0]; return !(b && b.top < a.bottom && b.bottom > a.top); }).map(p=>p.querySelector('.term').dataset.term); return z.length+' Chinese labels, off their term line: '+JSON.stringify(off); })()`));
 console.log('popover:', await ev(`(() => { const b=document.querySelector('.term[data-term=vla]'); b.click(); const p=document.getElementById('term-pop'); return (p.hidden?'HIDDEN ':'shown ')+p.textContent.slice(0,90); })()`));
 console.log('yt:', await ev(`(() => { const b=document.querySelector('.yt-play'); b.click(); const f=document.querySelector('[data-yt] iframe'); return f ? f.src : 'no iframe'; })()`));
 await ev(`document.querySelector('.do-step').click()`); await sleep(1400);

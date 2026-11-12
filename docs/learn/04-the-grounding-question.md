@@ -38,7 +38,8 @@ accident.
 ## Why a model might ignore the words
 
 Chapter 1 gave the reason. Imitation learning rewards whatever predicts the demonstrated action. In three of the four
-LIBERO suites, the starting picture already predicts it, so the words add nothing during training. In LIBERO-Goal they
+LIBERO suites, the starting picture already predicts it for almost every task, so the words add almost nothing during
+training. (Chapter 3 lists the two pairs of tasks that share a starting table.) In LIBERO-Goal they
 are the only thing that tells the tasks apart, so there the model has to use them.
 
 This gives a prediction we can check, and it is our reading, not yet a result. A blank or wrong instruction should

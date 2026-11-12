@@ -38,10 +38,16 @@ One run of our four-prompt plan therefore comes to 4 prompts × 4 suites × 10 t
 
 ## Why a high score doesn't prove the words were read
 
-In LIBERO-Spatial and LIBERO-Object, each task has its own arrangement of objects. The picture at the first step is
-already enough to tell which of the ten tasks this is. A model can reach a high score by learning "this arrangement
-means this motion" and never looking at the sentence. LIBERO-10 is similar, because its tasks happen in different
-scenes.
+In LIBERO-Spatial, LIBERO-Object and LIBERO-10, almost every task starts from its own arrangement of objects, so the
+picture at the first step is usually enough to tell which task this is. A model can reach a high score by learning
+"this arrangement means this motion" and never looking at the sentence.
+
+We checked each task's starting layout in LIBERO's task files, and found two exceptions. In LIBERO-Spatial, "pick up
+the black bowl on the stove" and "pick up the black bowl on the wooden cabinet" start from the same table. One black
+bowl sits on the stove and an identical one sits on the cabinet, so the picture can't say which one to take. In
+LIBERO-10, "put both the alphabet soup and the tomato sauce in the basket" and "put both the cream cheese box and the
+butter in the basket" also start from the same table. For each of these pairs, only the sentence tells the two tasks
+apart.
 
 LIBERO-Goal is the exception. All ten tasks share one picture, so a model that ignores the sentence has to guess. If
 it picked one of the ten tasks at random, it would succeed about one time in ten. This is our own arithmetic; chapter
@@ -67,8 +73,8 @@ three suites let it get away without reading. The interesting results sit in the
 
 1. LIBERO-Goal. All ten tasks start from the same scene, so only the sentence tells them apart.
 2. 500 (10 tasks × 50 trials).
-3. Each Spatial task starts from its own arrangement of objects, so the picture alone identifies the task. The model
-   can map arrangements to motions without using the words.
+3. The "between the plate and the ramekin" task starts from its own arrangement of objects, so the picture alone
+   identifies the task. The model can map arrangements to motions without using the words.
 
 </details>
 

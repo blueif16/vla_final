@@ -71,7 +71,32 @@
   <p>A robot arm stands at a table with a black bowl, a plate and a small stove on it. Someone types <span class="q">put the bowl on the plate</span>. From that moment, several times a second, something has to decide how the arm and its gripper, the two-fingered hand at its end, move next. A <button class="term" data-term="vla">vision-language-action model</button>, or VLA, is one <button class="term" data-term="neural-network">neural network</button> that makes that decision. It looks at the camera images, reads the sentence and returns the next few motions.</p>
 
   <h2 id="in-out">What goes in and what comes out</h2>
-  <p>Going in, there are usually two camera images. One comes from a camera looking at the table and one from a camera on the robot's wrist. Next to them goes the instruction as text, and often the robot's <button class="term" data-term="joint-readings">joint readings</button>, the angles its motors report. Coming out are <button class="term" data-term="action">actions</button>, numbers that tell the arm where to go.</p>
+  <p>Going in, there are usually two camera images. One comes from a camera looking at the table and one from a camera on the robot's wrist. Figure 1.1 shows what both cameras recorded during one run of <span class="q">put the bowl on the plate</span>, the task from the opening paragraph.</p>
+</div>
+
+<figure class="fig">
+  <div class="pan"><div class="frame film" style="--cols:4" role="group" aria-label="Table camera and wrist camera at four moments of one run">
+    <span></span>
+    <span class="film-col"><b>0.0 s</b>start</span>
+    <span class="film-col"><b>3.5 s</b>gripper over the bowl</span>
+    <span class="film-col"><b>6.5 s</b>bowl lifted</span>
+    <span class="film-col"><b>11.1 s</b>bowl on the plate</span>
+    <span class="film-row">Table camera</span>
+    <img src="../assets/img/libero-ep379/table-000.jpg" alt="Table camera at the start: the arm is raised behind a table with a stove, a wine bottle, a black bowl, a plate and a cabinet." width="256" height="256">
+    <img src="../assets/img/libero-ep379/table-035.jpg" alt="Table camera at 3.5 seconds: the gripper is above the bowl." width="256" height="256">
+    <img src="../assets/img/libero-ep379/table-065.jpg" alt="Table camera at 6.5 seconds: the gripper holds the bowl above the table." width="256" height="256">
+    <img src="../assets/img/libero-ep379/table-111.jpg" alt="Table camera at 11.1 seconds: the bowl sits on the plate and the gripper is above it." width="256" height="256">
+    <span class="film-row">Wrist camera</span>
+    <img src="../assets/img/libero-ep379/wrist-000.jpg" alt="Wrist camera at the start, looking down on the plate, the bowl, the stove and the bottle from above." width="256" height="256">
+    <img src="../assets/img/libero-ep379/wrist-035.jpg" alt="Wrist camera at 3.5 seconds: the plate in the middle and the edge of the bowl at the bottom." width="256" height="256">
+    <img src="../assets/img/libero-ep379/wrist-065.jpg" alt="Wrist camera at 6.5 seconds: the bowl fills the bottom of the picture, with the plate beyond it." width="256" height="256">
+    <img src="../assets/img/libero-ep379/wrist-111.jpg" alt="Wrist camera at 11.1 seconds: the bowl resting on the plate, seen from just above." width="256" height="256">
+  </div></div>
+  <figcaption><b>Figure 1.1 · What the two cameras see.</b> Four moments from one recorded run in LIBERO. The run is 112 steps long, at 10 steps a second. The table camera looks at the whole scene from in front of the robot. The wrist camera moves with the hand, so once the gripper reaches the bowl, the bowl fills its view. The dataset keeps one picture from each camera at every step, each 256 by 256 pixels. The pictures are turned 180 degrees from what the simulator draws, and <button class="term" data-term="openpi">openpi</button> turns its test pictures the same way, so left and right are swapped compared with the picture at the top of the page. <span class="credit">Frames: episode 379 of the physical-intelligence/libero dataset on Hugging Face, CC BY 4.0.</span></figcaption>
+</figure>
+
+<div class="prose">
+  <p>Next to the images goes the instruction as text, and often the robot's <button class="term" data-term="joint-readings">joint readings</button>, the angles its motors report. Coming out are <button class="term" data-term="action">actions</button>, numbers that tell the arm where to go.</p>
 </div>
 
 <figure class="fig">
@@ -132,7 +157,7 @@
     <text class="lbl" x="480" y="363" text-anchor="middle">NEW PICTURES, ASK AGAIN</text>
     <text class="sub" x="480" y="385" text-anchor="middle">until the task is done or time runs out</text>
   </svg></div>
-  <figcaption><b>Figure 1.1 · The control loop.</b> The VLA turns pictures and a sentence into actions. The robot moves, the cameras take new pictures and the model is asked again, several times a second.</figcaption>
+  <figcaption><b>Figure 1.2 · The control loop.</b> The VLA turns pictures and a sentence into actions. The robot moves, the cameras take new pictures and the model is asked again, several times a second.</figcaption>
 </figure>
 
 <div class="prose">
@@ -201,7 +226,7 @@
       </g>
     </g>
   </svg></div>
-  <figcaption><b>Figure 1.2 · One action in LIBERO.</b> Seven numbers per time step, in three groups. The values are made up to show the layout; a real model sends new ones at every step.</figcaption>
+  <figcaption><b>Figure 1.3 · One action in LIBERO.</b> Seven numbers per time step, in three groups. The values are made up to show the layout; a real model sends new ones at every step.</figcaption>
 </figure>
 
 <div class="prose">
@@ -243,7 +268,15 @@
 
 <div class="prose">
   <h2 id="why-vlm">Why start from a vision-language model</h2>
-  <p>Robot data is expensive. Each training example is a <button class="term" data-term="demonstration">demonstration</button>, a recording of a person steering the robot through the task by hand, which is called <button class="term" data-term="teleoperation">teleoperation</button>. So a single task might come with only 50 demonstrations, which is what each LIBERO task has.</p>
+  <p>Robot data is expensive. Each training example is a <button class="term" data-term="demonstration">demonstration</button>, a recording of a person steering the robot through the task by hand, which is called <button class="term" data-term="teleoperation">teleoperation</button>. Every demonstration needs a person and a robot for as long as the task takes, so a single task might come with only 50 demonstrations, which is what each LIBERO task has. Figure 1.4 shows a robot set up to record them.</p>
+</div>
+
+<figure class="fig narrow">
+  <div class="frame"><img src="../assets/img/droid-setup.jpg" alt="A white Franka Panda robot arm on a portable standing desk, with a stereo camera on an arm at each side, a small stereo camera on the wrist, a two-fingered gripper, a control laptop and an Oculus Quest 2 headset, each part labelled." width="1352" height="1026" loading="lazy"></div>
+  <figcaption><b>Figure 1.4 · A robot set up for teleoperation.</b> This setup recorded DROID, a public dataset of real robot demonstrations. It is a Franka Panda arm, the model LIBERO simulates, with a camera on each side and one on the wrist. A person steers the arm with an Oculus Quest 2 VR headset and its hand controllers. The red circles mark the headset and the wrist camera. With 18 of these robots, 50 people at 13 institutions spent 12 months recording 76k demonstrations. <span class="credit">Image: Khazatsky et al. 2024, DROID, Fig. 0, CC BY 4.0.</span></figcaption>
+</figure>
+
+<div class="prose">
   <p>A <button class="term" data-term="vlm">vision-language model</button> (VLM) learns from something far cheaper, images paired with text and collected from the web by the billion. That's how a VLM such as <button class="term" data-term="paligemma">PaliGemma</button> knows what a bowl looks like and what <span class="q">the one on the left</span> means. A VLA starts from a VLM and keeps training it on robot demonstrations, so the robot borrows that knowledge instead of learning it from 50 examples.</p>
 </div>
 
@@ -293,7 +326,7 @@
     <text class="lbl-s" x="803" y="252" text-anchor="middle">ACTIONS</text>
     <text class="sub" x="803" y="276" text-anchor="middle">7 numbers per step</text>
   </svg></div>
-  <figcaption><b>Figure 1.3 · Same network, new output.</b> A VLA starts as a copy of a VLM. Training on robot demonstrations teaches it to answer with actions instead of words.</figcaption>
+  <figcaption><b>Figure 1.5 · Same network, new output.</b> A VLA starts as a copy of a VLM. Training on robot demonstrations teaches it to answer with actions instead of words.</figcaption>
 </figure>
 
 <div class="prose">
@@ -405,7 +438,7 @@
       </div>
     </div>
   </div>
-  <figcaption><b>Figure 1.4 · Two ways out.</b> Left, an action number becomes the token of its bin. Right, the action expert's ten refinement steps, simplified. The dashed line is the motion the model should end up with, and each point slides along a straight line from its noise towards it, which is the path flow matching is trained to follow. The real model has to work out that direction at every step from the images and the sentence.</figcaption>
+  <figcaption><b>Figure 1.6 · Two ways out.</b> Left, an action number becomes the token of its bin. Right, the action expert's ten refinement steps, simplified. The dashed line is the motion the model should end up with, and each point slides along a straight line from its noise towards it, which is the path flow matching is trained to follow. The real model has to work out that direction at every step from the images and the sentence.</figcaption>
 </figure>
 
 <section class="rail" aria-label="Go deeper: tokens and action experts">
@@ -455,7 +488,7 @@
 
 <div class="prose">
   <h2 id="chunks">Action chunks</h2>
-  <p>Both kinds of model usually predict several future actions at once, called an <button class="term" data-term="action-chunk">action chunk</button>. π0 predicts 50 steps ahead, and the LIBERO version of <button class="term" data-term="pi05">π0.5</button> predicts 10. The robot runs some of them, the first 5 in the LIBERO evaluation script from <button class="term" data-term="openpi">openpi</button>, then asks the model again with fresh images. Predicting ahead keeps the motion smooth, and asking again lets the robot correct itself.</p>
+  <p>Both kinds of model usually predict several future actions at once, called an <button class="term" data-term="action-chunk">action chunk</button>. π0 predicts 50 steps ahead, and the LIBERO version of <button class="term" data-term="pi05">π0.5</button> predicts 10. The robot runs some of them, the first 5 in the LIBERO evaluation script from openpi, then asks the model again with fresh images. Predicting ahead keeps the motion smooth, and asking again lets the robot correct itself.</p>
 </div>
 
 <figure class="fig">
@@ -469,7 +502,7 @@
       <span class="readout" aria-live="polite"></span>
     </div>
   </div>
-  <figcaption><b>Figure 1.5 · Ten predicted, five run.</b> Press Step to make one call. Gold cells are the chunk the model predicts, green cells are the steps the robot runs, and dashed cells are predictions it throws away when it asks again. At this rate a 220-step LIBERO episode takes 44 calls.</figcaption>
+  <figcaption><b>Figure 1.7 · Ten predicted, five run.</b> Press Step to make one call. Gold cells are the chunk the model predicts, green cells are the steps the robot runs, and dashed cells are predictions it throws away when it asks again. At this rate a 220-step LIBERO episode takes 44 calls.</figcaption>
 </figure>
 
 <section class="rail" aria-label="Go deeper: why chunks help">
@@ -508,7 +541,7 @@
 
 <div class="prose">
   <h2 id="learning">How a VLA learns</h2>
-  <p>Training happens in three stages, laid out in figure 1.6. First the VLM learns from web images and text. Then the whole VLA learns from demonstrations recorded on many kinds of robot, such as the <button class="term" data-term="oxe">Open X-Embodiment</button> collection. Last, it is <button class="term" data-term="fine-tuning">fine-tuned</button> on the robot and the tasks it will be tested on, such as LIBERO.</p>
+  <p>Training happens in three stages, laid out in figure 1.8. First the VLM learns from web images and text. Then the whole VLA learns from demonstrations recorded on many kinds of robot, such as the <button class="term" data-term="oxe">Open X-Embodiment</button> collection. Last, it is <button class="term" data-term="fine-tuning">fine-tuned</button> on the robot and the tasks it will be tested on, such as LIBERO.</p>
   <p>In both robot stages the model learns by imitation, which is called <button class="term" data-term="behaviour-cloning">behaviour cloning</button>. It sees a picture and an instruction from a recorded demonstration, guesses the action, and is corrected towards what the human operator actually did.</p>
 </div>
 
@@ -557,7 +590,7 @@
     <path d="M362 284v10h558v-10" fill="none" stroke="#9BBC6C" stroke-width="3"/>
     <text class="lbl-s" x="641" y="316" text-anchor="middle">COPY THE OPERATOR · BEHAVIOUR CLONING</text>
   </svg></div>
-  <figcaption><b>Figure 1.6 · Three stages of training.</b> General knowledge comes first and the target tasks come last. In both robot stages the model learns by copying the operator.</figcaption>
+  <figcaption><b>Figure 1.8 · Three stages of training.</b> General knowledge comes first and the target tasks come last. In both robot stages the model learns by copying the operator.</figcaption>
 </figure>
 
 <section class="rail" aria-label="Go deeper: how a VLA learns">
@@ -603,7 +636,7 @@
     <p>“A model trained on instructions must be reading them.”</p>
   </div>
   <p>Imitation only learns what helps it copy the demonstrations. Suppose every scene in the training data comes with exactly one instruction. Then the picture alone already tells the model which motion to make, so reading the words never lowers its training error, and nothing pushes it to use them.</p>
-  <p>Things change when one scene comes with several instructions. Now the picture can't tell the tasks apart, and only the words can. Figure 1.7 puts the two cases side by side.</p>
+  <p>Things change when one scene comes with several instructions. Now the picture can't tell the tasks apart, and only the words can. Figure 1.9 puts the two cases side by side.</p>
 </div>
 
 <figure class="fig">
@@ -674,7 +707,33 @@
       </svg>
     </div>
   </div>
-  <figcaption><b>Figure 1.7 · When the words matter.</b> Left, each arrangement comes with one instruction, so the arrangement alone predicts the motion and the words (dashed) add nothing. Right, one arrangement comes with three instructions, so only the words decide. LIBERO has suites of both kinds, as chapter 3 shows.</figcaption>
+  <figcaption><b>Figure 1.9 · When the words matter.</b> Left, each arrangement comes with one instruction, so the arrangement alone predicts the motion and the words (dashed) add nothing. Right, one arrangement comes with three instructions, so only the words decide.</figcaption>
+</figure>
+
+<div class="prose">
+  <p>LIBERO has suites of both kinds. Each picture in figure 1.10 is the first frame the table camera recorded in one run of a task, shown next to that task's instruction. Chapter 3 goes through the suites one by one.</p>
+</div>
+
+<figure class="fig">
+  <div class="split">
+    <div>
+      <p class="panel-title">LIBERO-SPATIAL · THREE TASKS, THREE ARRANGEMENTS</p>
+      <div class="shots">
+        <div class="shot"><img src="../assets/img/libero-first/spatial-ep1262.jpg" alt="Start of a LIBERO-Spatial task: the top drawer of the cabinet is open with a black bowl inside, and a second black bowl sits on top of the cabinet." width="256" height="256" loading="lazy"><p>"pick up the black bowl in the top drawer of the wooden cabinet and place it on the plate"</p></div>
+        <div class="shot"><img src="../assets/img/libero-first/spatial-ep1264.jpg" alt="Start of a LIBERO-Spatial task: one black bowl sits on the small ramekin at the back left, and another sits on the cookie box." width="256" height="256" loading="lazy"><p>"pick up the black bowl on the ramekin and place it on the plate"</p></div>
+        <div class="shot"><img src="../assets/img/libero-first/spatial-ep1283.jpg" alt="Start of a LIBERO-Spatial task: one black bowl sits in the middle of the table, and another sits at the left edge next to the plate." width="256" height="256" loading="lazy"><p>"pick up the black bowl from table center and place it on the plate"</p></div>
+      </div>
+    </div>
+    <div>
+      <p class="panel-title">LIBERO-GOAL · THREE TASKS, ONE ARRANGEMENT</p>
+      <div class="shots">
+        <div class="shot"><img src="../assets/img/libero-ep379/table-000.jpg" alt="Start of a LIBERO-Goal task: a stove, a wine bottle, a black bowl, a plate and a cabinet." width="256" height="256" loading="lazy"><p>"put the bowl on the plate"</p></div>
+        <div class="shot"><img src="../assets/img/libero-first/goal-ep392.jpg" alt="Start of another LIBERO-Goal task: the same stove, bottle, bowl, plate and cabinet in the same places." width="256" height="256" loading="lazy"><p>"put the bowl on the stove"</p></div>
+        <div class="shot"><img src="../assets/img/libero-first/goal-ep388.jpg" alt="Start of a third LIBERO-Goal task: again the same objects in the same places." width="256" height="256" loading="lazy"><p>"turn on the stove"</p></div>
+      </div>
+    </div>
+  </div>
+  <figcaption><b>Figure 1.10 · Both cases in LIBERO.</b> In the three LIBERO-Spatial tasks, the two black bowls sit in different places each time, so the picture alone tells these tasks apart. In the three LIBERO-Goal tasks the table looks the same each time, and only the sentence says what to do. Not every Spatial task has its own arrangement, though: the tasks for the bowl on the stove and the bowl on the wooden cabinet start from the same one. <span class="credit">Frames: first frames of episodes 1262, 1264, 1283, 379, 392 and 388 of the physical-intelligence/libero dataset, CC BY 4.0. Arrangements: LIBERO's task files.</span></figcaption>
 </figure>
 
 <div class="prose">
@@ -700,6 +759,9 @@
     <li>Black et al. (2024), π0: A Vision-Language-Action Flow Model for General Robot Control. <a href="https://arxiv.org/abs/2410.24164">arXiv 2410.24164</a></li>
     <li>Open X-Embodiment Collaboration (2023), Open X-Embodiment: Robotic Learning Datasets and RT-X Models. <a href="https://arxiv.org/abs/2310.08864">arXiv 2310.08864</a>. Figure 1 reused under CC BY 4.0.</li>
     <li>Liu et al. (2023), LIBERO: Benchmarking Knowledge Transfer for Lifelong Robot Learning. <a href="https://arxiv.org/abs/2306.03310">arXiv 2306.03310</a>. LIBERO-Goal figure reused under CC BY 4.0.</li>
+    <li>Khazatsky et al. (2024), DROID: A Large-Scale In-The-Wild Robot Manipulation Dataset. <a href="https://arxiv.org/abs/2403.12945">arXiv 2403.12945</a>. Fig. 0 reused under CC BY 4.0; the counts in figure 1.4 are from its abstract and introduction, checked 2026-11-11.</li>
+    <li>physical-intelligence/libero, the LIBERO dataset that openpi's <code>pi05_libero</code> trains on (CC BY 4.0). Camera frames from episodes 379, 388, 392, 1262, 1264 and 1283, checked row by row on 2026-11-11. <a href="https://huggingface.co/datasets/physical-intelligence/libero">huggingface.co/datasets/physical-intelligence/libero</a></li>
+    <li>LIBERO task files, <code>libero/libero/bddl_files/libero_spatial/</code>: the starting arrangement of each Spatial task, checked 2026-11-11. <a href="https://github.com/Lifelong-Robot-Learning/LIBERO">github.com/Lifelong-Robot-Learning/LIBERO</a></li>
     <li>openpi, <code>examples/libero/main.py</code> (<code>replan_steps = 5</code>) and the <code>pi05_libero</code> config (<code>action_horizon=10</code>, <code>discrete_state_input=False</code>), checked 2026-11-11. <a href="https://github.com/Physical-Intelligence/openpi">github.com/Physical-Intelligence/openpi</a></li>
     <li>Talks: Hausman and Black (<a href="https://www.youtube.com/watch?v=qeOvHh4wxhs">qeOvHh4wxhs</a>), Nair (<a href="https://www.youtube.com/watch?v=wz1QzZY4Iaw">wz1QzZY4Iaw</a>), Levine (<a href="https://www.youtube.com/watch?v=ujAURT7YG2g">ujAURT7YG2g</a>, <a href="https://www.youtube.com/watch?v=KEbE33iGaIk">KEbE33iGaIk</a>, <a href="https://www.youtube.com/watch?v=EYLdC3a0NHw">EYLdC3a0NHw</a>), Pertsch (<a href="https://www.youtube.com/watch?v=SgjSAHKFP60">SgjSAHKFP60</a>), Simchowitz (<a href="https://www.youtube.com/watch?v=UX1YXcRnFbs">UX1YXcRnFbs</a>), Finn (<a href="https://www.youtube.com/watch?v=a8-QsBHoH94">a8-QsBHoH94</a>). Clip start and end times come from RoboBoom's section summaries of each talk (roboboom.com), checked 2026-11-11.</li>
     <li>Diagram style after Physical Intelligence's blog post “Frontier Models for Every Robot” (pi.website, 2026).</li>

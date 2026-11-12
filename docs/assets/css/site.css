@@ -31,7 +31,7 @@
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; scroll-padding-top: 24px; -webkit-text-size-adjust: 100%; }
 body { margin: 0; background: var(--bg); color: var(--ink); font: 400 18px/1.68 var(--sans); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
-img { max-width: 100%; display: block; }
+img { max-width: 100%; height: auto; display: block; }   /* height:auto keeps the width/height attributes from stretching a scaled image */
 a { color: var(--ink-2); text-decoration: underline; text-decoration-color: var(--tan); text-underline-offset: 3px; }
 a:hover { color: var(--ink); text-decoration-color: var(--ink); }
 :focus-visible { outline: 2px solid var(--gold-edge); outline-offset: 2px; }
@@ -74,16 +74,36 @@ a:hover { color: var(--ink); text-decoration-color: var(--ink); }
 .term-pop[hidden] { display: none; }
 .term-pop .label { margin-bottom: 6px; }
 .term-pop .more { margin-top: 8px; font: 12px var(--mono); }
+/* Chinese name of a term, from the glossary's zh field: after the term's first use and in its side note.
+   System CJK fonts only, so no web font is downloaded. */
+.zh { font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif; font-size: .8em; font-weight: 400; font-style: normal; letter-spacing: 0; text-transform: none; color: var(--ink-3); white-space: nowrap; }
+.term-zh { white-space: nowrap; }
+.term-pop .label .zh { font-size: 13px; margin-left: .5em; color: var(--ink-2); }
 
 /* ---------- figures ---------- */
 .fig { max-width: var(--wide); margin: 36px auto; padding: 0 16px; }
 .fig svg { width: 100%; height: auto; display: block; }
+.fig.narrow { max-width: calc(var(--col) + 32px); }   /* photos that would be too tall at full width */
 .fig figcaption, .caption { max-width: var(--col); margin: 14px auto 0; font: 13.5px/1.62 var(--mono); color: var(--ink); }
 .fig figcaption b { font-weight: 600; }
 .credit { color: var(--ink-3); }
 .frame { background: var(--frame); border-radius: 14px; padding: 8px; box-shadow: 0 10px 28px rgba(41, 39, 31, .14); }
 .frame img { border-radius: 8px; width: 100%; }
 .split { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+/* real frames on a grid: rows are cameras, columns are moments (labels stay HTML, never baked into pictures) */
+.film { display: grid; grid-template-columns: auto repeat(var(--cols, 4), minmax(0, 1fr)); gap: 6px; align-items: center; }
+.film img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 6px; }
+.film-col { font: 12px/1.4 var(--mono); color: var(--line); padding: 4px 2px 2px; }
+.film-col b { color: #fff; font-weight: 600; display: block; }
+.film-row { font: 600 11px var(--mono); letter-spacing: .07em; text-transform: uppercase; color: var(--line); writing-mode: vertical-rl; transform: rotate(180deg); text-align: center; padding: 0 2px; }
+@media (max-width: 760px) { .film { min-width: 600px; } }
+
+/* real pictures paired with the sentence that comes with each */
+.shots { display: grid; gap: 10px; }
+.shot { display: grid; grid-template-columns: minmax(0, 40%) 1fr; gap: 12px; align-items: center; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px 8px 8px; }
+.shot img { width: 100%; border-radius: 8px; }
+.shot p { margin: 0; font: 12.5px/1.5 var(--mono); color: var(--ink); }
 @media (max-width: 760px) { .split { grid-template-columns: 1fr; } }
 .panel-title { font: 700 14px var(--mono); letter-spacing: .04em; margin: 0 0 6px; }
 
@@ -195,6 +215,7 @@ a:hover { color: var(--ink); text-decoration-color: var(--ink); }
 .chapter-nav .next { text-align: right; grid-column: 2; }
 .sources { font-size: 15px; }
 .sources li { margin-bottom: 8px; }
+.sources code { overflow-wrap: anywhere; }   /* long file paths wrap on phones */
 .toc-list { list-style: none; padding: 0 !important; }
 .toc-list li { border-top: 1px solid var(--line); padding: 16px 0; display: grid; grid-template-columns: 48px 1fr; gap: 8px; }
 .toc-list .n { font: 400 30px/1 var(--serif); color: var(--ink-3); }
