@@ -436,3 +436,97 @@ a:hover { color: var(--ink); text-decoration-color: var(--ink); }
 .ep-strip { width: 100%; height: auto; display: block; }
 .ep-strip .ep-tick { font: 11px var(--mono); fill: var(--ink-3); }
 @media (max-width: 760px) { .ep-bar { grid-template-columns: minmax(0, 1fr); } }
+
+/* =====================================================================================================
+   Emphasis, margin notes and multiple-choice checks (added 2026-11-12 with chapter 2). Reusable; chapter 1
+   doesn't use them yet. The budget and its sources are in the teaching-web skill, section "Emphasis".
+   ===================================================================================================== */
+
+/* ---------- a sentence the reader must keep (strong.key) ----------
+   Semibold plus a low neutral band, like a pencil mark. Never gold (gold means the model and its data flow, and
+   it is the hover colour of terms) and never an underline (links and terms are underlined). Never animated. */
+/* uppercase labels must not change names: π0 would become Π0, and pi05_base would become PI05_BASE */
+.label code, .pt-k code, .nocase { text-transform: none; }
+.key code { font-weight: 500; }
+.key { font-weight: 600; background: linear-gradient(transparent 60%, rgba(215, 207, 182, .75) 60%, rgba(215, 207, 182, .75) 92%, transparent 92%); -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+
+/* ---------- one item of a set that is split across paragraphs or figures (h3.pt-k) ----------
+   <h3 class="pt-k"><span class="pt-n">1</span>of 2 changes · the training data</h3>, reads "1 of 2 changes". */
+.prose .pt-k { display: flex; align-items: center; gap: 9px; margin: 34px 0 8px; font: 600 12px/1.4 var(--mono); letter-spacing: .07em; text-transform: uppercase; color: var(--ink-2); }
+.pt-n, .prose ol.points > li::before, .side-pts > li::before { flex: none; display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: var(--ink); color: var(--bg); font: 600 12.5px/1 var(--mono); letter-spacing: 0; text-transform: none; }
+
+/* ---------- a short numbered list of things to keep, with the same badges (ol.points) ---------- */
+.prose ol.points { list-style: none; padding: 0; margin: 0 0 22px; counter-reset: pt; }
+.prose ol.points > li { counter-increment: pt; position: relative; padding-left: 40px; margin-bottom: 14px; }
+.prose ol.points > li::before { content: counter(pt); position: absolute; left: 0; top: 3px; }
+
+/* ---------- margin notes (.has-side > … + aside.side) ----------
+   The note comes right after the text it belongs to, so it reads in order without CSS and on phones. From 1240 px
+   it moves into the right margin, level with the top of its .has-side block; below that it stays in the flow,
+   open (no toggle). Keep each note shorter than the prose beside it so it never reaches a wide figure. */
+.has-side { position: relative; }
+.side { display: block; margin: -2px 0 26px; padding: 2px 0 4px 14px; border-left: 2px solid var(--line); font: 15px/1.5 var(--sans); color: var(--ink-2); }
+.side .label { margin-bottom: 6px; }
+.prose .side p { margin: 0 0 8px; }
+.prose .side p:last-child { margin-bottom: 0; }
+.side code { font-size: .9em; }
+@media (min-width: 1240px) {
+  .side { position: absolute; top: 4px; left: calc(100% + 36px); width: min(260px, calc(50vw - 414px)); margin: 0; }
+}
+/* small parts drawn in the figures' colours: white = text input, beige = everything else, gold = the model, green = actions */
+.chip { display: inline-block; font: 600 11.5px/1.35 var(--mono); padding: 4px 9px; border-radius: 8px; border: 1.5px solid var(--line); background: var(--box); color: var(--ink); }
+.chip.in { background: var(--white); border-color: var(--ink-3); }
+.chip.hot { background: var(--gold); border-color: var(--gold-edge); }
+.chip.act { background: var(--green-soft); border-color: var(--green); }
+.chip.out { background: var(--green); border-color: var(--green-dark); }
+.route { display: flex; flex-direction: column; align-items: flex-start; margin: 8px 0 10px; }
+.route .row { display: flex; gap: 6px; flex-wrap: wrap; }
+.route .down { display: flex; align-items: center; gap: 8px; min-height: 24px; padding-left: 16px; font: 11px/1.3 var(--mono); color: var(--ink-3); }
+.route .down svg { flex: none; width: 12px; height: 22px; }
+.route .down path { stroke: var(--gold-edge); fill: var(--gold-edge); stroke-width: 3; }
+.route .down.g path { stroke: var(--green-dark); fill: var(--green-dark); }
+/* in the flow on a wide-enough column, the route runs across instead of down */
+@media (min-width: 640px) and (max-width: 1239px) {
+  .route { flex-direction: row; flex-wrap: wrap; align-items: center; row-gap: 6px; }
+  .route .down { padding: 0 8px 0 4px; min-height: 0; gap: 4px; }
+  .route .down svg { transform: rotate(-90deg); margin: 0 5px; }
+}
+/* tokens to scale, in figure 2.3's colours: the two pictures in two tans, the sentence white with a dark edge */
+.tokbar { display: flex; height: 16px; margin: 8px 0 4px; border-radius: 4px; overflow: hidden; }
+.tokbar > span { display: block; height: 100%; }
+.tokbar .tb-a { flex: 256 0 0; background: #E3DBC4; }
+.tokbar .tb-b { flex: 256 0 0; background: #CDBF9C; }
+.tokbar .tb-w { flex: 20 0 0; background: #fff; box-shadow: inset 0 0 0 1.5px var(--ink); border-radius: 0 4px 4px 0; }
+.tokbar-key { display: flex; justify-content: space-between; gap: 10px; font: 11px/1.35 var(--mono); color: var(--ink-3); margin-bottom: 8px; }
+.tokbar-key b { color: var(--ink); font-weight: 600; }
+/* a few short rows that compare cases, e.g. three models side by side */
+.side-tbl { border-collapse: collapse; width: 100%; margin: 4px 0 8px; font-size: 14px; line-height: 1.35; }
+.side-tbl th { text-align: left; font: 600 11.5px/1.35 var(--mono); color: var(--ink); padding: 6px 8px 6px 0; vertical-align: top; white-space: nowrap; }
+.side-tbl td { padding: 6px 0; vertical-align: top; border-top: 0; }
+.side-tbl tr + tr > * { border-top: 1px solid var(--line); }
+.side-tbl svg { width: 30px; height: 12px; vertical-align: -1px; margin-right: 6px; }
+/* a numbered list inside a note, with the badges of h3.pt-k */
+.prose .side-pts { list-style: none; padding: 0; margin: 4px 0 8px; counter-reset: sp; }
+.prose .side-pts > li { counter-increment: sp; display: flex; align-items: flex-start; gap: 8px; margin-bottom: 6px; }
+.side-pts > li::before { content: counter(sp); width: 20px; height: 20px; font-size: 11px; margin-top: 1px; }
+
+/* ---------- multiple-choice checks (li.mcq in ol.quiz) ----------
+   Each option is a <details class="mcq-opt"> (the right one also has class "right"), all sharing one name, so
+   opening one closes the others. Opening an option is the reader's pick and shows why it is right or wrong.
+   Works without JavaScript; site.js only adds the "first try" line. Marks are neutral: ink for right,
+   dashed for wrong. */
+.prose .mcq-opts { list-style: none; padding: 0; margin: 6px 0 2px; counter-reset: opt; display: grid; gap: 8px; }
+.prose .mcq-opts > li { counter-increment: opt; margin: 0; }
+.quiz .mcq-opt > summary { list-style: none; position: relative; display: block; margin: 0; padding: 8px 14px 8px 46px; border: 1.5px solid var(--line); border-radius: 10px; background: var(--white); font: 16.5px/1.5 var(--sans); color: var(--ink); cursor: pointer; }
+.quiz .mcq-opt > summary::-webkit-details-marker { display: none; }
+.quiz .mcq-opt > summary::before { content: counter(opt, upper-alpha); position: absolute; left: 11px; top: 8px; width: 24px; height: 24px; box-sizing: border-box; border-radius: 50%; border: 1.5px solid var(--ink-3); display: grid; place-items: center; font: 600 12px/1 var(--mono); color: var(--ink-2); background: var(--white); }
+.quiz .mcq-opt > summary:hover { border-color: var(--tan); }
+.quiz .mcq-opt[open] > summary { margin: 0; border-style: dashed; border-color: var(--ink-3); border-radius: 10px 10px 0 0; }
+.quiz .mcq-opt[open] > summary::before { content: "\2715"; }
+.quiz .mcq-opt.right[open] > summary { border-style: solid; border-color: var(--ink); }
+.quiz .mcq-opt.right[open] > summary::before { content: "\2713"; background: var(--ink); border-color: var(--ink); color: var(--bg); }
+.quiz .mcq-opt > p { margin: 0; padding: 10px 14px 12px 46px; background: var(--box); border: 1.5px dashed var(--ink-3); border-top: 0; border-radius: 0 0 10px 10px; font-size: 15.5px; line-height: 1.55; }
+.quiz .mcq-opt.right > p { border-style: solid; border-color: var(--ink); }
+.quiz .mcq-first { margin: 8px 0 0; font: 12.5px/1.5 var(--mono); color: var(--ink-2); min-height: 0; }
+.quiz .mcq-first:empty { display: none; }
+.quiz-intro { font-size: 16.5px; color: var(--ink-2); }

@@ -116,6 +116,86 @@ new.
 
 </details>
 
+In questions 6 to 11, pick one answer before you open the answers. Each wrong option is a belief newcomers often
+hold, and the answers say why each option is right or wrong. (On the web page, each option opens on its own.)
+
+6. In our run, the call that started at step 30 had already planned to close the gripper, in its tenth action. Yet
+   the gripper closed at step 37, during the next call. Why didn't the first call's plan close it?
+   - A. The robot carried out all ten actions, and the gripper took a few steps to respond.
+   - B. The robot runs only the first five actions of a chunk. The tenth action was thrown away, and the next call
+     planned the close again from new pictures.
+   - C. openpi blended the two calls' plans where they overlap, and the blend put the close later.
+7. The action expert produces the actions. How does the instruction reach it?
+   - A. In every layer the expert reads what Gemma computed, and the words are in there, mixed with 512 picture
+     tokens.
+   - B. The expert reads the sentence's 20 tokens as part of its own input.
+   - C. Gemma first writes the next small step in words, and the expert acts on that.
+8. Gemma reads the sentence in every call. What does that tell us on its own?
+   - A. The sentence changes what the robot does, since the model reads it.
+   - B. The robot ignores the sentence and goes by the pictures.
+   - C. Nothing yet about whether the sentence changes the actions. That has to be tested.
+9. π0.5 kept π0's design. Which two things did it change?
+   - A. A new network design, and the robot's state as an extra input.
+   - B. What it was trained on, and saying the next small step in words before it acts.
+   - C. What it was trained on, and knowledge insulation in every fine-tune.
+10. How was the VLM trained during the 30,000-step fine-tune that made `pi05_libero`?
+    - A. With knowledge insulation, like `pi05_base`, so the action expert's gradients stopped before the VLM.
+    - B. The action expert's gradients flowed into the VLM, and every weight trained.
+    - C. The VLM was frozen, and only the action expert learned.
+11. openpi's evaluation script sends eight numbers about the robot's hand and fingers with every call. What does
+    `pi05_libero` do with them?
+    - A. The action expert takes them as an extra input, next to its action tokens.
+    - B. They're written into the prompt as text, next to the instruction.
+    - C. Its input code drops them, so it has to judge where the arm is from the two pictures.
+
+<details><summary>Answers to 6 to 11, with why each option is right or wrong</summary>
+
+6. B is right.
+   - A: No. The robot never carries out all ten. It runs the first five and then asks the model again, so the
+     tenth action never ran.
+   - B: Right. Each call's last five actions are dropped. The next call started at step 35 and put the close in its
+     third action, which is step 37.
+   - C: No. Nothing is blended. The robot runs the first five actions of the newest chunk, and the other five are
+     thrown away.
+7. A is right.
+   - A: Right. Attention is the only route. Gemma reads the 20 word tokens together with the picture tokens, and the
+     expert reads Gemma's layers, so the words reach the actions only as part of that mix.
+   - B: No. The expert's own input is 10 action tokens, which start out as random numbers. It never takes in the
+     sentence itself.
+   - C: No. That's π0.5 in the paper. openpi supports only the flow-matching action head for π0.5, so `pi05_libero`
+     goes from the instruction straight to actions. That last part is our reading of openpi's README.
+8. C is right.
+   - A: No, and this is the wrong belief the chapter warns about. The reading happens in Gemma, and the actions come
+     from the action expert. If the pictures were enough during training, the expert could learn to give the words
+     little weight.
+   - B: No, that goes too far the other way. Nothing in this chapter shows the robot ignoring the words. It shows
+     only that it could, and chapter 4 turns that into tests.
+   - C: Right. Reading and using are separate questions. Gemma reads the sentence every time, and whether the
+     sentence changes the robot's moves has to be measured. Chapter 4 sets up the tests, and chapter 5 shows what
+     other groups found.
+9. B is right.
+   - A: No. π0.5 kept the design, PaliGemma plus an action expert. And our checkpoint, `pi05_libero`, gets no robot
+     state at all.
+   - B: Right. The paper says 97.6% of the first-phase training examples didn't come from the mobile robots π0.5
+     was built for. And given "clean the bedroom", it first writes a step such as "pick up pillow".
+   - C: No. The training data is right, but insulation was used only in pre-training. openpi's fine-tune doesn't
+     have it, which is how `pi05_libero` was made.
+10. B is right.
+    - A: No. Insulation was used to pre-train `pi05_base`. openpi doesn't implement it for fine-tuning, as Karl
+      Pertsch of Physical Intelligence confirmed on GitHub.
+    - B: Right. openpi's fine-tune has one loss, the action expert's flow matching, and its gradients go through the
+      expert and the VLM alike. The knowledge-insulation work found this weakens language following, so whether it
+      did here is still open.
+    - C: No. The `pi05_libero` config trains every weight, the VLM included. Nothing was frozen.
+11. C is right.
+    - A: No. That's how π0 takes the robot's state in openpi's code. π0.5 has no state input in the action expert.
+    - B: No, though that is the one way π0.5 can take the state. The config sets `discrete_state_input=False`,
+      which turns it off, so the prompt holds only the instruction.
+    - C: Right. With the only way in turned off, the eight numbers arrive and are thrown away. At every call the
+      model has the two pictures and the sentence, and nothing more.
+
+</details>
+
 ## Sources
 
 - Physical Intelligence (2025), π0.5: a Vision-Language-Action Model with Open-World Generalization,

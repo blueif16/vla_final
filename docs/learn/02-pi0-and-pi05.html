@@ -110,10 +110,11 @@
 
 <main>
 <div class="prose">
-  <p>Here is one call from our own run of <code>pi05_libero</code>, the checkpoint this chapter is about. The robot was told <span class="q">pick up the black bowl between the plate and the ramekin and place it on the plate</span>. At each call the <button class="term" data-term="simulator">simulator</button> sends the model two pictures, one from the camera facing the table and one from the camera on the wrist, along with that sentence. The model sends back ten <button class="term" data-term="action">actions</button>, each one seven numbers. The robot carries out the first five, the cameras take new pictures, and the next call goes out with the same sentence. Our run took 21 calls, and the simulator counted the task done at step 104. Those two pictures and that one sentence are everything the model got, at every call from the first step to the last.</p>
+  <p>Here is one call from our own run of <code>pi05_libero</code>, the checkpoint this chapter is about. The robot was told <span class="q">pick up the black bowl between the plate and the ramekin and place it on the plate</span>. At each call the <button class="term" data-term="simulator">simulator</button> sends the model two pictures, one from the camera facing the table and one from the camera on the wrist, along with that sentence. The model sends back ten <button class="term" data-term="action">actions</button>, each one seven numbers. The robot carries out the first five, the cameras take new pictures, and the next call goes out with the same sentence. Our run took 21 calls, and the simulator counted the task done at step 104. <strong class="key">Those two pictures and that one sentence are everything the model got, at every call from the first step to the last.</strong></p>
   <p>Figure 2.1 opens on call 8, 35 steps in, with the gripper coming down over a bowl. The third column, Δz, is the hand moving down, and it shrinks row by row as the hand slows. In row three the last number flips from −1 to +1, which closes the gripper. The call before had already planned to close it, but only in its tenth action, which the robot never ran because it asked again after five. Step through the calls to see the gripper close at step 37, open again at step 58 and close once more at step 69.</p>
 
   <h2 id="parts">The parts</h2>
+  <h3 class="pt-k"><span class="pt-n">1</span>of 2 networks · the vision-language model</h3>
   <p><button class="term" data-term="pi05">π0.5</button> is built from two networks. The first is a <button class="term" data-term="vlm">vision-language model</button>, <button class="term" data-term="paligemma">PaliGemma</button>, which Google trained on images and text from the web. PaliGemma has two pieces of its own. An <button class="term" data-term="image-encoder">image encoder</button> called <button class="term" data-term="siglip">SigLIP</button> turns each picture into <button class="term" data-term="token">tokens</button>, and the <button class="term" data-term="gemma">Gemma</button> 2B language model reads those together with the tokens of the text. Figure 2.2 is the drawing from PaliGemma's own paper, where it answers a question about a photo.</p>
 </div>
 
@@ -123,8 +124,24 @@
 </figure>
 
 <div class="prose">
+  <div class="has-side">
+  <h3 class="pt-k"><span class="pt-n">2</span>of 2 networks · the action expert</h3>
   <p>The second network is the <button class="term" data-term="action-expert">action expert</button>. It's a smaller <button class="term" data-term="transformer">transformer</button>, about 300 million <button class="term" data-term="parameters">parameters</button> (311 million in openpi's code), with the same 18 layers as Gemma. It never takes in the pictures or the sentence itself. In every layer it reads what Gemma computed at that layer, and from that it turns random numbers into an <button class="term" data-term="action-chunk">action chunk</button>, using <button class="term" data-term="flow-matching">flow matching</button> as in chapter 1.</p>
-  <p>So the instruction can reach the actions by one route only, through what the action expert reads from Gemma. Figure 2.3 follows one call through both networks. Scroll slowly through its eight steps; the figure stays in view and changes with each one.</p>
+  <p><strong class="key">So the instruction can reach the actions by one route only, through what the action expert reads from Gemma.</strong> Figure 2.3 follows one call through both networks. Scroll slowly through its eight steps; the figure stays in view and changes with each one.</p>
+  <aside class="side" aria-label="Side note: how the words reach the actions">
+    <div class="label">How the words reach the actions</div>
+    <div class="route">
+      <div class="row"><span class="chip">two pictures</span><span class="chip in">the sentence</span></div>
+      <span class="down"><svg viewBox="0 0 12 22" aria-hidden="true"><path d="M6 1v12"/><path d="M1 12l5 9 5-9z"/></svg>read together</span>
+      <span class="chip hot">Gemma, 18 layers</span>
+      <span class="down"><svg viewBox="0 0 12 22" aria-hidden="true"><path d="M6 1v12"/><path d="M1 12l5 9 5-9z"/></svg>read in every layer</span>
+      <span class="chip act">action expert</span>
+      <span class="down g"><svg viewBox="0 0 12 22" aria-hidden="true"><path d="M6 1v12"/><path d="M1 12l5 9 5-9z"/></svg></span>
+      <span class="chip out">10 actions</span>
+    </div>
+    <p>The action expert never takes in the sentence itself, so anything the words change in the actions has to pass through Gemma.</p>
+  </aside>
+  </div>
 
   <h2 id="inside">Inside one call</h2>
 </div>
@@ -187,7 +204,15 @@
 
 <div class="prose">
   <h2 id="words">Reading isn't the same as using</h2>
-  <p>Gemma reads the sentence in every call. Whether the sentence changes what the robot does is a separate question. The actions come out of the action expert, and the expert sees the words only through Gemma's layers, mixed in with 512 picture tokens. Suppose that during training the pictures alone were enough to predict what the operator did next. Then the expert could learn to rely on the picture tokens and give the word tokens little weight. The model would still read the sentence, and the sentence would change nothing. Chapter 4 turns this into tests, and chapter 5 shows what other groups measured on this checkpoint.</p>
+  <div class="has-side">
+  <p>Gemma reads the sentence in every call. Whether the sentence changes what the robot does is a separate question. The actions come out of the action expert, and the expert sees the words only through Gemma's layers, mixed in with 512 picture tokens. Suppose that during training the pictures alone were enough to predict what the operator did next. Then the expert could learn to rely on the picture tokens and give the word tokens little weight. <strong class="key">The model would still read the sentence, and the sentence would change nothing.</strong> Chapter 4 turns this into tests, and chapter 5 shows what other groups measured on this checkpoint.</p>
+  <aside class="side" aria-label="Side note: the tokens of one call, to scale">
+    <div class="label">One call's tokens, to scale</div>
+    <div class="tokbar" role="img" aria-label="256 tokens from the table camera, 256 from the wrist camera and 20 from the sentence, drawn to scale."><span class="tb-a"></span><span class="tb-b"></span><span class="tb-w"></span></div>
+    <div class="tokbar-key"><span><b>512</b> from the two pictures</span><span><b>20</b> from the sentence</span></div>
+    <p>Gemma reads all 532 in every call. Whether the 20 from the sentence change what the robot does is the question chapter 4 tests.</p>
+  </aside>
+  </div>
 
   <h2 id="pi05">From π0 to π0.5</h2>
   <p><button class="term" data-term="pi0">π0</button> came out in October 2024 with this design. π0.5 followed in April 2025. It kept the design and changed what the model was trained on and what it was trained to say. Figure 2.4 puts the π models in order and marks the ones whose weights are in <button class="term" data-term="openpi">openpi</button>, <button class="term" data-term="physical-intelligence">Physical Intelligence</button>'s open-source release.</p>
@@ -205,11 +230,23 @@
     <li><span class="dot"></span><time>16 Apr 2026</time><b><button class="term" data-term="pi07">π0.7</button></b><p>Its abstract says it follows diverse instructions in places it hasn't seen. Not in openpi.</p></li>
   </ol>
   <div class="timeline-key"><span><i class="g"></i>weights or code in openpi</span><span><i></i>paper only, as far as openpi goes</span></div>
-  <figcaption><b>Figure 2.4 · The π models.</b> Paper dates are the first arXiv version. The openpi dates come from its git history and its README's update list. A gold dot means you can download it from openpi.</figcaption>
+  <figcaption style="padding:0 16px"><b>Figure 2.4 · The π models.</b> Paper dates are the first arXiv version. The openpi dates come from its git history and its README's update list. A gold dot means you can download it from openpi.</figcaption>
 </figure>
 
 <div class="prose">
+  <div class="has-side">
   <p>The two newest models in figure 2.4 aren't in openpi. π*0.6 learns from the robot's own attempts through <button class="term" data-term="reinforcement-learning">reinforcement learning</button>, and π0.7 takes richer prompts, such as pictures of a subgoal. This chapter stays with π0.5, which changed two things compared with π0.</p>
+  <aside class="side" aria-label="Side note: what changed from π0 to π0.5">
+    <div class="label">From <span class="nocase">π0</span> to <span class="nocase">π0.5</span></div>
+    <p>π0.5 kept π0's design, PaliGemma plus an action expert, and changed two things.</p>
+    <ol class="side-pts">
+      <li>what it was trained on</li>
+      <li>a step in words before it acts</li>
+    </ol>
+    <p>By our reading of openpi, <code>pi05_libero</code> acts without the step in words (figure 2.6).</p>
+  </aside>
+  </div>
+  <h3 class="pt-k"><span class="pt-n">1</span>of 2 changes · the training data</h3>
   <p>The first change is the training data. π0.5 learned from about 400 hours of mobile robots doing housework in about 100 homes, and from a lot more besides. There were arms fixed in place in other homes and many kinds of robot in the lab, including the public <button class="term" data-term="oxe">Open X-Embodiment</button> collection. There was web data too, such as image captions, questions and answers about pictures, and finding objects in pictures. The paper says 97.6% of the training examples in the first phase didn't come from the mobile robots at all.</p>
 </div>
 
@@ -220,6 +257,7 @@
 </figure>
 
 <div class="prose">
+  <h3 class="pt-k"><span class="pt-n">2</span>of 2 changes · a step in words</h3>
   <p>The second change is that π0.5 learned to say the next small step in words before acting. Given <span class="q">clean the bedroom</span>, it first writes a subtask such as <span class="q">pick up pillow</span>, then produces the actions for that subtask. In its first training phase, 280,000 steps long, it learned actions as FAST tokens. A second phase of 80,000 steps added the action expert and flow matching. Figure 2.6 compares the paper's model with ours.</p>
 </div>
 
@@ -257,7 +295,18 @@
 </figure>
 
 <div class="prose">
-  <p>So <code>pi05_base</code> learned with its VLM protected, and the LIBERO fine-tune then trained the VLM directly on robot actions from 40 tasks. We don't know whether that wore away any of its language following. It's an open question, and chapter 5 collects what other groups have measured.</p>
+  <div class="has-side">
+  <p><strong class="key">So <code>pi05_base</code> learned with its VLM protected, and the LIBERO fine-tune then trained the VLM directly on robot actions from 40 tasks.</strong> We don't know whether that wore away any of its language following. It's an open question, and chapter 5 collects what other groups have measured.</p>
+  <aside class="side" aria-label="Side note: where the action expert's gradients went in three trainings">
+    <div class="label">Did the expert's gradients reach the VLM?</div>
+    <table class="side-tbl">
+      <tr><th>π0</th><td><svg viewBox="0 0 30 12" aria-hidden="true"><path d="M1 6h19" stroke="#B5652D" stroke-width="2.5" stroke-dasharray="4 3"/><path d="M20 1.5l8 4.5-8 4.5z" fill="#B5652D"/></svg>yes</td></tr>
+      <tr><th>pi05_base</th><td><svg viewBox="0 0 30 12" aria-hidden="true"><path d="M1 6h15" stroke="#B5652D" stroke-width="2.5" stroke-dasharray="4 3"/><rect x="19" y="0" width="4" height="12" rx="1" fill="#B5652D"/></svg>no, insulated</td></tr>
+      <tr><th>pi05_libero</th><td><svg viewBox="0 0 30 12" aria-hidden="true"><path d="M1 6h19" stroke="#B5652D" stroke-width="2.5" stroke-dasharray="4 3"/><path d="M20 1.5l8 4.5-8 4.5z" fill="#B5652D"/></svg>yes, in the LIBERO fine-tune</td></tr>
+    </table>
+    <p><code>pi05_libero</code> starts from <code>pi05_base</code>, so its VLM was protected in pre-training and then trained without that protection.</p>
+  </aside>
+  </div>
 
   <aside class="clip-aside" aria-label="Talk clip">
     <div class="media" data-yt="wz1QzZY4Iaw" data-start="789" data-end="1437" data-title="Suraj Nair on FAST and knowledge insulation"></div>
@@ -333,7 +382,13 @@
   <p>The re-training averages 90.85, six points under openpi's 96.85. Small differences in data and setup can move these numbers that much, so before testing anything new we need to see where our own setup lands.</p>
 
   <h2 id="for-us">What this means for our project</h2>
-  <p>Three facts from this chapter come back in every later chapter. <code>pi05_libero</code> gets two pictures and one sentence and nothing else, so when we change the sentence, the pictures are the only other thing it can go by. The sentence is 20 of the 532 tokens it reads, and it reaches the actions only through what the action expert reads from Gemma. And the LIBERO fine-tune trained the whole model, VLM included, without the insulation <code>pi05_base</code> had. Chapter 3 looks at LIBERO itself, and at why a 98% score doesn't show that the robot reads.</p>
+  <p>Three facts from this chapter come back in every later chapter.</p>
+  <ol class="points">
+    <li><code>pi05_libero</code> gets two pictures and one sentence and nothing else, so when we change the sentence, the pictures are the only other thing it can go by.</li>
+    <li>The sentence is 20 of the 532 tokens it reads, and it reaches the actions only through what the action expert reads from Gemma.</li>
+    <li>The LIBERO fine-tune trained the whole model, VLM included, without the insulation <code>pi05_base</code> had.</li>
+  </ol>
+  <p>Chapter 3 looks at LIBERO itself, and at why a 98% score doesn't show that the robot reads.</p>
 
   <h2 id="check">Check yourself</h2>
   <ol class="quiz">
@@ -347,6 +402,46 @@
       <details><summary>Show answer</summary><p>With no robot state and no instruction, the two pictures are the model's only input, so whatever it does comes from the pictures alone.</p></details></li>
     <li><p><code>pi05_base</code> was pre-trained with knowledge insulation. What happened to its VLM during the fine-tune that made <code>pi05_libero</code>, and why might that matter for our question?</p>
       <details><summary>Show answer</summary><p>openpi has no insulation for fine-tuning, so for all 30,000 steps the action expert's gradients flowed into the VLM and every weight trained. The knowledge-insulation work found that letting those gradients in weakens language following, so the fine-tune could have worn away some of the reading <code>pi05_base</code> could do. That's a possibility to test, not a finding.</p></details></li>
+  </ol>
+
+  <p class="quiz-intro">In questions 6 to 11, pick the answer you think is right. The option opens and says whether it's right and why, and you can open the others afterwards to see what's wrong with them.</p>
+  <ol class="quiz" style="counter-reset: q 5">
+    <li class="mcq"><p>In figure 2.1, call 7 had already planned to close the gripper, in its tenth action. Yet the gripper closed at step 37, during call 8. Why didn't call 7's plan close it?</p>
+      <ol class="mcq-opts">
+        <li><details class="mcq-opt" name="mcq-6"><summary>The robot carried out all ten actions, and the gripper took a few steps to respond.</summary><p>No. The robot never carries out all ten. It runs the first five and then asks the model again, so call 7's tenth action never ran.</p></details></li>
+        <li><details class="mcq-opt right" name="mcq-6"><summary>The robot runs only the first five actions of a chunk. Call 7's tenth action was thrown away, and call 8 planned the close again from new pictures.</summary><p>Right. Each call's last five actions are dropped. Call 8 started at step 35 and put the close in its third action, which is step 37.</p></details></li>
+        <li><details class="mcq-opt" name="mcq-6"><summary>openpi blended the plans of calls 7 and 8 where they overlap, and the blend put the close later.</summary><p>No. Nothing is blended. The robot runs the first five actions of the newest chunk, and the other five are thrown away.</p></details></li>
+      </ol></li>
+    <li class="mcq"><p>The action expert produces the actions. How does the instruction reach it?</p>
+      <ol class="mcq-opts">
+        <li><details class="mcq-opt right" name="mcq-7"><summary>In every layer the expert reads what Gemma computed, and the words are in there, mixed with 512 picture tokens.</summary><p>Right. Attention is the only route. Gemma reads the 20 word tokens together with the picture tokens, and the expert reads Gemma's layers, so the words reach the actions only as part of that mix.</p></details></li>
+        <li><details class="mcq-opt" name="mcq-7"><summary>The expert reads the sentence's 20 tokens as part of its own input.</summary><p>No. The expert's own input is 10 action tokens, which start out as random numbers. It never takes in the sentence itself.</p></details></li>
+        <li><details class="mcq-opt" name="mcq-7"><summary>Gemma first writes the next small step in words, and the expert acts on that.</summary><p>No. That's π0.5 in the paper. openpi supports only the flow-matching action head for π0.5, so <code>pi05_libero</code> goes from the instruction straight to actions. That last part is our reading of openpi's README (figure 2.6).</p></details></li>
+      </ol></li>
+    <li class="mcq"><p>Gemma reads the sentence in every call. What does that tell us on its own?</p>
+      <ol class="mcq-opts">
+        <li><details class="mcq-opt" name="mcq-8"><summary>The sentence changes what the robot does, since the model reads it.</summary><p>No, and this is the wrong belief the chapter warns about. The reading happens in Gemma, and the actions come from the action expert. If the pictures were enough during training, the expert could learn to give the words little weight.</p></details></li>
+        <li><details class="mcq-opt" name="mcq-8"><summary>The robot ignores the sentence and goes by the pictures.</summary><p>No, that goes too far the other way. Nothing in this chapter shows the robot ignoring the words. It shows only that it could, and chapter 4 turns that into tests.</p></details></li>
+        <li><details class="mcq-opt right" name="mcq-8"><summary>Nothing yet about whether the sentence changes the actions. That has to be tested.</summary><p>Right. Reading and using are separate questions. Gemma reads the sentence every time, and whether the sentence changes the robot's moves has to be measured. Chapter 4 sets up the tests, and chapter 5 shows what other groups found.</p></details></li>
+      </ol></li>
+    <li class="mcq"><p>π0.5 kept π0's design. Which two things did it change?</p>
+      <ol class="mcq-opts">
+        <li><details class="mcq-opt" name="mcq-9"><summary>A new network design, and the robot's state as an extra input.</summary><p>No. π0.5 kept the design, PaliGemma plus an action expert. And our checkpoint, <code>pi05_libero</code>, gets no robot state at all.</p></details></li>
+        <li><details class="mcq-opt right" name="mcq-9"><summary>What it was trained on, and saying the next small step in words before it acts.</summary><p>Right. The paper says 97.6% of the first-phase training examples didn't come from the mobile robots π0.5 was built for. And given <span class="q">clean the bedroom</span>, it first writes a step such as <span class="q">pick up pillow</span>.</p></details></li>
+        <li><details class="mcq-opt" name="mcq-9"><summary>What it was trained on, and knowledge insulation in every fine-tune.</summary><p>No. The training data is right, but insulation was used only in pre-training. openpi's fine-tune doesn't have it, which is how <code>pi05_libero</code> was made.</p></details></li>
+      </ol></li>
+    <li class="mcq"><p>How was the VLM trained during the 30,000-step fine-tune that made <code>pi05_libero</code>?</p>
+      <ol class="mcq-opts">
+        <li><details class="mcq-opt" name="mcq-10"><summary>With knowledge insulation, like <code>pi05_base</code>, so the action expert's gradients stopped before the VLM.</summary><p>No. Insulation was used to pre-train <code>pi05_base</code>. openpi doesn't implement it for fine-tuning, as Karl Pertsch of Physical Intelligence confirmed on GitHub.</p></details></li>
+        <li><details class="mcq-opt right" name="mcq-10"><summary>The action expert's gradients flowed into the VLM, and every weight trained.</summary><p>Right. openpi's fine-tune has one loss, the action expert's flow matching, and its gradients go through the expert and the VLM alike. The knowledge-insulation work found this weakens language following, so whether it did here is still open.</p></details></li>
+        <li><details class="mcq-opt" name="mcq-10"><summary>The VLM was frozen, and only the action expert learned.</summary><p>No. The <code>pi05_libero</code> config trains every weight, the VLM included. Nothing was frozen.</p></details></li>
+      </ol></li>
+    <li class="mcq"><p>openpi's evaluation script sends eight numbers about the robot's hand and fingers with every call. What does <code>pi05_libero</code> do with them?</p>
+      <ol class="mcq-opts">
+        <li><details class="mcq-opt" name="mcq-11"><summary>The action expert takes them as an extra input, next to its action tokens.</summary><p>No. That's how π0 takes the robot's state in openpi's code. π0.5 has no state input in the action expert.</p></details></li>
+        <li><details class="mcq-opt" name="mcq-11"><summary>They're written into the prompt as text, next to the instruction.</summary><p>No, though that is the one way π0.5 can take the state. The config sets <code>discrete_state_input=False</code>, which turns it off, so the prompt holds only the instruction.</p></details></li>
+        <li><details class="mcq-opt right" name="mcq-11"><summary>Its input code drops them, so it has to judge where the arm is from the two pictures.</summary><p>Right. With the only way in turned off, the eight numbers arrive and are thrown away. At every call the model has the two pictures and the sentence, and nothing more.</p></details></li>
+      </ol></li>
   </ol>
 
   <h2 id="sources">Sources</h2>

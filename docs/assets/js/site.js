@@ -457,4 +457,25 @@
       k.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); k.click(); } });
     });
   });
+
+  /* =====================================================================================================
+     Added 2026-11-12: multiple-choice checks. Each option is a <details class="mcq-opt"> and works without this
+     script; this only records the reader's first pick and says it in words (and to screen readers).
+     ===================================================================================================== */
+  $$(".mcq").forEach((q) => {
+    const opts = $$(".mcq-opt", q), list = $(".mcq-opts", q);
+    if (!opts.length || !list) return;
+    const first = document.createElement("p");
+    first.className = "mcq-first";
+    first.setAttribute("aria-live", "polite");
+    list.after(first);
+    opts.forEach((d) => d.addEventListener("toggle", () => {
+      if (!d.open || q.dataset.first) return;
+      const right = d.classList.contains("right");
+      q.dataset.first = right ? "right" : "wrong";
+      first.textContent = right
+        ? "Your first pick was right. The other options say why each one is wrong."
+        : "Your first pick wasn't right. Open the other options to find the one that is.";
+    }));
+  });
 })();
