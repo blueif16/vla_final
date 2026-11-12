@@ -38,7 +38,7 @@ experiments and the steps, and [where we stand](docs/learn/06-where-we-stand.md)
 ## Learn the background
 
 The chapters are also a website, with diagrams you can play with, talk clips that start at the right moment and side
-notes for every term: **[blueif16.github.io/vla_final](https://blueif16.github.io/vla_final/)** (chapter 1 so far).
+notes for every term: **[blueif16.github.io/vla_final](https://blueif16.github.io/vla_final/)** (chapters 1 and 2 so far).
 
 [`docs/learn`](docs/learn/README.md) has six short chapters, about 50 minutes in all. They go from what a VLA is,
 through π0.5 and the LIBERO benchmark, to what other groups have found and the choice in front of us. Each chapter

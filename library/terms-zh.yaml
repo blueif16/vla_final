@@ -31,13 +31,24 @@ terms:
   episode:           { zh: 回合, alt: ["episode (kept in English)", 轨迹, 幕], open: true,
                        note: "回合 in RL textbooks and blogs; 幕 in the Chinese translation of Sutton and Barto; dataset write-ups often keep 'episode' or count 轨迹 (recorded runs)" }
 
+  # added for chapter 2 (2026-11-11)
+  checkpoint:        { zh: 检查点, alt: ["checkpoint / ckpt (kept in English)", 权重], open: true,
+                       note: "检查点 is the textbook word; Chinese VLA write-ups often keep 'checkpoint' (技术栈 KI article: 公开的 π0.5 checkpoint)" }
+  attention:         { zh: 注意力, alt: [注意力机制], note: "注意力 for the operation, 注意力机制 for the mechanism; both in the KI write-ups below" }
+  image-encoder:     { zh: 图像编码器, alt: [视觉编码器], note: "Hugging Face's Chinese PaliGemma post writes SigLIP 图像编码器; VLA Gallery writes 视觉编码器" }
+  patch:             { zh: 图像块, alt: ["patch (kept in English)", 贴片, 图块], open: true,
+                       note: "ViT write-ups use 图像块 or keep 'patch'; Hugging Face's Chinese PaliGemma post uses 贴片" }
+  gradient:          { zh: 梯度 }
+  knowledge-insulation: { zh: 知识隔离, alt: [知识绝缘, "KI / knowledge insulation (kept in English)"],
+                       note: "知识隔离 in the 技术栈, cnblogs and CSDN write-ups; 知识绝缘 in Laurie's notes; 具身星图 keeps 'Knowledge Insulation (KI)'" }
+  reinforcement-learning: { zh: 强化学习 }
+
 # Terms only in docs/learn/glossary.md (later chapters)
 md_only:
-  checkpoint:                 { zh: 检查点 }
   counterfactual-instruction: { zh: 反事实指令 }
   shortcut:                   { zh: 捷径, note: "as in 捷径学习 (shortcut learning)" }
   success-rate:               { zh: 成功率 }
-  not_chosen: [grounding, grounding rate, knowledge insulation, faithful / biased success]
+  not_chosen: [grounding, grounding rate, faithful / biased success]
 
 sources:
   - "全国科学技术名词审定委员会, 关于发布试用人工智能领域名词token中文名“词元”的公告, 2026-03-25, http://www.cnterm.cn/news/tzgg/202603/t20260325_827999.html"
@@ -45,4 +56,11 @@ sources:
   - "具身星图, π0 细读, https://zhuyun97.github.io/embodied-ai-learning/vla/papers/pi0 (视觉-语言模型, 动作专家, 动作块(action chunk), 流匹配)"
   - "LLM Paper Notes, π₀ 原理详解, https://llm-paper-notes.jiabingyang.cn/papers/06-embodied-ai/vla/foundation/pi0_2024.html (本体感知状态)"
   - "技术栈, 《VLA 系列》π0, 2026-08-15, https://jishuzhan.net/article/2088481340340453378 (本体状态, 关节角, 动作 token)"
+  - "技术栈, 《VLA 系列》π0.5 + KI | 知识隔离, 2026-08-15, https://jishuzhan.net/article/2088511926266380289 (知识隔离, 注意力, 梯度, checkpoint kept in English)"
+  - "clnchanpin, 论文笔记：π0.5 (PI 0.5)KI改进版, 博客园, 2025-11-09, https://www.cnblogs.com/clnchanpin/p/19203767 (知识隔离, 梯度截断, 协同训练)"
+  - "v_JULY_v, π0.5的KI改进版——知识隔离, CSDN, 2025-07-10, https://blog.csdn.net/v_JULY_v/article/details/149227640 (知识隔离, 停止梯度)"
+  - "Laurie, VLA训练策略 论文笔记, 2025-08-15, https://laurie-hxf.xyz/blog/%E8%AE%BA%E6%96%87vla (知识绝缘)"
+  - "具身星图, Knowledge Insulation 细读, https://zhuyun97.github.io/embodied-ai-learning/vla/papers/knowledge-insulation (Knowledge Insulation (KI), 梯度隔离)"
+  - "Hugging Face 中文博客, PaliGemma 正式发布, https://huggingface.co/blog/zh/paligemma (SigLIP 图像编码器, 贴片)"
+  - "VLA Gallery, π0.5 + KI, https://vla-gallery.is-a.dev/zh/m/pi0-5-ki/ (视觉编码器, 动作专家)"
   - "Embodied AI: Zero to One, LIBERO 与 Ch21 数据集全景, https://estelledc.github.io/embodied-ai-reading-station/ (示范数据采集, 每任务演示数, 遥操作, 基准)"

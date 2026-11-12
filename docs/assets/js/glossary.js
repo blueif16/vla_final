@@ -39,5 +39,20 @@ window.GLOSSARY = {
   "oxe": { t: "Open X-Embodiment", d: "A robot dataset pooled from many labs in 2023: more than a million recorded episodes from 22 kinds of robot." },
   "fast": { t: "FAST", d: "An action tokenizer from Physical Intelligence (2025). It compresses an action chunk with a discrete cosine transform, the maths behind JPEG, before turning it into tokens, so far fewer tokens are needed." },
   "joint-readings": { t: "joint readings", zh: "关节状态", d: "The angles the robot's motors report about themselves, also called the robot's state or proprioception." },
-  "episode": { t: "episode", zh: "回合", d: "One attempt at a task, from the starting arrangement until success or until the step limit runs out." }
+  "episode": { t: "episode", zh: "回合", d: "One attempt at a task, from the starting arrangement until success or until the step limit runs out." },
+  /* added with chapter 2 */
+  "checkpoint": { t: "checkpoint", zh: "检查点", d: "A saved copy of a trained model's parameters. You load it to run the model or to train it further. pi05_base and pi05_libero are two of openpi's checkpoints.", more: "Chapter 2" },
+  "transformer": { t: "transformer", d: "The kind of neural network language models are built from. It works on a row of tokens, layer after layer, and in every layer each token can look at the others through attention." },
+  "attention": { t: "attention", zh: "注意力", d: "The step inside a transformer where each token looks at other tokens and takes in what they hold, weighted by how relevant each one seems. Words and pictures only meet each other here." },
+  "image-encoder": { t: "image encoder", zh: "图像编码器", d: "The part of a vision-language model that turns a picture into tokens the language model can read. In PaliGemma it is SigLIP." },
+  "patch": { t: "patch", zh: "图像块", d: "A small square cut from a picture. SigLIP cuts a 224×224 picture into a 16×16 grid of 14×14-pixel patches and turns each one into a token, so one picture becomes 256 tokens." },
+  "gradient": { t: "gradient", zh: "梯度", d: "The signal training sends backwards through a network after each guess. It tells every parameter which way to move so the error gets smaller." },
+  "knowledge-insulation": { t: "knowledge insulation", zh: "知识隔离", d: "A training recipe from Physical Intelligence (2025). The action expert's gradients are stopped before they reach the VLM, and the VLM learns from action tokens and web data instead, so robot training doesn't wear away what it knew.", more: "Chapter 2" },
+  "reinforcement-learning": { t: "reinforcement learning", zh: "强化学习", d: "Learning by trying. The robot acts, gets a score for how well it went, and is trained to do more of what scored well." },
+  "lora": { t: "LoRA", d: "Low-rank adaptation. A way to fine-tune a big model by training small added matrices while the original weights stay frozen, which needs far less GPU memory." },
+  "jax": { t: "JAX", d: "Google's Python library for numerical computing and machine learning. openpi was first written in it." },
+  "pytorch": { t: "PyTorch", d: "The most widely used Python library for deep learning, started at Meta. openpi added a PyTorch version of π0 and π0.5 in September 2025." },
+  "gpu": { t: "GPU", d: "Graphics processing unit, the chip that runs neural networks quickly. How much memory it has decides which models fit on it." },
+  "pi-star-06": { t: "π*0.6", d: "Physical Intelligence's model from November 2025. It keeps improving from the robot's own attempts and from people's corrections, using reinforcement learning. Its weights are not in openpi." },
+  "pi07": { t: "π0.7", d: "Physical Intelligence's model from April 2026. Its paper's abstract says it can follow diverse language instructions in unseen environments. Its weights are not in openpi." }
 };

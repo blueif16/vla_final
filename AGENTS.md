@@ -37,8 +37,12 @@ ones.
 
 ## Facts that are easy to get wrong
 
-- `pi05_libero` gets two camera images and the instruction, and no robot joint readings (`discrete_state_input=False`
-  in openpi's `pi05_libero` config). Chapter 2 explains how we read this from the code.
+- `pi05_libero` gets two camera images and the instruction, and no robot state (`discrete_state_input=False` in
+  openpi's `pi05_libero` config). In LIBERO the state is the hand's position and rotation and the two finger
+  positions; openpi's client still sends it and the model's input code drops it. Chapter 2 explains how we read this
+  from the code.
+- openpi's fine-tuning doesn't use knowledge insulation, so `pi05_libero`'s fine-tune updated the VLM too. Insulation
+  was used only in pre-training `pi05_base` (openpi issue #649, Physical Intelligence, 2025-09-11).
 - Only LIBERO-Goal has all ten tasks starting from the same scene. In the other suites the scene identifies the task
   for all but two pairs. In LIBERO-Spatial, "the bowl on the stove" and "the bowl on the wooden cabinet" share a
   starting table, and in LIBERO-10 so do the two "put both … in the basket" tasks in LIVING_ROOM_SCENE2 (checked in

@@ -134,13 +134,14 @@ def run(args: Args) -> None:
                         plan.extend(chunk[: args.replan_steps])
                     obs, _, done, _ = env.step(plan.popleft().tolist())
                     t += 1
+                    step = t - args.num_steps_wait  # same count as "steps" in the record
                     for p in extra:
                         name = " ".join(p)
                         if name not in first_true and env.env._eval_predicate(p):
-                            first_true[name] = t
+                            first_true[name] = step
                     for lang, goal in other_goals.items():
                         if lang not in first_true and all(env.env._eval_predicate(st) for st in goal):
-                            first_true[lang] = t
+                            first_true[lang] = step
                     if done or (args.stop_on_extra and first_true):
                         break
                 except Exception as e:  # keep going like openpi's script, but record it
@@ -203,4 +204,4 @@ def _quat2axisangle(quat):
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(message)s")
-    tyro.cli(run)
+    run(tyro.cli(Args))

@@ -166,7 +166,13 @@ rented GPU to fine-tune π0.5 (LoRA fine-tuning needs more than 22.5 GB). We'll 
   robot goes by, and tied each test to something that happens in a real home.
 - We compared six places to run experiments ([`library/environments.yaml`](library/environments.yaml)) and checked our
   compute. Our desktop GPU is enough for stage 1, and stage 2 needs a rented card.
-- We haven't run the model yet. Step 1 comes next.
+- Stage 1 runs on our desktop. `pi05_libero` serves on the GPU, and LIBERO runs with openpi's exact versions
+  ([`stage1/README.md`](stage1/README.md)). Step 1 is done.
+- We have a first answer from experiment 1, on the two LIBERO-Spatial tasks that share a table
+  ([`stage1/results/exp1-shared-table.md`](stage1/results/exp1-shared-table.md)). With its own sentence the robot
+  took the right bowl 19 times out of 20. With the sentence erased it succeeded 8 times out of 40, and it sometimes put
+  the cookie box on the plate instead. We had guessed about half, so our guess was wrong. An episode takes 12 to 24
+  seconds, so the full reproduction in step 2 should take under 2 hours per suite.
 
 ## Sources
 

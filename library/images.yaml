@@ -60,6 +60,40 @@ downloaded:
       which start from the same arrangement (see papers.yaml code libero-bddl)
     used: [ch1 figure 1.10 (both cases in LIBERO)]
 
+  - files: docs/assets/img/libero-ep379/{table,wrist}-044.jpg
+    source: same dataset and API as above, episode 379 frame 44 (global row 101513), fetched 2026-11-11
+    license: CC BY 4.0
+    shows: 4.4 s into "put the bowl on the plate"; the table camera sees the gripper low over the bowl, the wrist camera
+      sees the plate above and the bowl's rim between the fingers. The recorded actions for frames 44-53 (papers.yaml)
+      close the gripper at frame 48
+    used: []   # drafted for ch2 figure 2.1, then replaced by our own recorded run (pi05-run below)
+  - files: docs/assets/img/libero-first/{object-ep851,ten-ep0}.jpg
+    source: same dataset and API, frame 0 of episode 851 (row 159975, task 25 "pick up the milk and place it in the
+      basket", LIBERO-Object) and of episode 0 (row 0, task 0 "put the white mug on the left plate and put the yellow
+      and white mug on the right plate", LIBERO-10); fetched 2026-11-11
+    license: CC BY 4.0
+    used: [ch2 figure 2.9 (the four suites in the training data)]
+  - files: docs/assets/img/pi05-run/call-{00..20}-{table,wrist}.jpg
+    source: our own run of openpi's pi05_libero checkpoint on our desktop GPU, 2026-11-11, recorded with openpi's
+      preprocessing and settings; originals in stage1/runs/recorded-call-spatial0/call_NN_{table,wrist}.png with calls.json
+    license: ours (our own recording of the simulator)
+    credit: "our run of openpi's pi05_libero checkpoint, 2026-11-11"
+    shows: the two 224x224 pictures exactly as the model received them for each of the 21 calls of LIBERO-Spatial task 0
+      ("pick up the black bowl between the plate and the ramekin and place it on the plate"), starting state 0,
+      turned 180 degrees and padded as openpi's client does. Call 07 (step 35) is the gripper coming down over a bowl
+    converted: PNG 224x224 -> JPG q3 (ffmpeg), same size
+    used: [ch2 figure 2.1 (episode player, all 21 calls), ch2 figure 2.3 (call 07), ch2 figure 2.9 (call 07 thumbnails)]
+  - file: docs/assets/img/paligemma-architecture.jpg
+    source: https://arxiv.org/html/2407.07726v2/PaliGemma_sketch.svg (rendered in headless Chrome at 1748 px, then JPG)
+    paper: "PaliGemma (Beyer et al. 2024), Figure 1, captioned 'PaliGemma's architecture: a SigLIP image encoder feeds into a
+      Gemma decoder LM' (arXiv abstract page licence CC BY 4.0, checked 2026-11-11)"
+    license: CC BY 4.0
+    shows: a beach photo -> SigLIP 400M contrastive vision encoder -> linear projection -> image tokens; the question
+      "Where is the photographer resting?" -> SentencePiece tokenizer -> text tokens; both into the Gemma 2B transformer
+      decoder, which answers "In a hammock under a tree on a tropical beach"
+    converted: 1748x872 PNG render -> 1600x798 JPG q3
+    used: [ch2 figure 2.2]
+
 available_cc_by:   # not downloaded yet; base URL + file
   - paper: LIBERO (arXiv 2306.03310, CC BY 4.0)
     base: https://arxiv.org/html/2306.03310v2/
@@ -95,9 +129,14 @@ available_cc_by_more:   # found 2026-11-11, not downloaded
   - paper: PaliGemma (arXiv 2407.07726, CC BY 4.0)
     base: https://arxiv.org/html/2407.07726v2/figures/tasks/
     note: example task images (a VLM answering about a photo); could illustrate what a VLM does before robot training
+    figures:
+      - { file: ../PaliGemma_image_prefix_suffix.svg, caption: "Figure 2: prefix-LM masking, which row can attend to which column (image, prefix, suffix)", for: "a later chapter on attention" }
+  - paper: FAST (arXiv 2501.09747, CC BY 4.0, checked 2026-11-11)
+    base: https://arxiv.org/html/2501.09747
+    note: not looked at yet; FAST tokens are what pi0.5 pre-trains on and what knowledge insulation trains the VLM with
 
 still_needed:
   - "a teleoperation photo or short video with a clear licence that shows a person at work (leader arms driving a
     follower arm); DROID Fig. 0 shows the hardware but no person"
-  - "LIBERO frames as pi05_libero receives them at evaluation (224 px, rendered by the simulator); the dataset frames we
-    hold are 256 px training frames"
+  # done 2026-11-11: frames as pi05_libero receives them at evaluation, and a recorded call with its 10x7 output
+  # (docs/assets/img/pi05-run/, from our own run)

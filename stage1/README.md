@@ -35,13 +35,14 @@ uv pip install -e third_party/libero
 ## Running
 
 ```sh
-# terminal 1, in ~/openpi: the first start downloads the checkpoint to ~/.cache/openpi
-uv run scripts/serve_policy.py --env LIBERO
+# terminal 1, in ~/openpi (port 8000 is taken on our machine, so we use 8011)
+uv run scripts/serve_policy.py --env LIBERO --port 8011
 
 # terminal 2, in this repo
 source ~/openpi/examples/libero/.venv/bin/activate
 export PYTHONPATH=$PYTHONPATH:$HOME/openpi/third_party/libero MUJOCO_GL=glx
-python stage1/run_libero.py --label original --task-suite-name libero_spatial --task-ids 3 9 --num-trials-per-task 5
+export LIBERO_CONFIG_PATH=$HOME/openpi/examples/libero/.libero_config   # see "Things that tripped us up"
+python stage1/run_libero.py --port 8011 --label original --task-suite-name libero_spatial --task-ids 7 9 --num-trials-per-task 5
 ```
 
 `run_libero.py` keeps openpi's preprocessing, replanning (5 of 10 actions), wait steps, step limits and seed, and adds
@@ -54,5 +55,16 @@ videos.
 - **Rendering.** Use `MUJOCO_GL=glx`. EGL fails on this machine, and glx falls through to a GLFW context that works
   through WSLg. We learned this in an earlier LIBERO project on the same machine, where building a scene
   took 15–85 s and each control step 0.04–0.16 s.
+- **The checkpoint download.** openpi fetches `gs://openpi-assets/checkpoints/pi05_libero` (12.44 GB, 16 files)
+  with `gsutil` when it's installed, and a `gsutil` with stale Google credentials fails. The bucket is public, so we
+  downloaded the files over HTTPS (`https://storage.googleapis.com/openpi-assets/checkpoints/pi05_libero/...`) into
+  `~/.cache/openpi/openpi-assets/checkpoints/pi05_libero`, which is where openpi looks first. That ran at about
+  34 MB/s, while the Python packages came at about 1.4 MB/s.
+- **LIBERO's first import asks a question** ("Do you want to specify a custom path…") unless a config file exists. We
+  write one to `~/openpi/examples/libero/.libero_config/config.yaml`, pointing at `third_party/libero/libero/libero`
+  and its `bddl_files`, `init_files` and `assets`, and set `LIBERO_CONFIG_PATH` to that folder.
+- **Task numbers.** LIBERO's benchmark numbers tasks differently from the Hugging Face dataset. In LIBERO-Spatial,
+  the two tasks that share a starting table are 7 ("the bowl on the stove") and 9 ("the bowl on the wooden cabinet").
+- **Port 8000** was already taken by another project's Docker container, so our server runs on 8011.
 - **Image orientation.** openpi turns both camera images 180° before sending them, to match how the training data
   was stored, so left and right are swapped compared with the LIBERO paper's figures.
