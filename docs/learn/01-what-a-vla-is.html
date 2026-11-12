@@ -1,0 +1,723 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What a VLA Is · Chapter 1</title>
+<meta name="description" content="Chapter 1 of our learning path on vision-language-action models: what goes in, what comes out, and how a VLA learns.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,400&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/site.css">
+</head>
+<body>
+<div class="progress" aria-hidden="true"></div>
+
+<header class="site-head">
+  <a class="brand" href="../index.html">Learning VLAs</a>
+  <nav class="nav" aria-label="Site">
+    <a href="../index.html" aria-current="page">Chapters</a>
+    <a href="https://github.com/blueif16/vla_final">GitHub</a>
+  </nav>
+</header>
+
+<nav class="toc" aria-label="On this page">
+  <div class="label">Chapter 1</div>
+  <a href="#in-out">What goes in and out</a>
+  <a href="#why-vlm">Why start from a VLM</a>
+  <a href="#two-ways">Two ways to get actions out</a>
+  <a href="#chunks">Action chunks</a>
+  <a href="#learning">How a VLA learns</a>
+  <a href="#shortcut">When the words don't matter</a>
+  <a href="#for-us">What this means for us</a>
+  <a href="#check">Check yourself</a>
+  <a href="#sources">Sources</a>
+</nav>
+
+<header class="doc-head">
+  <h1>What a vision-language-action model is</h1>
+  <p class="subtitle">One network looks through a robot's cameras, reads a sentence and moves the arm. This chapter shows what goes in, what comes out and how it learns.</p>
+  <div class="meta"><span>Chapter 1 of 6</span><span>15 min read</span><span>Needs nothing</span></div>
+  <div class="outcomes">
+    <div class="label">After this chapter you can</div>
+    <ul>
+      <li>say what goes into a VLA and what comes out</li>
+      <li>explain why VLAs are built on top of vision-language models</li>
+      <li>say what an action chunk is, and why a VLA can score well while ignoring the instruction</li>
+    </ul>
+  </div>
+  <details class="contents">
+    <summary>Contents</summary>
+    <ol>
+      <li><a href="#in-out">What goes in and out</a></li>
+      <li><a href="#why-vlm">Why start from a VLM</a></li>
+      <li><a href="#two-ways">Two ways to get actions out</a></li>
+      <li><a href="#chunks">Action chunks</a></li>
+      <li><a href="#learning">How a VLA learns</a></li>
+      <li><a href="#shortcut">When the words don't matter</a></li>
+      <li><a href="#for-us">What this means for us</a></li>
+      <li><a href="#check">Check yourself</a></li>
+    </ol>
+  </details>
+</header>
+
+<figure class="fig" style="margin-top:48px">
+  <div class="frame"><img src="../assets/img/libero-goal.jpg" alt="Ten frames of a simulated robot arm working at the same table, which holds a cabinet, a bowl, a plate, a stove, a wine bottle and a small box." width="1137" height="455"></div>
+  <figcaption><b>One table, ten tasks.</b> A simulated <button class="term" data-term="franka">Franka Panda</button> arm in <button class="term" data-term="libero">LIBERO</button>, the <button class="term" data-term="benchmark">benchmark</button> our project uses. Each frame comes from a different task. When an <button class="term" data-term="episode">episode</button> starts, the table looks the same for all ten, and only the instruction says which task to do. <span class="credit">Image: Liu et al. 2023, LIBERO, CC BY 4.0.</span></figcaption>
+</figure>
+
+<main>
+<div class="prose">
+  <p>A robot arm stands at a table with a black bowl, a plate and a small stove on it. Someone types <span class="q">put the bowl on the plate</span>. From that moment, several times a second, something has to decide how the arm and its gripper, the two-fingered hand at its end, move next. A <button class="term" data-term="vla">vision-language-action model</button>, or VLA, is one <button class="term" data-term="neural-network">neural network</button> that makes that decision. It looks at the camera images, reads the sentence and returns the next few motions.</p>
+
+  <h2 id="in-out">What goes in and what comes out</h2>
+  <p>Going in, there are usually two camera images. One comes from a camera looking at the table and one from a camera on the robot's wrist. Next to them goes the instruction as text, and often the robot's <button class="term" data-term="joint-readings">joint readings</button>, the angles its motors report. Coming out are <button class="term" data-term="action">actions</button>, numbers that tell the arm where to go.</p>
+</div>
+
+<figure class="fig">
+  <div class="pan"><svg class="dg wide" viewBox="0 0 960 400" role="img" aria-labelledby="f11t f11d">
+    <title id="f11t">The control loop of a VLA</title>
+    <desc id="f11d">Camera images and the instruction flow into the VLA, which sends actions to the robot. The robot moves, the cameras take new pictures, and the model is asked again.</desc>
+    <defs>
+      <pattern id="f11-dots" width="16" height="16" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1" fill="#D7CFB6" opacity=".65"/></pattern>
+      <marker id="f11-gold" viewBox="0 0 12 12" refX="8" refY="6" markerWidth="3" markerHeight="3" orient="auto"><path d="M0 0L12 6 0 12z" fill="#FBD45B"/></marker>
+      <marker id="f11-green" viewBox="0 0 12 12" refX="8" refY="6" markerWidth="3" markerHeight="3" orient="auto"><path d="M0 0L12 6 0 12z" fill="#9BBC6C"/></marker>
+    </defs>
+    <rect class="bg" width="960" height="400"/>
+    <rect x="8" y="8" width="944" height="384" fill="url(#f11-dots)"/>
+    <text class="lbl" x="150" y="46" text-anchor="middle">SEES AND READS</text>
+    <text class="lbl" x="884" y="46" text-anchor="middle">MOVES</text>
+
+    <path class="flow" d="M262 118H318V178H366" marker-end="url(#f11-gold)"/>
+    <path class="dash-w" d="M262 118H318V178H366"/>
+    <path class="flow" d="M262 244H318V218H366" marker-end="url(#f11-gold)"/>
+    <path class="dash-w" d="M262 244H318V218H366"/>
+    <path class="flow" d="M572 198H626" marker-end="url(#f11-gold)"/>
+    <path class="dash-w" d="M572 198H626"/>
+    <path class="flow" d="M792 198H826" marker-end="url(#f11-gold)"/>
+    <path class="dash-w" d="M792 198H826"/>
+
+    <rect class="box" x="40" y="70" width="222" height="96" rx="12"/>
+    <text class="lbl" x="151" y="110" text-anchor="middle">CAMERA IMAGES</text>
+    <text class="sub" x="151" y="136" text-anchor="middle">table view + wrist view</text>
+    <rect class="wcard" x="40" y="196" width="222" height="96" rx="12"/>
+    <text class="lbl" x="151" y="236" text-anchor="middle">INSTRUCTION</text>
+    <text class="sub" x="151" y="262" text-anchor="middle">"put the bowl on the plate"</text>
+
+    <rect class="hot" x="380" y="140" width="192" height="116" rx="12"/>
+    <text class="lbl" x="476" y="192" text-anchor="middle">VLA</text>
+    <text class="sub" x="476" y="218" text-anchor="middle">one neural network</text>
+
+    <rect class="act" x="640" y="150" width="152" height="96" rx="12"/>
+    <text class="lbl" x="716" y="192" text-anchor="middle">ACTIONS</text>
+    <text class="sub" x="716" y="218" text-anchor="middle">next few motions</text>
+
+    <g transform="translate(834 128)" class="icon">
+      <path d="M6 100h84v10H6z"/>
+      <path d="M32 100l6-38h20l6 38z"/>
+      <g class="arm-upper">
+        <path d="M39 57L60 16l12 6-21 41z"/>
+        <path d="M62 13l34 14-5 11-35-14z"/>
+        <circle cx="66" cy="19" r="7" fill="#FBD45B"/>
+        <path d="M94 26v14" fill="none"/>
+        <path d="M94 26h12v-6" fill="none"/>
+        <path d="M94 40h12v6" fill="none"/>
+      </g>
+      <circle cx="45" cy="58" r="9" fill="#F5F4EF"/>
+    </g>
+
+    <path class="loop" d="M882 248V340Q882 362 860 362H42Q20 362 20 340V140Q20 118 32 118" marker-end="url(#f11-green)"/>
+    <path class="dash-g" d="M882 248V340Q882 362 860 362H42Q20 362 20 340V140Q20 118 32 118"/>
+    <rect class="bg" x="282" y="342" width="396" height="50"/>
+    <text class="lbl" x="480" y="363" text-anchor="middle">NEW PICTURES, ASK AGAIN</text>
+    <text class="sub" x="480" y="385" text-anchor="middle">until the task is done or time runs out</text>
+  </svg></div>
+  <figcaption><b>Figure 1.1 · The control loop.</b> The VLA turns pictures and a sentence into actions. The robot moves, the cameras take new pictures and the model is asked again, several times a second.</figcaption>
+</figure>
+
+<div class="prose">
+  <p>In LIBERO, the <button class="term" data-term="simulator">simulator</button> our project uses, one action is seven numbers. Three move the hand along x, y and z. Three turn it, and the last one opens or closes the gripper. Point at a group of numbers in the figure below to see which motion it controls.</p>
+</div>
+
+<figure class="fig">
+  <div class="pan"><svg class="dg wide" data-hover viewBox="0 0 960 290" role="img" aria-labelledby="f12t f12d">
+    <title id="f12t">One action in LIBERO</title>
+    <desc id="f12d">Seven numbers in three groups: three move the hand along x, y and z, three turn it, and one opens or closes the gripper.</desc>
+    <defs>
+      <pattern id="f12-dots" width="16" height="16" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1" fill="#D7CFB6" opacity=".65"/></pattern>
+      <marker id="f12-ink" viewBox="0 0 12 12" refX="8" refY="6" markerWidth="4" markerHeight="4" orient="auto"><path d="M0 0L12 6 0 12z" fill="#746D58"/></marker>
+    </defs>
+    <rect class="bg" width="960" height="290"/>
+    <rect x="8" y="8" width="944" height="274" fill="url(#f12-dots)"/>
+
+    <g class="grp" data-g="move" style="cursor:pointer">
+      <rect x="28" y="60" width="276" height="170" rx="14" fill="transparent"/>
+      <rect class="wcard" x="40" y="78" width="80" height="70" rx="10"/><text class="sub" x="80" y="102" text-anchor="middle">Δx</text><text class="lbl" x="80" y="130" text-anchor="middle">+0.12</text>
+      <rect class="wcard" x="128" y="78" width="80" height="70" rx="10"/><text class="sub" x="168" y="102" text-anchor="middle">Δy</text><text class="lbl" x="168" y="130" text-anchor="middle">−0.05</text>
+      <rect class="wcard" x="216" y="78" width="80" height="70" rx="10"/><text class="sub" x="256" y="102" text-anchor="middle">Δz</text><text class="lbl" x="256" y="130" text-anchor="middle">+0.30</text>
+      <path class="ink-line" d="M40 162v8h256v-8"/>
+      <text class="lbl" x="168" y="196" text-anchor="middle">MOVE</text>
+      <text class="sub" x="168" y="218" text-anchor="middle">where the hand goes</text>
+    </g>
+    <g class="grp" data-g="turn" style="cursor:pointer">
+      <rect x="316" y="60" width="276" height="170" rx="14" fill="transparent"/>
+      <rect class="wcard" x="328" y="78" width="80" height="70" rx="10"/><text class="sub" x="368" y="102" text-anchor="middle">Δroll</text><text class="lbl" x="368" y="130" text-anchor="middle">0.00</text>
+      <rect class="wcard" x="416" y="78" width="80" height="70" rx="10"/><text class="sub" x="456" y="102" text-anchor="middle">Δpitch</text><text class="lbl" x="456" y="130" text-anchor="middle">+0.02</text>
+      <rect class="wcard" x="504" y="78" width="80" height="70" rx="10"/><text class="sub" x="544" y="102" text-anchor="middle">Δyaw</text><text class="lbl" x="544" y="130" text-anchor="middle">−0.10</text>
+      <path class="ink-line" d="M328 162v8h256v-8"/>
+      <text class="lbl" x="456" y="196" text-anchor="middle">TURN</text>
+      <text class="sub" x="456" y="218" text-anchor="middle">how the hand is angled</text>
+    </g>
+    <g class="grp" data-g="grip" style="cursor:pointer">
+      <rect x="604" y="60" width="104" height="170" rx="14" fill="transparent"/>
+      <rect class="act" x="616" y="78" width="80" height="70" rx="10"/><text class="sub" x="656" y="102" text-anchor="middle">grip</text><text class="lbl" x="656" y="130" text-anchor="middle">close</text>
+      <path class="ink-line" d="M616 162v8h80v-8"/>
+      <text class="lbl" x="656" y="196" text-anchor="middle">GRIP</text>
+      <text class="sub" x="656" y="218" text-anchor="middle">open or close</text>
+    </g>
+
+    <g transform="translate(760 36)">
+      <g class="icon">
+        <rect x="80" y="-24" width="24" height="52" rx="4"/>
+        <path d="M58 46h68v16H58z"/>
+        <path d="M60 62h12v42h8v10H60z"/>
+        <path d="M112 62h12v52h-20v-10h8z"/>
+      </g>
+      <circle cx="92" cy="36" r="8" fill="#FBD45B" stroke="#746D58" stroke-width="2.5"/>
+      <rect x="80" y="86" width="24" height="24" rx="3" fill="#fff" stroke="#746D58" stroke-width="2"/>
+      <g data-g="move">
+        <path class="ink-line" d="M16 200H76" marker-end="url(#f12-ink)"/><text class="tiny" x="84" y="204">x</text>
+        <path class="ink-line" d="M16 200l34-28" marker-end="url(#f12-ink)"/><text class="tiny" x="56" y="168">y</text>
+        <path class="ink-line" d="M16 200V146" marker-end="url(#f12-ink)"/><text class="tiny" x="22" y="142">z</text>
+      </g>
+      <g data-g="turn">
+        <path class="ink-line" d="M64 30A30 11 0 1 0 120 30" marker-end="url(#f12-ink)"/>
+        <text class="tiny" x="128" y="22">turn</text>
+      </g>
+      <g data-g="grip">
+        <path class="ink-line" d="M36 96H54" marker-end="url(#f12-ink)"/>
+        <path class="ink-line" d="M148 96H130" marker-end="url(#f12-ink)"/>
+        <text class="tiny" x="134" y="136">grip</text>
+      </g>
+    </g>
+  </svg></div>
+  <figcaption><b>Figure 1.2 · One action in LIBERO.</b> Seven numbers per time step, in three groups. The values are made up to show the layout; a real model sends new ones at every step.</figcaption>
+</figure>
+
+<div class="prose">
+  <p>Robotics has a word for anything that maps what a robot senses to what it does next. It's called a <button class="term" data-term="policy">policy</button>, so a VLA is a policy that also reads language.</p>
+</div>
+
+<section class="rail" aria-label="Go deeper: what goes in and out">
+  <div class="rail-head">
+    <div><div class="label">Go deeper</div><p class="rail-title">What goes in and what comes out</p></div>
+    <div class="rail-nav"><button class="rail-prev" aria-label="Previous">←</button><button class="rail-next" aria-label="Next">→</button></div>
+  </div>
+  <div class="rail-track">
+    <article class="card">
+      <div class="media" data-yt="qeOvHh4wxhs" data-start="112" data-end="346" data-title="Kevin Black on how a VLA is built"></div>
+      <div class="body">
+        <span class="tag">Clip · 4 min</span>
+        <h4>From language model to VLA</h4>
+        <p>Kevin Black of Physical Intelligence goes step by step from a language model to a vision-language model to a VLA, and says what goes in (images and an instruction) and what comes out (actions such as joint positions or speeds).</p>
+        <p class="src">Karol Hausman and Kevin Black, “Building a Brain for Any Robot” · <a href="https://www.youtube.com/watch?v=qeOvHh4wxhs&amp;t=112s">YouTube at 1:52</a></p>
+      </div>
+    </article>
+    <article class="card text">
+      <div class="body">
+        <span class="tag">Our model</span>
+        <p class="big">2 pictures + 1 sentence</p>
+        <p>That is everything the LIBERO version of π0.5 receives at each step. It gets no joint readings at all. Chapter 2 shows the setting in openpi's code that turns them off.</p>
+        <p class="src">openpi config <code>pi05_libero</code>, checked 2026-11-11</p>
+      </div>
+    </article>
+    <article class="card text">
+      <div class="body">
+        <span class="tag">Where the words go</span>
+        <h4>The sentence is read by the same network as the pictures</h4>
+        <p>The instruction is cut into tokens and fed in next to the image features. Whether the motion that comes out actually depends on those tokens is the question our project asks, in chapter 4.</p>
+      </div>
+    </article>
+  </div>
+</section>
+
+<div class="prose">
+  <h2 id="why-vlm">Why start from a vision-language model</h2>
+  <p>Robot data is expensive. Each training example is a <button class="term" data-term="demonstration">demonstration</button>, a recording of a person steering the robot through the task by hand, which is called <button class="term" data-term="teleoperation">teleoperation</button>. So a single task might come with only 50 demonstrations, which is what each LIBERO task has.</p>
+  <p>A <button class="term" data-term="vlm">vision-language model</button> (VLM) learns from something far cheaper, images paired with text and collected from the web by the billion. That's how a VLM such as <button class="term" data-term="paligemma">PaliGemma</button> knows what a bowl looks like and what <span class="q">the one on the left</span> means. A VLA starts from a VLM and keeps training it on robot demonstrations, so the robot borrows that knowledge instead of learning it from 50 examples.</p>
+</div>
+
+<figure class="fig">
+  <div class="pan"><svg class="dg wide" viewBox="0 0 960 330" role="img" aria-labelledby="f13t f13d">
+    <title id="f13t">From VLM to VLA</title>
+    <desc id="f13d">Top row: a vision-language model takes a photo and a question and answers in words. Bottom row: the same network, trained further on robot demonstrations, takes camera images and an instruction and answers with actions.</desc>
+    <defs>
+      <pattern id="f13-dots" width="16" height="16" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1" fill="#D7CFB6" opacity=".65"/></pattern>
+      <marker id="f13-gold" viewBox="0 0 12 12" refX="8" refY="6" markerWidth="3" markerHeight="3" orient="auto"><path d="M0 0L12 6 0 12z" fill="#FBD45B"/></marker>
+      <marker id="f13-tan" viewBox="0 0 12 12" refX="8" refY="6" markerWidth="4" markerHeight="4" orient="auto"><path d="M0 0L12 6 0 12z" fill="#AAA184"/></marker>
+    </defs>
+    <rect class="bg" width="960" height="330"/>
+    <rect x="8" y="8" width="944" height="314" fill="url(#f13-dots)"/>
+
+    <text class="lbl-s" x="40" y="40">VISION-LANGUAGE MODEL</text>
+    <rect class="wcard" x="40" y="56" width="230" height="72" rx="12"/>
+    <text class="lbl-s" x="155" y="86" text-anchor="middle">PHOTO + QUESTION</text>
+    <text class="sub" x="155" y="110" text-anchor="middle">"what is on the table?"</text>
+    <path class="flow-t" d="M272 92H316" marker-end="url(#f13-tan)"/>
+    <rect class="box" x="328" y="50" width="300" height="84" rx="12"/>
+    <text class="lbl-s" x="478" y="86" text-anchor="middle">IMAGE ENCODER</text>
+    <text class="lbl-s" x="478" y="106" text-anchor="middle">+ LANGUAGE MODEL</text>
+    <text class="tiny" x="478" y="124" text-anchor="middle">learned from web images + text</text>
+    <path class="flow-t" d="M630 92H674" marker-end="url(#f13-tan)"/>
+    <rect class="wcard" x="686" y="56" width="234" height="72" rx="12"/>
+    <text class="lbl-s" x="803" y="86" text-anchor="middle">WORDS</text>
+    <text class="sub" x="803" y="110" text-anchor="middle">"a black bowl, a plate"</text>
+
+    <path class="flow-t" d="M478 138V194" stroke-dasharray="6 6" marker-end="url(#f13-tan)"/>
+    <text class="tiny" x="492" y="164">start from a copy,</text>
+    <text class="tiny" x="492" y="180">keep training on robot data</text>
+
+    <text class="lbl-s" x="40" y="206">VISION-LANGUAGE-ACTION MODEL</text>
+    <rect class="wcard" x="40" y="222" width="230" height="72" rx="12"/>
+    <text class="lbl-s" x="155" y="252" text-anchor="middle">IMAGES + INSTRUCTION</text>
+    <text class="sub" x="155" y="276" text-anchor="middle">"put the bowl on the plate"</text>
+    <path class="flow" d="M272 258H314" marker-end="url(#f13-gold)"/>
+    <path class="dash-w" d="M272 258H314"/>
+    <rect class="hot" x="328" y="216" width="300" height="84" rx="12"/>
+    <text class="lbl-s" x="478" y="252" text-anchor="middle">SAME NETWORK,</text>
+    <text class="lbl-s" x="478" y="272" text-anchor="middle">TRAINED FURTHER</text>
+    <text class="tiny" x="478" y="290" text-anchor="middle">on robot demonstrations</text>
+    <path class="flow" d="M630 258H672" marker-end="url(#f13-gold)"/>
+    <path class="dash-w" d="M630 258H672"/>
+    <rect class="act" x="686" y="222" width="234" height="72" rx="12"/>
+    <text class="lbl-s" x="803" y="252" text-anchor="middle">ACTIONS</text>
+    <text class="sub" x="803" y="276" text-anchor="middle">7 numbers per step</text>
+  </svg></div>
+  <figcaption><b>Figure 1.3 · Same network, new output.</b> A VLA starts as a copy of a VLM. Training on robot demonstrations teaches it to answer with actions instead of words.</figcaption>
+</figure>
+
+<div class="prose">
+  <p><button class="term" data-term="deepmind">Google DeepMind</button>'s <button class="term" data-term="rt2">RT-2</button> (2023) made this idea widely known. <button class="term" data-term="openvla">OpenVLA</button> (2024) was an open version with 7 billion <button class="term" data-term="parameters">parameters</button>, the adjustable numbers a network learns. <button class="term" data-term="pi0">π0</button> (2024), from the company <button class="term" data-term="physical-intelligence">Physical Intelligence</button>, is the family our project uses.</p>
+</div>
+
+<section class="rail" aria-label="Go deeper: why web knowledge helps">
+  <div class="rail-head">
+    <div><div class="label">Go deeper</div><p class="rail-title">Why web knowledge helps a robot</p></div>
+    <div class="rail-nav"><button class="rail-prev" aria-label="Previous">←</button><button class="rail-next" aria-label="Next">→</button></div>
+  </div>
+  <div class="rail-track">
+    <article class="card">
+      <div class="media" data-yt="qeOvHh4wxhs" data-start="346" data-end="839" data-title="The Taylor Swift test"></div>
+      <div class="body">
+        <span class="tag">Clip · 8 min</span>
+        <h4>A Coke can on Taylor Swift's picture</h4>
+        <p>Karol Hausman recalls RT-2 placing a can on a picture of Taylor Swift, though no robot data ever mentioned her. Kevin Black explains that web pretraining supplied the idea and robot training tied it to motion. The section then turns to π0's action expert.</p>
+        <p class="src">Hausman and Black · <a href="https://www.youtube.com/watch?v=qeOvHh4wxhs&amp;t=346s">YouTube at 5:46</a></p>
+      </div>
+    </article>
+    <article class="card">
+      <div class="media" data-yt="wz1QzZY4Iaw" data-start="399" data-end="789" data-title="Suraj Nair on building pi0"></div>
+      <div class="body">
+        <span class="tag">Clip · 6.5 min</span>
+        <h4>How π0 was built, and what web pretraining adds</h4>
+        <p>Suraj Nair of Physical Intelligence describes π0 as PaliGemma plus a flow-matching action part, trained on more than 10,000 hours of robot data. A smaller model trained without the VLM's web pretraining did worse.</p>
+        <p class="src">Suraj Nair, GRASP seminar, Oct 2025 · <a href="https://www.youtube.com/watch?v=wz1QzZY4Iaw&amp;t=399s">YouTube at 6:39</a></p>
+      </div>
+    </article>
+    <article class="card">
+      <div class="media" data-yt="ujAURT7YG2g" data-start="105" data-end="387" data-title="Sergey Levine on early VLAs and pooled data"></div>
+      <div class="body">
+        <span class="tag">Clip · 5 min</span>
+        <h4>Early VLAs and pooled robot data</h4>
+        <p>Sergey Levine explains how the first VLAs were made from multimodal language models, and how Open X-Embodiment pooled data from 34 labs and about 22 kinds of robot into one training set.</p>
+        <p class="src">Sergey Levine, keynote “Robot Foundation Models” · <a href="https://www.youtube.com/watch?v=ujAURT7YG2g&amp;t=105s">YouTube at 1:45</a></p>
+      </div>
+    </article>
+  </div>
+</section>
+
+<div class="prose">
+  <h2 id="two-ways">Two ways to get actions out</h2>
+  <p>A language model writes its answer one <button class="term" data-term="token">token</button> at a time, where a token is a word or a piece of one. The first way to get actions out treats them the same way. Each action number is cut into 256 bins, ranges of equal width, and the model writes the number of the bin as if it were a word. RT-2 and OpenVLA work like this. It's simple, but writing a long motion one token at a time is slow, and 256 bins are coarse for fine work.</p>
+  <p>The second way adds a smaller network next to the VLM, called an <button class="term" data-term="action-expert">action expert</button>. It starts from random noise and refines it, in about ten steps, into a smooth run of real-valued actions. The method that learns this refinement is <button class="term" data-term="diffusion">diffusion</button> or its close relative <button class="term" data-term="flow-matching">flow matching</button>. π0 and π0.5 work like this. Drag the slider under the right-hand panel to watch noise turn into a motion.</p>
+</div>
+
+<figure class="fig">
+  <div class="split">
+    <div>
+      <p class="panel-title">1 · ACTIONS AS TOKENS</p>
+      <svg class="dg" viewBox="0 0 460 300" role="img" aria-labelledby="f14at">
+        <title id="f14at">An action number becomes the token of its bin</title>
+        <defs>
+          <marker id="f14-gold" viewBox="0 0 12 12" refX="8" refY="6" markerWidth="3" markerHeight="3" orient="auto"><path d="M0 0L12 6 0 12z" fill="#FBD45B"/></marker>
+        </defs>
+        <rect class="bg" width="460" height="300" rx="12" style="stroke:#D7CFB6;stroke-width:1.5"/>
+        <text class="sub" x="290" y="40" text-anchor="middle">Δx = +0.30</text>
+        <path class="ink-line" d="M290 48V74"/>
+        <g>
+          <rect class="box" x="30" y="76" width="25" height="28"/><rect class="wcard" x="55" y="76" width="25" height="28"/>
+          <rect class="box" x="80" y="76" width="25" height="28"/><rect class="wcard" x="105" y="76" width="25" height="28"/>
+          <rect class="box" x="130" y="76" width="25" height="28"/><rect class="wcard" x="155" y="76" width="25" height="28"/>
+          <rect class="box" x="180" y="76" width="25" height="28"/><rect class="wcard" x="205" y="76" width="25" height="28"/>
+          <rect class="box" x="230" y="76" width="25" height="28"/><rect class="wcard" x="255" y="76" width="25" height="28"/>
+          <rect class="hot" x="280" y="76" width="25" height="28"/><rect class="wcard" x="305" y="76" width="25" height="28"/>
+          <rect class="box" x="330" y="76" width="25" height="28"/><rect class="wcard" x="355" y="76" width="25" height="28"/>
+          <rect class="box" x="380" y="76" width="25" height="28"/><rect class="wcard" x="405" y="76" width="25" height="28"/>
+        </g>
+        <text class="tiny" x="30" y="122" text-anchor="middle">−1</text>
+        <text class="tiny" x="230" y="122" text-anchor="middle">0</text>
+        <text class="tiny" x="430" y="122" text-anchor="middle">+1</text>
+        <text class="tiny" x="230" y="142" text-anchor="middle">16 bins drawn here · 256 in a real model</text>
+        <path class="flow" d="M292 150V178" marker-end="url(#f14-gold)"/>
+        <text class="sub" x="306" y="170">bin 166 of 256</text>
+        <rect class="wcard" x="40" y="196" width="64" height="40" rx="8"/><text class="lbl-s" x="72" y="221" text-anchor="middle">128</text>
+        <rect class="wcard" x="112" y="196" width="64" height="40" rx="8"/><text class="lbl-s" x="144" y="221" text-anchor="middle">91</text>
+        <rect class="wcard" x="184" y="196" width="64" height="40" rx="8"/><text class="lbl-s" x="216" y="221" text-anchor="middle">241</text>
+        <rect class="hot" x="256" y="196" width="64" height="40" rx="8"/><text class="lbl-s" x="288" y="221" text-anchor="middle">166</text>
+        <text class="lbl-s" x="346" y="221">…</text>
+        <text class="tiny" x="144" y="254" text-anchor="middle">tokens written so far</text>
+        <text class="tiny" x="288" y="254" text-anchor="middle">next token</text>
+        <text class="sub" x="230" y="282" text-anchor="middle">7 numbers per step → 7 tokens, one by one</text>
+      </svg>
+    </div>
+    <div data-widget="refine" data-target="[[60,220],[95,190],[135,160],[175,136],[215,122],[255,113],[295,118],[330,136],[360,160],[380,186]]">
+      <p class="panel-title">2 · ACTION EXPERT</p>
+      <svg class="dg" viewBox="0 0 460 300" role="img" aria-labelledby="f14bt">
+        <title id="f14bt">Ten refinement steps turn noise into a motion from the start, past the bowl, to the plate</title>
+        <rect class="bg" width="460" height="300" rx="12" style="stroke:#D7CFB6;stroke-width:1.5"/>
+        <rect class="box" x="20" y="20" width="420" height="250" rx="14" style="opacity:.55"/>
+        <circle cx="215" cy="122" r="22" fill="#fff" stroke="#746D58" stroke-width="2"/>
+        <text class="tiny" x="215" y="94" text-anchor="middle">bowl</text>
+        <circle cx="384" cy="190" r="30" fill="#fff" stroke="#746D58" stroke-width="2"/>
+        <circle cx="384" cy="190" r="18" fill="none" stroke="#D7CFB6" stroke-width="2"/>
+        <text class="tiny" x="384" y="244" text-anchor="middle">plate</text>
+        <rect x="50" y="210" width="20" height="20" rx="4" fill="#EEECE4" stroke="#746D58" stroke-width="2"/>
+        <text class="tiny" x="60" y="252" text-anchor="middle">gripper</text>
+        <polyline points="60,220 95,190 135,160 175,136 215,122 255,113 295,118 330,136 360,160 380,186" fill="none" stroke="#AAA184" stroke-width="1.5" stroke-dasharray="4 5" opacity=".7"/>
+        <text class="tiny" x="300" y="104" text-anchor="middle">answer (dashed)</text>
+        <polyline class="path" points="" fill="none" stroke="#9BBC6C" stroke-width="3" stroke-linejoin="round"/>
+        <g class="dots" fill="#fff" stroke="#577B37" stroke-width="2"></g>
+      </svg>
+      <div class="ctrl">
+        <input type="range" min="0" max="10" value="0" step="1" aria-label="Refinement step">
+        <span class="readout">step 0 of 10</span>
+        <button class="btn" type="button">New noise</button>
+      </div>
+    </div>
+  </div>
+  <figcaption><b>Figure 1.4 · Two ways out.</b> Left, an action number becomes the token of its bin. Right, the action expert's ten refinement steps, simplified. The dashed line is the motion the model should end up with, and each point slides along a straight line from its noise towards it, which is the path flow matching is trained to follow. The real model has to work out that direction at every step from the images and the sentence.</figcaption>
+</figure>
+
+<section class="rail" aria-label="Go deeper: tokens and action experts">
+  <div class="rail-head">
+    <div><div class="label">Go deeper</div><p class="rail-title">Tokens and action experts</p></div>
+    <div class="rail-nav"><button class="rail-prev" aria-label="Previous">←</button><button class="rail-next" aria-label="Next">→</button></div>
+  </div>
+  <div class="rail-track">
+    <article class="card">
+      <div class="media pic"><img src="../assets/img/openvla-architecture.jpg" alt="OpenVLA architecture: an input image and the instruction 'Put eggplant in bowl' go through DinoV2 and SigLIP encoders and Llama 2 7B, whose output tokens an action de-tokenizer turns into a 7D robot action." loading="lazy"></div>
+      <div class="body">
+        <span class="tag">Figure · tokens</span>
+        <h4>OpenVLA writes actions as tokens</h4>
+        <p>An image and an instruction go into <button class="term" data-term="llama2">Llama 2</button>, which writes action tokens. A de-tokenizer turns each token back into its bin's value, giving a seven-number action.</p>
+        <p class="src">Kim et al. 2024, OpenVLA, Figure 2 · CC BY 4.0</p>
+      </div>
+    </article>
+    <article class="card">
+      <div class="media" data-yt="ujAURT7YG2g" data-start="387" data-end="677" data-title="Sergey Levine on a motor-control part for dexterity"></div>
+      <div class="body">
+        <span class="tag">Clip · 5 min</span>
+        <h4>Why add a separate part for motion</h4>
+        <p>Sergey Levine contrasts early VLAs, which wrote coarse text tokens, with newer designs that add a separate part for smooth, continuous control, then shows π0 folding laundry.</p>
+        <p class="src">Levine, keynote · <a href="https://www.youtube.com/watch?v=ujAURT7YG2g&amp;t=387s">YouTube at 6:27</a></p>
+      </div>
+    </article>
+    <article class="card">
+      <div class="media" data-yt="KEbE33iGaIk" data-start="1414" data-end="1767" data-title="Sergey Levine on pi0's action expert"></div>
+      <div class="body">
+        <span class="tag">Clip · 6 min</span>
+        <h4>Inside π0's action expert</h4>
+        <p>Levine describes how π0's action expert uses flow matching to generate 50-step chunks fast enough for high-frequency control.</p>
+        <p class="src">Levine, “Robot Foundation Models” · <a href="https://www.youtube.com/watch?v=KEbE33iGaIk&amp;t=1414s">YouTube at 23:34</a></p>
+      </div>
+    </article>
+    <article class="card">
+      <div class="media" data-yt="SgjSAHKFP60" data-start="825" data-end="2053" data-title="Karl Pertsch on action tokenization"></div>
+      <div class="body">
+        <span class="tag">Clip · from 13:45</span>
+        <h4>Why one token per number struggles</h4>
+        <p>Karl Pertsch goes from the Octo model to OpenVLA, explains why plain action tokens struggle on fast tasks, and shows how <button class="term" data-term="fast">FAST</button> compresses a chunk before tokenizing it.</p>
+        <p class="src">Karl Pertsch, “Unlocking Scalable Robot Learning” · <a href="https://www.youtube.com/watch?v=SgjSAHKFP60&amp;t=825s">YouTube at 13:45</a></p>
+      </div>
+    </article>
+  </div>
+</section>
+
+<div class="prose">
+  <h2 id="chunks">Action chunks</h2>
+  <p>Both kinds of model usually predict several future actions at once, called an <button class="term" data-term="action-chunk">action chunk</button>. π0 predicts 50 steps ahead, and the LIBERO version of <button class="term" data-term="pi05">π0.5</button> predicts 10. The robot runs some of them, the first 5 in the LIBERO evaluation script from <button class="term" data-term="openpi">openpi</button>, then asks the model again with fresh images. Predicting ahead keeps the motion smooth, and asking again lets the robot correct itself.</p>
+</div>
+
+<figure class="fig">
+  <div class="chunks" data-widget="chunks" data-steps="40" data-horizon="10" data-run="5">
+    <div class="legend"><span><i class="k-call"></i>model called</span><span><i class="k-pred"></i>predicted chunk</span><span><i class="k-done"></i>step the robot ran</span><span><i class="k-drop"></i>prediction thrown away</span></div>
+    <div class="chunk-grid" aria-label="Forty time steps"></div>
+    <div class="ctrl">
+      <button class="btn do-step" type="button">Step: one call</button>
+      <button class="btn do-play" type="button">Play / pause</button>
+      <button class="btn do-reset" type="button">Reset</button>
+      <span class="readout" aria-live="polite"></span>
+    </div>
+  </div>
+  <figcaption><b>Figure 1.5 · Ten predicted, five run.</b> Press Step to make one call. Gold cells are the chunk the model predicts, green cells are the steps the robot runs, and dashed cells are predictions it throws away when it asks again. At this rate a 220-step LIBERO episode takes 44 calls.</figcaption>
+</figure>
+
+<section class="rail" aria-label="Go deeper: why chunks help">
+  <div class="rail-head">
+    <div><div class="label">Go deeper</div><p class="rail-title">Why predict a chunk at all</p></div>
+    <div class="rail-nav"><button class="rail-prev" aria-label="Previous">←</button><button class="rail-next" aria-label="Next">→</button></div>
+  </div>
+  <div class="rail-track">
+    <article class="card">
+      <div class="media" data-yt="UX1YXcRnFbs" data-start="1154" data-end="1628" data-title="Max Simchowitz on action chunking"></div>
+      <div class="body">
+        <span class="tag">Clip · 8 min</span>
+        <h4>Chunks stop small errors from piling up</h4>
+        <p>Max Simchowitz explains why predicting a sequence of actions can stop small imitation errors from compounding over a long task, and why long chunks can make a robot slower to react.</p>
+        <p class="src">Simchowitz, CMU RI Seminar · <a href="https://www.youtube.com/watch?v=UX1YXcRnFbs&amp;t=1154s">YouTube at 19:14</a></p>
+      </div>
+    </article>
+    <article class="card">
+      <div class="media" data-yt="qeOvHh4wxhs" data-start="2136" data-title="Kevin Black on real-time chunking"></div>
+      <div class="body">
+        <span class="tag">Clip · from 35:36</span>
+        <h4>The world keeps moving while the model thinks</h4>
+        <p>Kevin Black on slow inference: while the model computes, the scene changes, and real-time action chunking lets the robot keep moving while it plans the next chunk.</p>
+        <p class="src">Hausman and Black · <a href="https://www.youtube.com/watch?v=qeOvHh4wxhs&amp;t=2136s">YouTube at 35:36</a></p>
+      </div>
+    </article>
+    <article class="card text">
+      <div class="body">
+        <span class="tag">The trade-off</span>
+        <h4>Run more of the chunk, or look again sooner?</h4>
+        <p>Running more of each chunk means fewer calls and smoother motion. Running fewer means the robot looks again sooner and can react to a surprise. The LIBERO script's choice, 5 of 10, sits between the two.</p>
+      </div>
+    </article>
+  </div>
+</section>
+
+<div class="prose">
+  <h2 id="learning">How a VLA learns</h2>
+  <p>Training happens in three stages, laid out in figure 1.6. First the VLM learns from web images and text. Then the whole VLA learns from demonstrations recorded on many kinds of robot, such as the <button class="term" data-term="oxe">Open X-Embodiment</button> collection. Last, it is <button class="term" data-term="fine-tuning">fine-tuned</button> on the robot and the tasks it will be tested on, such as LIBERO.</p>
+  <p>In both robot stages the model learns by imitation, which is called <button class="term" data-term="behaviour-cloning">behaviour cloning</button>. It sees a picture and an instruction from a recorded demonstration, guesses the action, and is corrected towards what the human operator actually did.</p>
+</div>
+
+<figure class="fig">
+  <div class="pan"><svg class="dg wide" viewBox="0 0 960 330" role="img" aria-labelledby="f16t f16d">
+    <title id="f16t">Three stages of training</title>
+    <desc id="f16d">Web images and text train the VLM. Demonstrations from many robots train the VLA. Demonstrations of the target tasks fine-tune it. In the two robot stages the model copies the operator.</desc>
+    <defs>
+      <pattern id="f16-dots" width="16" height="16" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1" fill="#D7CFB6" opacity=".65"/></pattern>
+      <marker id="f16-gold" viewBox="0 0 12 12" refX="8" refY="6" markerWidth="3" markerHeight="3" orient="auto"><path d="M0 0L12 6 0 12z" fill="#FBD45B"/></marker>
+      <marker id="f16-tan" viewBox="0 0 12 12" refX="8" refY="6" markerWidth="4" markerHeight="4" orient="auto"><path d="M0 0L12 6 0 12z" fill="#AAA184"/></marker>
+    </defs>
+    <rect class="bg" width="960" height="330"/>
+    <rect x="8" y="8" width="944" height="314" fill="url(#f16-dots)"/>
+    <text class="lbl-s" x="40" y="40">LEARNS FROM</text>
+
+    <rect class="wcard" x="40" y="56" width="236" height="70" rx="12"/>
+    <text class="lbl-s" x="158" y="86" text-anchor="middle">WEB IMAGES + TEXT</text>
+    <text class="sub" x="158" y="108" text-anchor="middle">captions, questions, answers</text>
+    <rect class="wcard" x="362" y="56" width="236" height="70" rx="12"/>
+    <text class="lbl-s" x="480" y="86" text-anchor="middle">MANY ROBOTS' DEMOS</text>
+    <text class="sub" x="480" y="108" text-anchor="middle">e.g. Open X-Embodiment</text>
+    <rect class="wcard" x="684" y="56" width="236" height="70" rx="12"/>
+    <text class="lbl-s" x="802" y="86" text-anchor="middle">TARGET-TASK DEMOS</text>
+    <text class="sub" x="802" y="108" text-anchor="middle">e.g. 50 per LIBERO task</text>
+
+    <path class="flow-t" d="M158 128V166" marker-end="url(#f16-tan)"/>
+    <path class="flow-t" d="M480 128V166" marker-end="url(#f16-tan)"/>
+    <path class="flow-t" d="M802 128V166" marker-end="url(#f16-tan)"/>
+
+    <path class="flow" d="M278 222H350" marker-end="url(#f16-gold)"/>
+    <path class="dash-w" d="M278 222H350"/>
+    <path class="flow" d="M600 222H672" marker-end="url(#f16-gold)"/>
+    <path class="dash-w" d="M600 222H672"/>
+
+    <rect class="box" x="40" y="176" width="236" height="92" rx="12"/>
+    <text class="lbl-s" x="158" y="214" text-anchor="middle">1 · VLM PRETRAINING</text>
+    <text class="sub" x="158" y="240" text-anchor="middle">names for what it sees</text>
+    <rect class="box" x="362" y="176" width="236" height="92" rx="12"/>
+    <text class="lbl-s" x="480" y="214" text-anchor="middle">2 · ROBOT PRETRAINING</text>
+    <text class="sub" x="480" y="240" text-anchor="middle">motor skills across robots</text>
+    <rect class="hot" x="684" y="176" width="236" height="92" rx="12"/>
+    <text class="lbl-s" x="802" y="214" text-anchor="middle">3 · FINE-TUNING</text>
+    <text class="sub" x="802" y="240" text-anchor="middle">the exact robot and tasks</text>
+
+    <path d="M362 284v10h558v-10" fill="none" stroke="#9BBC6C" stroke-width="3"/>
+    <text class="lbl-s" x="641" y="316" text-anchor="middle">COPY THE OPERATOR · BEHAVIOUR CLONING</text>
+  </svg></div>
+  <figcaption><b>Figure 1.6 · Three stages of training.</b> General knowledge comes first and the target tasks come last. In both robot stages the model learns by copying the operator.</figcaption>
+</figure>
+
+<section class="rail" aria-label="Go deeper: how a VLA learns">
+  <div class="rail-head">
+    <div><div class="label">Go deeper</div><p class="rail-title">Broad pretraining, then focused fine-tuning</p></div>
+    <div class="rail-nav"><button class="rail-prev" aria-label="Previous">←</button><button class="rail-next" aria-label="Next">→</button></div>
+  </div>
+  <div class="rail-track">
+    <article class="card">
+      <div class="media" data-yt="a8-QsBHoH94" data-start="274" data-end="1054" data-title="Chelsea Finn on training a laundry robot"></div>
+      <div class="body">
+        <span class="tag">Clip · from 4:34</span>
+        <h4>Months of failure, then a recipe that worked</h4>
+        <p>Chelsea Finn tells how the team's laundry-folding robot kept failing until they pretrained on broad robot data and then fine-tuned on consistent, carefully chosen demonstrations.</p>
+        <p class="src">Chelsea Finn, “Building Robots That Can Do Anything” · <a href="https://www.youtube.com/watch?v=a8-QsBHoH94&amp;t=274s">YouTube at 4:34</a></p>
+      </div>
+    </article>
+    <article class="card">
+      <div class="media" data-yt="EYLdC3a0NHw" data-start="535" data-end="1350" data-title="Sergey Levine on pi0's training recipe"></div>
+      <div class="body">
+        <span class="tag">Clip · from 8:55</span>
+        <h4>π0's training recipe</h4>
+        <p>Levine presents π0's data, from seven robot types, the web and Open X-Embodiment, and its recipe of about 10,000 hours of broad pretraining followed by smaller, curated sets for each task.</p>
+        <p class="src">Levine, U of T Robotics Institute seminar · <a href="https://www.youtube.com/watch?v=EYLdC3a0NHw&amp;t=535s">YouTube at 8:55</a></p>
+      </div>
+    </article>
+    <article class="card">
+      <div class="media pic"><img src="../assets/img/oxe-dataset.jpg" alt="Charts from the Open X-Embodiment paper: number of datasets, scenes and trajectories per robot type, and the most common skills and objects." loading="lazy"></div>
+      <div class="body">
+        <span class="tag">Figure · robot data</span>
+        <h4>What a pooled robot dataset holds</h4>
+        <p>Open X-Embodiment's datasets per robot type, scenes, trajectories, skills and objects. Picking and moving dominate, and the Franka arm, the one LIBERO simulates, has the most scenes.</p>
+        <p class="src">Open X-Embodiment Collaboration 2023, Figure 1 · CC BY 4.0</p>
+      </div>
+    </article>
+  </div>
+</section>
+
+<div class="prose">
+  <h2 id="shortcut">When the words don't matter</h2>
+  <div class="note">
+    <div class="label">A common wrong belief</div>
+    <p>“A model trained on instructions must be reading them.”</p>
+  </div>
+  <p>Imitation only learns what helps it copy the demonstrations. Suppose every scene in the training data comes with exactly one instruction. Then the picture alone already tells the model which motion to make, so reading the words never lowers its training error, and nothing pushes it to use them.</p>
+  <p>Things change when one scene comes with several instructions. Now the picture can't tell the tasks apart, and only the words can. Figure 1.7 puts the two cases side by side.</p>
+</div>
+
+<figure class="fig">
+  <div class="split">
+    <div>
+      <p class="panel-title">EACH ARRANGEMENT HAS ONE INSTRUCTION</p>
+      <svg class="dg" viewBox="0 0 460 330" role="img" aria-labelledby="f17at">
+        <title id="f17at">Three different arrangements, each with one instruction: the arrangement alone predicts the motion</title>
+        <defs><marker id="f17-gold" viewBox="0 0 12 12" refX="8" refY="6" markerWidth="3" markerHeight="3" orient="auto"><path d="M0 0L12 6 0 12z" fill="#FBD45B"/></marker></defs>
+        <rect class="bg" width="460" height="330" rx="12" style="stroke:#D7CFB6;stroke-width:1.5"/>
+        <!-- row A -->
+        <rect class="box" x="18" y="22" width="120" height="76" rx="8"/>
+        <circle cx="48" cy="48" r="8" fill="#fff" stroke="#746D58" stroke-width="2"/>
+        <circle cx="100" cy="72" r="13" fill="#fff" stroke="#746D58" stroke-width="2"/><circle cx="100" cy="72" r="7" fill="none" stroke="#D7CFB6" stroke-width="2"/>
+        <rect x="104" y="32" width="16" height="16" rx="3" fill="#746D58"/>
+        <path class="flow" d="M142 60H332" marker-end="url(#f17-gold)"/>
+        <rect class="ghost" x="154" y="72" width="170" height="30" rx="8"/>
+        <text class="tiny" x="239" y="91" text-anchor="middle" opacity=".75" style="font-size:10px">"put the bowl on the plate"</text>
+        <rect class="act" x="344" y="36" width="98" height="48" rx="10"/><text class="lbl-s" x="393" y="65" text-anchor="middle">MOTION A</text>
+        <!-- row B -->
+        <rect class="box" x="18" y="126" width="120" height="76" rx="8"/>
+        <circle cx="110" cy="182" r="8" fill="#fff" stroke="#746D58" stroke-width="2"/>
+        <circle cx="46" cy="152" r="13" fill="#fff" stroke="#746D58" stroke-width="2"/><circle cx="46" cy="152" r="7" fill="none" stroke="#D7CFB6" stroke-width="2"/>
+        <rect x="70" y="170" width="16" height="16" rx="3" fill="#746D58"/>
+        <path class="flow" d="M142 164H332" marker-end="url(#f17-gold)"/>
+        <rect class="ghost" x="154" y="176" width="170" height="30" rx="8"/>
+        <text class="tiny" x="239" y="195" text-anchor="middle" opacity=".75" style="font-size:10px">"put the bowl on the stove"</text>
+        <rect class="act" x="344" y="140" width="98" height="48" rx="10"/><text class="lbl-s" x="393" y="169" text-anchor="middle">MOTION B</text>
+        <!-- row C -->
+        <rect class="box" x="18" y="230" width="120" height="76" rx="8"/>
+        <circle cx="76" cy="286" r="8" fill="#fff" stroke="#746D58" stroke-width="2"/>
+        <circle cx="108" cy="254" r="13" fill="#fff" stroke="#746D58" stroke-width="2"/><circle cx="108" cy="254" r="7" fill="none" stroke="#D7CFB6" stroke-width="2"/>
+        <rect x="32" y="248" width="16" height="16" rx="3" fill="#746D58"/>
+        <path class="flow" d="M142 268H332" marker-end="url(#f17-gold)"/>
+        <rect class="ghost" x="154" y="280" width="170" height="30" rx="8"/>
+        <text class="tiny" x="239" y="299" text-anchor="middle" opacity=".75" style="font-size:10px">"turn on the stove"</text>
+        <rect class="act" x="344" y="244" width="98" height="48" rx="10"/><text class="lbl-s" x="393" y="273" text-anchor="middle">MOTION C</text>
+      </svg>
+    </div>
+    <div>
+      <p class="panel-title">ONE ARRANGEMENT HAS THREE INSTRUCTIONS</p>
+      <svg class="dg" viewBox="0 0 460 330" role="img" aria-labelledby="f17bt">
+        <title id="f17bt">One arrangement with three instructions: only the words decide the motion</title>
+        <defs>
+          <marker id="f17b-gold" viewBox="0 0 12 12" refX="8" refY="6" markerWidth="3" markerHeight="3" orient="auto"><path d="M0 0L12 6 0 12z" fill="#FBD45B"/></marker>
+          <marker id="f17b-tan" viewBox="0 0 12 12" refX="8" refY="6" markerWidth="4" markerHeight="4" orient="auto"><path d="M0 0L12 6 0 12z" fill="#AAA184"/></marker>
+        </defs>
+        <rect class="bg" width="460" height="330" rx="12" style="stroke:#D7CFB6;stroke-width:1.5"/>
+        <rect class="box" x="18" y="126" width="120" height="76" rx="8"/>
+        <circle cx="48" cy="152" r="8" fill="#fff" stroke="#746D58" stroke-width="2"/>
+        <circle cx="100" cy="178" r="13" fill="#fff" stroke="#746D58" stroke-width="2"/><circle cx="100" cy="178" r="7" fill="none" stroke="#D7CFB6" stroke-width="2"/>
+        <rect x="104" y="136" width="16" height="16" rx="3" fill="#746D58"/>
+        <path class="flow-t" d="M140 164H150V48H158" marker-end="url(#f17b-tan)"/>
+        <path class="flow-t" d="M140 164H158" marker-end="url(#f17b-tan)"/>
+        <path class="flow-t" d="M150 164V282H158" marker-end="url(#f17b-tan)"/>
+        <rect class="wcard" x="162" y="28" width="172" height="40" rx="8" style="stroke:#C9A533"/>
+        <text class="tiny" x="248" y="52" text-anchor="middle" style="fill:#29271F;font-size:10px">"put the bowl on the plate"</text>
+        <rect class="wcard" x="162" y="144" width="172" height="40" rx="8" style="stroke:#C9A533"/>
+        <text class="tiny" x="248" y="168" text-anchor="middle" style="fill:#29271F;font-size:10px">"put the bowl on the stove"</text>
+        <rect class="wcard" x="162" y="262" width="172" height="40" rx="8" style="stroke:#C9A533"/>
+        <text class="tiny" x="248" y="286" text-anchor="middle" style="fill:#29271F;font-size:10px">"turn on the stove"</text>
+        <path class="flow" d="M332 48H340" marker-end="url(#f17b-gold)"/>
+        <path class="flow" d="M332 164H340" marker-end="url(#f17b-gold)"/>
+        <path class="flow" d="M332 282H340" marker-end="url(#f17b-gold)"/>
+        <rect class="act" x="352" y="24" width="90" height="48" rx="10"/><text class="lbl-s" x="397" y="53" text-anchor="middle">MOTION A</text>
+        <rect class="act" x="352" y="140" width="90" height="48" rx="10"/><text class="lbl-s" x="397" y="169" text-anchor="middle">MOTION B</text>
+        <rect class="act" x="352" y="258" width="90" height="48" rx="10"/><text class="lbl-s" x="397" y="287" text-anchor="middle">MOTION C</text>
+      </svg>
+    </div>
+  </div>
+  <figcaption><b>Figure 1.7 · When the words matter.</b> Left, each arrangement comes with one instruction, so the arrangement alone predicts the motion and the words (dashed) add nothing. Right, one arrangement comes with three instructions, so only the words decide. LIBERO has suites of both kinds, as chapter 3 shows.</figcaption>
+</figure>
+
+<div class="prose">
+  <h2 id="for-us">What this means for our project</h2>
+  <p>A VLA can score near 100% on a benchmark while ignoring the instruction, as long as the benchmark never shows the same scene with two different instructions. That is the root of our question. Chapter 3 shows where LIBERO does this and where it doesn't, and chapter 4 turns it into tests.</p>
+
+  <h2 id="check">Check yourself</h2>
+  <ol class="quiz">
+    <li><p>What goes into a VLA at each step, and what comes out?</p>
+      <details><summary>Show answer</summary><p>Camera images, the instruction text and often the robot's joint readings go in. A chunk of future actions comes out, each one a few numbers for the arm and gripper.</p></details></li>
+    <li><p>A model predicts 10 actions per call and the robot runs 5 before calling again. How many calls does a 220-step episode take?</p>
+      <details><summary>Show answer</summary><p>44 calls, because 220 ÷ 5 = 44.</p></details></li>
+    <li><p>Which of the two ways to get actions out does π0.5 use, and what does it start from?</p>
+      <details><summary>Show answer</summary><p>An action expert trained with flow matching. It starts from random noise and refines it in about ten steps into an action chunk.</p></details></li>
+    <li><p>Why could a VLA trained on 40 instructions still ignore language? Say it in your own words.</p>
+      <details><summary>Show answer</summary><p>It learns by copying demonstrations. If each scene in training appears with only one instruction, the image alone predicts the actions, so reading the words never lowers the training error and nothing pushes the model to use them.</p></details></li>
+  </ol>
+
+  <h2 id="sources">Sources</h2>
+  <ul class="sources">
+    <li>Brohan et al. (2023), RT-2: Vision-Language-Action Models Transfer Web Knowledge to Robotic Control. <a href="https://arxiv.org/abs/2307.15818">arXiv 2307.15818</a></li>
+    <li>Kim et al. (2024), OpenVLA: An Open-Source Vision-Language-Action Model. <a href="https://arxiv.org/abs/2406.09246">arXiv 2406.09246</a>. Figure 2 reused under CC BY 4.0.</li>
+    <li>Black et al. (2024), π0: A Vision-Language-Action Flow Model for General Robot Control. <a href="https://arxiv.org/abs/2410.24164">arXiv 2410.24164</a></li>
+    <li>Open X-Embodiment Collaboration (2023), Open X-Embodiment: Robotic Learning Datasets and RT-X Models. <a href="https://arxiv.org/abs/2310.08864">arXiv 2310.08864</a>. Figure 1 reused under CC BY 4.0.</li>
+    <li>Liu et al. (2023), LIBERO: Benchmarking Knowledge Transfer for Lifelong Robot Learning. <a href="https://arxiv.org/abs/2306.03310">arXiv 2306.03310</a>. LIBERO-Goal figure reused under CC BY 4.0.</li>
+    <li>openpi, <code>examples/libero/main.py</code> (<code>replan_steps = 5</code>) and the <code>pi05_libero</code> config (<code>action_horizon=10</code>, <code>discrete_state_input=False</code>), checked 2026-11-11. <a href="https://github.com/Physical-Intelligence/openpi">github.com/Physical-Intelligence/openpi</a></li>
+    <li>Talks: Hausman and Black (<a href="https://www.youtube.com/watch?v=qeOvHh4wxhs">qeOvHh4wxhs</a>), Nair (<a href="https://www.youtube.com/watch?v=wz1QzZY4Iaw">wz1QzZY4Iaw</a>), Levine (<a href="https://www.youtube.com/watch?v=ujAURT7YG2g">ujAURT7YG2g</a>, <a href="https://www.youtube.com/watch?v=KEbE33iGaIk">KEbE33iGaIk</a>, <a href="https://www.youtube.com/watch?v=EYLdC3a0NHw">EYLdC3a0NHw</a>), Pertsch (<a href="https://www.youtube.com/watch?v=SgjSAHKFP60">SgjSAHKFP60</a>), Simchowitz (<a href="https://www.youtube.com/watch?v=UX1YXcRnFbs">UX1YXcRnFbs</a>), Finn (<a href="https://www.youtube.com/watch?v=a8-QsBHoH94">a8-QsBHoH94</a>). Clip start and end times come from RoboBoom's section summaries of each talk (roboboom.com), checked 2026-11-11.</li>
+    <li>Diagram style after Physical Intelligence's blog post “Frontier Models for Every Robot” (pi.website, 2026).</li>
+  </ul>
+</div>
+</main>
+
+<nav class="chapter-nav" aria-label="Chapters">
+  <a class="prev" href="../index.html"><div class="label">Back</div>All chapters</a>
+  <a class="next" href="https://github.com/blueif16/vla_final/blob/main/docs/learn/02-pi0-and-pi05.md"><div class="label">Next · chapter 2</div>π0, π0.5 and our checkpoint →</a>
+</nav>
+
+<footer class="site-foot">
+  <span class="brand">Learning VLAs</span>
+  <nav class="nav"><a href="../index.html">Chapters</a><a href="https://github.com/blueif16/vla_final">GitHub</a></nav>
+</footer>
+
+<script src="../assets/js/glossary.js"></script>
+<script src="../assets/js/site.js"></script>
+</body>
+</html>

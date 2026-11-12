@@ -1,0 +1,21 @@
+// Usage: start Chrome with --headless=new --remote-debugging-port=9333, serve docs/, then: node cdp-check.mjs <page url>
+const [,, url] = process.argv;
+const list = await (await fetch('http://127.0.0.1:9333/json/new?' + encodeURIComponent(url), { method: 'PUT' })).json();
+const ws = new WebSocket(list.webSocketDebuggerUrl);
+let id = 0; const pending = new Map();
+ws.onmessage = (m) => { const d = JSON.parse(m.data); if (d.id && pending.has(d.id)) { pending.get(d.id)(d); pending.delete(d.id); } };
+await new Promise((r) => ws.onopen = r);
+const send = (method, params = {}) => new Promise((r) => { const i = ++id; pending.set(i, r); ws.send(JSON.stringify({ id: i, method, params })); });
+const ev = async (expr) => (await send('Runtime.evaluate', { expression: expr, awaitPromise: true, returnByValue: true })).result.result.value;
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+await sleep(2500);
+console.log('terms:', await ev(`(() => { const ks=[...document.querySelectorAll('.term')].map(b=>b.dataset.term); const miss=ks.filter(k=>!window.GLOSSARY[k]); return ks.length+' used, '+new Set(ks).size+' distinct, missing: '+JSON.stringify(miss); })()`));
+console.log('popover:', await ev(`(() => { const b=document.querySelector('.term[data-term=vla]'); b.click(); const p=document.getElementById('term-pop'); return (p.hidden?'HIDDEN ':'shown ')+p.textContent.slice(0,90); })()`));
+console.log('yt:', await ev(`(() => { const b=document.querySelector('.yt-play'); b.click(); const f=document.querySelector('[data-yt] iframe'); return f ? f.src : 'no iframe'; })()`));
+await ev(`document.querySelector('.do-step').click()`); await sleep(1400);
+await ev(`document.querySelector('.do-step').click()`); await sleep(1400);
+console.log('chunks:', await ev(`document.querySelector('[data-widget=chunks] .readout').textContent + ' | done=' + document.querySelectorAll('.cell.done').length + ' drop=' + document.querySelectorAll('.cell.drop').length + ' call=' + document.querySelectorAll('.cell.call').length`));
+console.log('refine:', await ev(`(() => { const w=document.querySelector('[data-widget=refine]'); const s=w.querySelector('input'); s.value=10; s.dispatchEvent(new Event('input')); return w.querySelector('.readout').textContent + ' | ' + w.querySelector('.path').getAttribute('points').split(' ').slice(0,3).join(' '); })()`));
+console.log('rail next:', await ev(`(async () => { const r=document.querySelector('.rail'); const t=r.querySelector('.rail-track'); r.querySelector('.rail-next').click(); await new Promise(z=>setTimeout(z,800)); return 'scrollLeft='+Math.round(t.scrollLeft); })()`));
+console.log('overflow:', await ev(`document.documentElement.scrollWidth + ' vs ' + window.innerWidth`));
+ws.close(); process.exit(0);

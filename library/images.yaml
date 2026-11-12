@@ -1,0 +1,63 @@
+# Images: what we hold, where it came from, and whether we may reuse it. Checked 2026-11-11.
+# Rule: reuse a figure only if its paper's licence allows it (CC BY 4.0 here) and credit it in the caption.
+# arXiv's default licence (nonexclusive-distrib) does NOT allow reuse: link to the paper or draw our own.
+# Local files live in docs/assets/img/ (converted to JPG, max 1600 px wide).
+
+downloaded:
+  - file: docs/assets/img/libero-goal.jpg
+    source: https://arxiv.org/html/2306.03310v2/figures/libero_goal.png
+    paper: LIBERO (Liu et al. 2023), Figure 10 "LIBERO-Goal"
+    license: CC BY 4.0
+    shows: ten frames of the ten LIBERO-Goal tasks, same table and objects
+    used: [ch1 hero]
+  - file: docs/assets/img/libero-suites.jpg
+    source: https://arxiv.org/html/2306.03310v2/libero_fig1.png
+    paper: LIBERO, Figure 1
+    license: CC BY 4.0
+    shows: the four suites around a globe, plus the five research topics
+    note: the panel labels "Different layouts, same objects" / "Different objects, same layout" sit beside the
+      LIBERO-Object and LIBERO-Spatial lines in a way that reads swapped against the paper's text; caption it carefully
+    used: []
+  - file: docs/assets/img/openvla-architecture.jpg
+    source: https://arxiv.org/html/2406.09246v3/openvla_model.png
+    paper: OpenVLA (Kim et al. 2024), Figure 2
+    license: CC BY 4.0
+    shows: image + instruction -> DinoV2/SigLIP -> projector -> Llama 2 7B -> action tokens -> de-tokenizer -> 7D action
+    used: [ch1 rail two-ways]
+  - file: docs/assets/img/oxe-dataset.jpg
+    source: https://arxiv.org/html/2310.08864v9/rtx_data_analysis.png
+    paper: Open X-Embodiment (2023), Figure 1
+    license: CC BY 4.0
+    shows: datasets, scenes and trajectories per robot type; common skills and objects
+    used: [ch1 rail learning]
+
+available_cc_by:   # not downloaded yet; base URL + file
+  - paper: LIBERO (arXiv 2306.03310, CC BY 4.0)
+    base: https://arxiv.org/html/2306.03310v2/
+    figures:
+      - { file: figures/libero_spatial.png, caption: "Figure 8: LIBERO-Spatial (all ten tasks)", for: ch3 }
+      - { file: figures/libero_object.png, caption: "Figure 9: LIBERO-Object", for: ch3 }
+      - { file: figures/libero_100.png, caption: "Figure 11: LIBERO-100", for: ch3 }
+      - { file: figures/libero_fig2.png, caption: "Figure 2: procedural generation pipeline (Ego4D templates -> instructions -> scenes)", for: ch3 }
+      - { file: figures/fig21.png, caption: "Figure 21: attention maps across task suites", for: "ch4 or ch5 (where models look)" }
+  - paper: OpenVLA (arXiv 2406.09246, CC BY 4.0)
+    base: https://arxiv.org/html/2406.09246v3/
+    figures:
+      - { file: bridge_results.png, caption: "Figure 3: BridgeData V2 WidowX evaluation", for: optional }
+      - { file: franka_tabletop_tasks.png, caption: "Figure 10: Franka-Tabletop fine-tuning tasks", for: optional }
+  - paper: Open X-Embodiment (arXiv 2310.08864, CC BY 4.0)
+    base: https://arxiv.org/html/2310.08864v9/
+    figures:
+      - { file: figures/rtx_barplot_10.png, caption: "Fig. 3: RT-1-X 50% higher success than original methods", for: optional }
+      - { file: figures/rt2x_eval_v9.png, caption: "Fig. 4: RT-2-X transfer across embodiments", for: optional }
+
+link_only:   # arXiv default licence: do not copy figures
+  - { paper: "RT-2 (2307.15818)", note: "action string figure on the DeepMind blog; draw our own" }
+  - { paper: "pi0 (2410.24164)", note: "architecture figure; draw our own (done in ch1 figure 1.4)" }
+  - { paper: "pi0.5 (2504.16054)", note: "draw our own" }
+  - { paper: "ALOHA / ACT (2304.13705)", note: "teleoperation photos; link to tonyzhaozh.github.io/aloha" }
+  - { paper: "Physical Intelligence blog posts", note: "style reference only; never copy their SVGs or photos" }
+
+still_needed:
+  - "a teleoperation photo or short video with a clear licence (leader arms driving a follower arm)"
+  - "LIBERO wrist-camera and table-camera frames at 224 px, to show exactly what pi05_libero sees (we can render our own once LIBERO runs)"

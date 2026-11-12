@@ -10,9 +10,6 @@ Needs: chapters 1 to 5. Last updated: 2026-11-11.
 |---|---|---|
 | Team: Jingyi Fu and Shiran Wang | sign-up, November 2026 | both |
 | The project is about VLAs | sign-up, November 2026; Shiran restated it on 2026-11-11 | both |
-| Project review on 2026-11-18 (10 minutes: what we've done and what's next) | course rule | the course |
-| Poster at the Research Capstone session, 2026-12-16, 10am to 1pm | course rule | the course |
-| Write-up due 2026-12-18 | course rule | the course |
 
 ## Open
 
@@ -20,7 +17,6 @@ Needs: chapters 1 to 5. Last updated: 2026-11-11.
   it should focus on VLA-related knowledge." The submitted plan below is our current candidate.
 - **The model and benchmark.** The submitted plan names `pi05_libero` and LIBERO. This holds for every option below,
   and it is still open until we agree on the question.
-- **A third member.** The course rules say teams of three, and the sign-up sheet lists two names.
 
 ## The plan we submitted
 
@@ -54,10 +50,10 @@ cost. The notes are our reading.
 We haven't researched VLA topics outside language grounding yet. If we want to look wider, the same search can be run
 for other directions.
 
-## A first week that helps every option
+## A first step that helps every option
 
-This is a proposal, not a decision. Each step is needed whichever option we pick, and together they give the
-2026-11-18 review a working setup, one reproduced number and a clear choice for what's next.
+This is a proposal, not a decision. Each step is needed whichever option we pick, and together they give us a working
+setup, one reproduced number and a clear choice for what's next.
 1. Serve `pi05_libero` on the cluster and run the openpi LIBERO client.
 2. Run the original instruction on one suite (500 episodes). Compare with the published 98.8 (Spatial) or 98.0 (Goal),
    and time one episode so we can price the rest.

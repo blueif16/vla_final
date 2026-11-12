@@ -3,6 +3,7 @@
 After this chapter you can say what goes into a VLA and what comes out, explain why people build one on top of a
 vision-language model, and say what an action chunk is.
 Needs: nothing. Reading time: 8 min.
+Web version, with diagrams, talk clips and side notes: https://blueif16.github.io/vla_final/learn/01-what-a-vla-is.html
 
 A robot arm stands at a table with a black bowl, a plate and a small stove on it. Someone types "put the bowl on the
 plate". From then on, several times a second, something has to decide how the arm and its gripper move next. A

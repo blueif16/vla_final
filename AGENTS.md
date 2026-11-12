@@ -2,8 +2,8 @@
 
 This is the CS 6180 final project of Jingyi Fu and Shiran Wang, about vision-language-action models (VLAs). As of
 2026-11-11 the team has submitted a candidate question (does π0.5 read the instruction on LIBERO?), learned that much of
-it is already published, and is choosing what to do instead. No code has been written yet. The project review is on
-2026-11-18, the poster on 2026-12-16 and the write-up is due 2026-12-18.
+it is already published, and is choosing what to do instead. No code has been written yet. The work right now is
+learning the field, through the chapters in `docs/learn/` (also a website, https://blueif16.github.io/vla_final/).
 
 ## If someone asks you to teach them this
 
@@ -28,7 +28,9 @@ as the plan. When the team decides something together, move it to "Decided" with
 
 ## Writing in this repo
 
-New chapters follow the shape in `.claude/skills/teaching/SKILL.md`. Every fact carries its source and the date it
+New chapters follow the shape in `.claude/skills/teaching/SKILL.md`, and their web pages follow
+`.claude/skills/teaching-web/SKILL.md`. Check `library/` before searching the web, and record every new clip time,
+image licence or checked number there. Every fact carries its source and the date it
 was checked, and our own readings are labelled as ours. Numbers are copied from their source, never rounded into new
 ones.
 

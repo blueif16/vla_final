@@ -1,0 +1,146 @@
+# Talk clips with section start times, for embedding at the right second.
+# Times come from RoboBoom's section summaries (roboboom.com/briefs/...), whose links open YouTube at each
+# section start. Checked 2026-11-11. A section's end is the next section's start; the last section has none.
+# `about` is our own one-line paraphrase of what the section covers, written to choose clips, not to quote.
+# `used` lists where a clip is embedded. Embed with youtube-nocookie.com/embed/<id>?start=<s>&end=<e>.
+# How to add more: teaching-web skill, "Finding clip times".
+
+talks:
+  - id: qeOvHh4wxhs
+    title: "#38 Karol Hausman & Kevin Black: Building A Brain For Any Robot (AI Eating The Physical World)"
+    speakers: [Karol Hausman, Kevin Black]
+    org: Physical Intelligence
+    brief: https://roboboom.com/briefs/38-karol-hausman-kevin-black-building-a-brain-for-any-robot-ai-eating-the-1614
+    sections:
+      - { start: 112, label: "1:52", title: "How vision-language-action models work", about: "LLM -> VLM -> VLA; images and instruction in, actions (joint positions or velocities) out", used: ["ch1 rail in-out"] }
+      - { start: 346, label: "5:46", title: "Why internet knowledge and action expertise matter", about: "RT-2 Coke can on Taylor Swift's picture; web pretraining gives the concept; action expert for ~50 Hz control; FAST trains faster, infers slower", used: ["ch1 rail why-vlm"] }
+      - { start: 839, label: "13:59", title: "Open models, hardware, and a broader robotics ecosystem", about: "why PI open-sourced pi0 (openpi); hardware strategy" }
+      - { start: 1555, label: "25:55", title: "Generalizing across homes and improving performance", about: "pi0.5 subtask + action; ~80-100 homes match in-home training; limits of imitation" }
+      - { start: 2136, label: "35:36", title: "Research bottlenecks and deployment priorities", about: "slow inference; real-time action chunking; history; data, objectives, hardware", used: ["ch1 rail chunks"] }
+
+  - id: wz1QzZY4Iaw
+    title: "Fall 2025 GRASP SFI - Suraj Nair, Physical Intelligence"
+    speakers: [Suraj Nair]
+    org: Physical Intelligence
+    duration: "1:01:26"
+    date: 2025-10-23
+    brief: https://roboboom.com/briefs/fall-2025-grasp-sfi-suraj-nair-physical-intelligence-1825
+    sections:
+      - { start: 13, label: "0:13", title: "Why robots need a generalist foundation", about: "goal: robots that follow language in unfamiliar homes; pretrain then adapt" }
+      - { start: 399, label: "6:39", title: "Building and training Pi 0", about: "PaliGemma + flow-matching action part; >10,000 h data; no-VLM-pretraining model did worse", used: ["ch1 rail why-vlm"] }
+      - { start: 789, label: "13:09", title: "Compressing actions for faster training", about: "FAST (DCT on chunks, then tokens); ~160k vs >1M steps; knowledge insulation" }
+      - { start: 1437, label: "23:57", title: "Taking Pi 0.5 into unfamiliar homes", about: "mobile-robot home data + web + cross-robot; high-level subtask + low-level policy; ~100 environments" }
+      - { start: 2563, label: "42:43", title: "Lessons and open problems", about: "evaluate across several unseen settings; task-progress metrics; data quality; action representations" }
+
+  - id: _b-FwaiETwM
+    title: "Prof. Sergey Levine: Robotic Foundation Models (AI Agent Frontier Seminar)"
+    speakers: [Sergey Levine]
+    duration: "1:00:13"
+    date: 2026-03-29
+    brief: https://roboboom.com/briefs/prof-sergey-levine-robotic-foundation-models-2616
+    sections:
+      - { start: 35, label: "0:35", title: "Why physical interaction matters", about: "an LLM can explain chores, a robot must do them; semantic to motor levels" }
+      - { start: 394, label: "6:34", title: "From language models to dexterous action", about: "RT-2 actions as text vs pi0 action expert; pi0 laundry recovering from mistakes" }
+      - { start: 1312, label: "21:52", title: "Reasoning and teaching robots", about: "embodied chain of thought; verbal coaching in pi0.5" }
+      - { start: 1937, label: "32:17", title: "Pooling data for generalization", about: "RT-X 30+ labs, 50% better; broad pretraining + curated post-training" }
+      - { start: 2391, label: "39:51", title: "Reinforcement learning for reliability and speed", about: "pi*0.6 value function, espresso 13 h, ~2x throughput" }
+
+  - id: ujAURT7YG2g
+    title: "Keynote: Robot Foundation Models - Sergey Levine (PyTorch Conference 2025)"
+    speakers: [Sergey Levine]
+    brief: https://roboboom.com/briefs/keynote-robot-foundation-models-sergey-levine-2063
+    sections:
+      - { start: 1, label: "0:01", title: "Foundation models meet robotics", about: "RT-2-X follows a web-delivered instruction on an unfamiliar robot" }
+      - { start: 105, label: "1:45", title: "Why diverse robot data matters", about: "early VLAs from multimodal LMs; Open X-Embodiment 34 labs, ~22 robot types; ~50% better; 3x on hard language-following", used: ["ch1 rail why-vlm"] }
+      - { start: 387, label: "6:27", title: "A motor-control component for dexterity", about: "coarse text tokens vs dedicated continuous-control part; pi0 ~10,000 h; laundry; recovery", used: ["ch1 rail two-ways"] }
+      - { start: 677, label: "11:17", title: "Longer tasks and language supervision", about: "pi0.5 language reasoning step; coaching in words; only 3% mobile data" }
+      - { start: 852, label: "14:12", title: "Progress and open challenges", about: "~100 homes close to in-home; imitation limits; PyTorch ports of pi0/pi0.5" }
+
+  - id: KEbE33iGaIk
+    title: "Sergey Levine (UC Berkeley): Robot Foundation Models"
+    speakers: [Sergey Levine]
+    brief: https://roboboom.com/briefs/sergey-levine-uc-berkeley-robot-foundation-models-2059
+    sections:
+      - { start: 832, label: "13:52", title: "Why learn robot control end to end", about: "modular vs end-to-end; shape sorting with 1 mm tolerance" }
+      - { start: 1414, label: "23:34", title: "Building vision-language-action models", about: "pi0 continuous action expert, flow matching, 50-step chunks; laundry with disruptions", used: ["ch1 rail two-ways"] }
+      - { start: 1767, label: "29:27", title: "Reasoning, coaching, and generalization", about: "intermediate semantic steps (Gemini, SAM labels); pi0.5 verbal coaching" }
+      - { start: 2203, label: "36:43", title: "More data improves general-purpose skills", about: "RT-X 33 labs/22 robots; pi0 10,000 h; 60-100 locations for unseen homes" }
+      - { start: 2508, label: "41:48", title: "Reinforcement learning boosts performance", about: "online RL ~2x throughput on 3 of 4 tasks" }
+
+  - id: EYLdC3a0NHw
+    title: "U of T Robotics Institute Seminar: Sergey Levine (UC Berkeley), 2025-03-21"
+    speakers: [Sergey Levine]
+    brief: https://roboboom.com/briefs/u-of-t-robotics-institute-seminar-sergey-levine-uc-berkeley-1857
+    sections:
+      - { start: 83, label: "1:23", title: "Cross-embodiment training", about: "RT-X 34 labs, 22 robot types, ~50% better; VLMs add language understanding" }
+      - { start: 535, label: "8:55", title: "Building and adapting pi0", about: "data from 7 robot types, web, OXE; PaliGemma + action expert; ~10,000 h pretraining + curated post-training", used: ["ch1 rail learning"] }
+      - { start: 1350, label: "22:30", title: "Adding sequential reasoning", about: "embodied chain of thought (+~50% on OpenVLA); high-level policy with pi0" }
+      - { start: 1871, label: "31:11", title: "Using reinforcement learning", about: "online RL for chip insertion, cable routing; 2-3x faster than imitation" }
+      - { start: 2431, label: "40:31", title: "Open questions and future directions", about: "recipes like LLMs; adapting to new embodiments takes 1-100s of hours; chunks limit responsiveness" }
+
+  - id: SgjSAHKFP60
+    title: "Unlocking Scalable Robot Learning in the Real World - Karl Pertsch (UC Berkeley and Stanford)"
+    speakers: [Karl Pertsch]
+    brief: https://roboboom.com/briefs/unlocking-scalable-robot-learning-in-the-real-world-karl-pertsch-uc-berkeley-1618
+    sections:
+      - { start: 60, label: "1:00", title: "Why robot learning needs to scale", about: "brittle task-specific policies; diverse data + high-capacity models" }
+      - { start: 427, label: "7:07", title: "Building shared robot datasets", about: "DROID ~70k teleop episodes, ~560 scenes; Open X-Embodiment >1M episodes, 22 embodiments" }
+      - { start: 825, label: "13:45", title: "Designing policies for dexterous control", about: "Octo -> OpenVLA; plain action tokens struggle on fast tasks; FAST >10x compression", used: ["ch1 rail two-ways"] }
+      - { start: 2053, label: "34:13", title: "Making robot evaluation more reproducible", about: "simulated evals track real success better than validation loss; visuals matter more than physics" }
+      - { start: 2571, label: "42:51", title: "Limits and next research directions", about: "unfamiliar objects, dexterity, reliability; zero-shot 50-80%" }
+
+  - id: UX1YXcRnFbs
+    title: "RI Seminar: Max Simchowitz: Generative Control, Action Chunking, and Moravec's Paradox (CMU, 2026-03-13)"
+    speakers: [Max Simchowitz]
+    brief: https://roboboom.com/briefs/ri-seminar-max-simchowitz-generative-control-action-chunking-and-moravecs-1769
+    sections:
+      - { start: 106, label: "1:46", title: "Why robot imitation can fail", about: "imitation errors compound with horizon in continuous control" }
+      - { start: 1154, label: "19:14", title: "Action chunking can stabilize learned behavior", about: "chunks past a threshold prevent compounding error; 4-8 steps common; less responsive", used: ["ch1 rail chunks"] }
+      - { start: 1628, label: "27:08", title: "Generative policies help beyond multimodal actions", about: "flow vs regression competitive; stochasticity and iterative correction help" }
+      - { start: 2358, label: "39:18", title: "Control-shaped errors and what remains hard", about: "flow policies err along the action manifold; long-horizon adaptation; online RL" }
+
+  - id: a8-QsBHoH94
+    title: "Chelsea Finn: Building Robots That Can Do Anything (Y Combinator)"
+    speakers: [Chelsea Finn]
+    org: Physical Intelligence
+    brief: https://roboboom.com/briefs/chelsea-finn-building-robots-that-can-do-anything-362
+    sections:
+      - { start: 13, label: "0:13", title: "Why robotics needs general models", about: "per-application robotics doesn't scale; which data sources miss what" }
+      - { start: 274, label: "4:34", title: "Training robots to handle laundry", about: "months of failure; broad pretraining + curated fine-tuning; ~3B VLM helped", used: ["ch1 rail learning"] }
+      - { start: 1054, label: "17:34", title: "Generalizing to unfamiliar homes", about: "100+ rooms of data; three rented homes; ~80% success" }
+      - { start: 1533, label: "25:33", title: "Following open-ended requests", about: "hierarchical system; synthetic prompts from demonstrations; vegan sandwich" }
+      - { start: 1803, label: "30:03", title: "What still needs work", about: "fast inference, training infra, online experience; real data essential" }
+
+  - id: OJCT-HGxPjk
+    title: "Training General Robots for Any Task: Physical Intelligence's Karol Hausman and Tobi Springenberg"
+    speakers: [Karol Hausman, Jost Tobias Springenberg]
+    org: Physical Intelligence
+    brief: https://roboboom.com/briefs/training-general-robots-for-any-task-physical-intelligences-karol-hausman-and-2362
+    sections:
+      - { start: 202, label: "3:22", title: "Intelligence is robotics' bottleneck", about: "hardware can do tasks under a human; intelligence is missing" }
+      - { start: 981, label: "16:21", title: "From hand-coded pipelines to general models", about: "rules -> learned modules -> end-to-end VLMs + action part" }
+      - { start: 1536, label: "25:36", title: "Pi-Star 0.6 learns from robot experience", about: "demos then attempts, ratings, corrections; throughput >2x" }
+      - { start: 1923, label: "32:03", title: "Reliability opens a path to deployment", about: "13 h coffee, 4 h laundry; 30-50 corrections fix tamping" }
+      - { start: 2489, label: "41:29", title: "Deployment data could broaden capability", about: "transfer between tasks; deployed robots return data" }
+
+  - id: 48pxVdmkMIE
+    title: "Fully autonomous robots are much closer than you think - Sergey Levine"
+    speakers: [Sergey Levine]
+    brief: https://roboboom.com/briefs/fully-autonomous-robots-are-much-closer-than-you-think-sergey-levine-2064
+    sections:
+      - { start: 32, label: "0:32", title: "Start with useful, bounded tasks", about: "laundry, kitchen cleanup, box folding, coffee as dexterity tests" }
+      - { start: 253, label: "4:13", title: "A gradual path to autonomy", about: "single-digit years; ~5-year median for a capable household robot" }
+      - { start: 429, label: "7:09", title: "Learning from people and mistakes", about: "pi0.5 taught through spoken instructions; teleop-to-autonomy spectrum" }
+      - { start: 1323, label: "22:03", title: "Foundation models need real-world scale", about: "industrial effort; which experience improves robustness" }
+      - { start: 1650, label: "27:30", title: "Prior knowledge, hardware, and the broader economy", about: "pi0 = VLM + continuous action part; hardware cost and reliability" }
+
+# Talks found without section times yet (no RoboBoom brief, captions blocked from our machine):
+untimed:
+  - { id: yp5fI6gufBs, title: "Dexterous Robotic Foundation Models (Sergey Levine, RAIL, 29 min, 2025-10-19)", note: "very clear first- vs second-generation VLA explanation, pi0 inputs, 50-step chunks, pre/post-training; get times before using" }
+  - { id: cGLa8DsOYdk, title: "Robotics: why now? - Quan Vuong and Jost Tobias Springenberg (AI Engineer)", note: "what a VLA is; PI's teleoperation data engine with leader arms; 10,000 h" }
+  - { id: o5ONDdbReAA, title: "Yevgen Chebotar: RT-2 Vision-Language-Action Models (Montreal Robotics)", note: "RT-2 from its author" }
+  - { id: -0s0v3q7mBk, title: "OpenVLA: LeRobot Research Presentation #5 by Moo Jin Kim (Hugging Face)", note: "OpenVLA inputs/outputs, tokenized actions" }
+  - { id: iNS7zaxWvJ8, title: "Vision Language Action Models - OpenVLA, pi0, RT-2, Gemini Robotics (Architecture Bytes, 8 min)", note: "YouTube chapters: 0:30 VLA architecture, 1:48 OpenVLA, 2:33 pi0, 3:42 RT-2, 4:39 Gemini Robotics, 5:34 comparison, 7:11 training" }
+  - { id: ejk6-ffDXFw, title: "Pi0 - generalist VLA policy for robots (VLA Series Ep.2, Ilia)", note: "pi0 architecture walk-through and fine-tuning with LeRobot" }
+  - { id: zMNumQ45pJ8, title: "Mobile ALOHA - Compilation of Autonomous Skills (Zipeng Fu, 1:39)", note: "short visual of a learned household robot" }
+  - { id: ELUMFpJCUS0, title: "Livestream with Kevin Black on pi0's design (from Octo)", note: "a third-party note says 4:41:06 (t=16866); unverified" }

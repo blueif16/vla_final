@@ -16,6 +16,7 @@ reader is us.
 
 ## The loop
 
+0. **Check the project's `library/` first** for sources, clips and checked numbers we already hold.
 1. **The learner and the goal.** Write two or three sentences about who will learn this: what they already know, what
    they need it for and by when. Then write what they will be able to do at the end, as things a person does: explain
    X to a classmate, predict what happens when Y changes, choose between A and B. Every chapter serves one of these.
@@ -88,6 +89,13 @@ principles (active learning, managing load, adapting to the learner, curiosity, 
   than guessing.
 - Never present an open item as decided. Point to the status list.
 - End a session by asking the learner to say in two sentences what they now understand and what is still fuzzy.
+
+## Web page
+
+When a chapter should also be a web page (diagrams, clips at the right second, hover notes for every term, rails of
+extra material), build it with the `teaching-web` skill. Its library rule applies to markdown chapters too: every clip
+time, image licence and checked number goes into the project's `library/` once, and later chapters reuse it (user,
+2026-11-11).
 
 ## Later: video
 

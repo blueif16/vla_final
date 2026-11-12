@@ -29,6 +29,9 @@ what we can add. [Where we stand](docs/learn/06-where-we-stand.md) lists the opt
 
 ## Learn the background
 
+The chapters are also a website, with diagrams you can play with, talk clips that start at the right moment and side
+notes for every term: **[blueif16.github.io/vla_final](https://blueif16.github.io/vla_final/)** (chapter 1 so far).
+
 [`docs/learn`](docs/learn/README.md) has six short chapters, about 50 minutes in all. They go from what a VLA is,
 through π0.5 and the LIBERO benchmark, to what other groups have found and the choice in front of us. Each chapter
 ends with questions to check yourself and lists its sources.
@@ -39,18 +42,12 @@ You can open this repo in Claude Code, Codex or another coding agent and ask it 
 tells the agent how. It goes one chapter at a time, asks the check questions, and keeps what we've decided apart from
 what's still open.
 
-## Dates
-
-| Date | What |
-|---|---|
-| 2026-11-18 | Project review: 10 minutes on what we've done and what's next |
-| 2026-12-16 | Poster session, 10am to 1pm |
-| 2026-12-18 | Write-up due |
-
 ## What's in the repo
 
 | Path | What it holds |
 |---|---|
-| `docs/learn/` | the learning chapters, the glossary and our status ([chapter 6](docs/learn/06-where-we-stand.md)) |
+| `docs/learn/` | the learning chapters as markdown and web pages, the glossary and our status ([chapter 6](docs/learn/06-where-we-stand.md)) |
+| `docs/assets/` | the website's styles, scripts, shared glossary of terms and images |
+| `library/` | every clip time, image licence and checked number we've found, so later chapters reuse them |
 | `AGENTS.md` | instructions for an AI agent teaching from this repo (`CLAUDE.md` points to it) |
-| `.claude/skills/teaching/` | how we write teaching material, so an agent can add chapters the same way |
+| `.claude/skills/teaching/`, `.claude/skills/teaching-web/` | how we write teaching chapters and turn them into web pages, so an agent can add more the same way |

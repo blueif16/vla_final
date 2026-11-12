@@ -1,0 +1,44 @@
+# Papers, code and facts we rely on, with licence and the numbers we have checked. Checked 2026-11-11 unless noted.
+# A number goes here only after we read it in the source; the chapters copy numbers from this file.
+
+papers:
+  - { key: rt2, title: "RT-2: Vision-Language-Action Models Transfer Web Knowledge to Robotic Control", authors: "Brohan et al.", year: 2023, arxiv: 2307.15818, license: arxiv-default,
+      facts: ["actions written as text tokens, 256 bins per dimension (same discretisation as RT-1)", "backbones PaLI-X and PaLM-E", "co-fine-tuned on web and robot data"] }
+  - { key: openvla, title: "OpenVLA: An Open-Source Vision-Language-Action Model", authors: "Kim et al.", year: 2024, arxiv: 2406.09246, license: CC-BY-4.0,
+      facts: ["7B parameters", "Llama 2 7B + DinoV2 and SigLIP encoders", "trained on 970k episodes from Open X-Embodiment", "outputs tokenised 7-D actions"] }
+  - { key: pi0, title: "pi0: A Vision-Language-Action Flow Model for General Robot Control", authors: "Black et al.", year: 2024, arxiv: 2410.24164, license: arxiv-default,
+      facts: ["PaliGemma (Gemma 2B + SigLIP) + ~300M action expert", "flow matching, ~10 integration steps", "50-step action chunks", "~10,000 h of PI robot data + OXE in pretraining"] }
+  - { key: pi05, title: "pi0.5: a Vision-Language-Action Model with Open-World Generalization", authors: "Physical Intelligence", year: 2025, arxiv: 2504.16054, license: arxiv-default,
+      facts: ["co-trained on many robots + web data", "predicts a high-level subtask in words, then actions", "aimed at unseen homes"] }
+  - { key: ki, title: "Knowledge Insulating Vision-Language-Action Models", authors: "Driess et al.", year: 2025, arxiv: 2505.23705,
+      facts: ["action expert gradients stopped from flowing into the VLM", "openpi's pi0.5 is trained with it"] }
+  - { key: pistar06, title: "pi*0.6: a VLA That Learns From Experience", year: 2025, arxiv: 2511.14759, facts: ["RECAP; RL from robot experience; Nov 2025"] }
+  - { key: fast, title: "FAST: Efficient Action Tokenization for Vision-Language-Action Models", year: 2025, arxiv: 2501.09747, facts: ["DCT + BPE action tokens"] }
+  - { key: oxe, title: "Open X-Embodiment: Robotic Learning Datasets and RT-X Models", year: 2023, arxiv: 2310.08864, license: CC-BY-4.0,
+      facts: ["1M+ episodes", "22 embodiments", "RT-1-X ~50% higher mean success than original methods"] }
+  - { key: libero, title: "LIBERO: Benchmarking Knowledge Transfer for Lifelong Robot Learning", authors: "Liu et al.", year: 2023, arxiv: 2306.03310, license: CC-BY-4.0,
+      facts: ["130 tasks; Spatial, Object, Goal (10 each) and LIBERO-100 (90 + 10)", "robosuite on MuJoCo, Franka Panda", "50 human demonstrations per task", "LIBERO-Goal: same objects and layout, different goals"] }
+  - { key: libero-cf, title: "When Vision Overrides Language: Evaluating and Mitigating Counterfactual Failures in VLAs", authors: "Fang et al.", year: 2026, arxiv: 2602.17659, venue: "CoRL 2026 spotlight", code: https://github.com/yuffish/VLA-CF,
+      facts: ["Table I pi0.5 success V+L 98.8/98.2/98.0/92.4 (Spatial/Object/Goal/Long), vision-only 68.2/56.6/10.2/71.6, language-only 0.0 everywhere",
+              "pi0 vision-only 28.0/26.8/3.4/15.6; OpenVLA-OFT vision-only 83.2/98.2/10.0/85.0",
+              "50 counterfactual tasks x 50 trials; grounding rate = gripper contacts the named object; faithful vs biased success",
+              "TF-CAG on pi0.5: +9.7 grounding, +3.6 success; VA-CAG +15.5 / +8.5"] }
+  - { key: libero-pro, title: "LIBERO-PRO", authors: "Zhou et al.", year: 2025, arxiv: 2510.03827, facts: [">90% falls to 0.0% under perturbation; outputs unchanged with corrupted instructions or meaningless tokens (abstract)"] }
+  - { key: libero-plus, title: "LIBERO-Plus", authors: "Fei et al.", year: 2025, arxiv: 2510.13626, venue: "CVPR 2026", facts: ["10,030 variants, 7 factors", "insensitive to wording, tends to ignore instructions (abstract)", "camera viewpoint and initial state hurt most"] }
+  - { key: langgap, title: "LangGap", authors: "Hou and Zhao", year: 2026, arxiv: 2603.00592, facts: ["pi0.5; many tasks share one layout", "augmentation 0->90% single-task, 0->28% multi-task (abstract)"] }
+  - { key: features, title: "Not All Features Are Created Equal: A Mechanistic Study of VLA Models", authors: "Grant, Zhao and Wang", year: 2026, arxiv: 2603.19233, venue: "ICLR 2026",
+      facts: ["language matters only when vision doesn't settle the goal", "prompts distinguishable internally at 99.3% while behaviour unchanged (abstract/project page)"] }
+  - { key: steering, title: "Mechanistic Interpretability for Steering Vision-Language-Action Models", authors: "Haon et al.", year: 2025, arxiv: 2509.00328, venue: "CoRL 2025", facts: ["steer pi0 and OpenVLA via FFN directions in LIBERO and on a UR5"] }
+
+code:
+  - key: openpi
+    url: https://github.com/Physical-Intelligence/openpi
+    facts:
+      - "pi05_libero results @30k: Spatial 98.8, Object 98.2, Goal 98.0, LIBERO-10 92.4, avg 96.85 (examples/libero/README.md)"
+      - "config pi05_libero: from pi05_base, 30,000 steps, batch 256, action_horizon=10, discrete_state_input=False, dataset physical-intelligence/libero, prompt_from_task=True"
+      - "pi0.5 adds joint state only as text in the prompt ('Task: ..., State: ...;\\nAction: '); with discrete_state_input=False it gets no state (models/pi0.py, transforms.py)"
+      - "eval script examples/libero/main.py: replan_steps=5, num_trials_per_task=50, seed=7, num_steps_wait=10, max steps 220/280/300/520/400 (spatial/object/goal/10/90), images resized to 224"
+      - "GPU: inference >8 GB, LoRA fine-tune >22.5 GB (JAX only), full fine-tune >70 GB"
+  - key: libero-dataset
+    url: https://huggingface.co/datasets/physical-intelligence/libero
+    facts: ["1,693 episodes, 273,465 frames, 40 tasks (Spatial, Object, Goal, 10), 10 fps", "image + wrist_image 256x256, state 8-D, action 7-D", "converted from OpenVLA's modified LIBERO RLDS"]
