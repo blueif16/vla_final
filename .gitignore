@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+.venv/
+checkpoints/
+wandb/
+*.mp4
+.DS_Store

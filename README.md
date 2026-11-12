@@ -1,0 +1,56 @@
+# CS 6180 final project: vision-language-action models
+
+We're Jingyi Fu and Shiran Wang, a team in CS 6180, and our final project is about vision-language-action models
+(VLAs). This repo holds what we've learned so far and the question we're working on. Our code and results will go
+here too as the project moves.
+
+## What a VLA is
+
+A VLA is the model behind a robot that looks through its cameras, reads an instruction such as "put the bowl on the
+plate", and moves its arm to do it. It's built on a vision-language model, the kind trained on billions of web images
+and captions, and then trained further on recordings of people steering robots through tasks. Several times a second
+it takes the camera images and the sentence and returns the next few motions for the arm and gripper.
+
+## The question we started from
+
+π0.5, an open VLA from Physical Intelligence, succeeds about 98% of the time on LIBERO, a widely used set of simulated
+robot tasks. We wanted to know how much of that comes from reading the instruction. In most LIBERO tasks the objects
+on the table are arranged differently for each task, so the picture alone gives away which task it is. A robot could
+score well without reading the words at all.
+
+So our first plan was to change the instruction and watch whether the robot's behaviour changes with it. We'd reword
+it, remove it, or ask for a different task in the same scene, and measure success over 50 trials per task on all four
+LIBERO suites.
+
+Other groups have since measured part of this. With the instruction removed, the same π0.5 checkpoint still succeeds
+68.2% of the time on LIBERO-Spatial. On LIBERO-Goal, the one suite where all ten tasks start from the same scene, it
+falls to 10.2% ([Fang et al., 2026](https://arxiv.org/abs/2602.17659)). Our topic is still open, and we're working out
+what we can add. [Where we stand](docs/learn/06-where-we-stand.md) lists the options.
+
+## Learn the background
+
+[`docs/learn`](docs/learn/README.md) has six short chapters, about 50 minutes in all. They go from what a VLA is,
+through π0.5 and the LIBERO benchmark, to what other groups have found and the choice in front of us. Each chapter
+ends with questions to check yourself and lists its sources.
+
+## Learning with an AI agent
+
+You can open this repo in Claude Code, Codex or another coding agent and ask it to teach you. [`AGENTS.md`](AGENTS.md)
+tells the agent how. It goes one chapter at a time, asks the check questions, and keeps what we've decided apart from
+what's still open.
+
+## Dates
+
+| Date | What |
+|---|---|
+| 2026-11-18 | Project review: 10 minutes on what we've done and what's next |
+| 2026-12-16 | Poster session, 10am to 1pm |
+| 2026-12-18 | Write-up due |
+
+## What's in the repo
+
+| Path | What it holds |
+|---|---|
+| `docs/learn/` | the learning chapters, the glossary and our status ([chapter 6](docs/learn/06-where-we-stand.md)) |
+| `AGENTS.md` | instructions for an AI agent teaching from this repo (`CLAUDE.md` points to it) |
+| `.claude/skills/teaching/` | how we write teaching material, so an agent can add chapters the same way |
