@@ -210,6 +210,27 @@ body.wc {{ background-color: var(--bg); background-image: {uri(GRAIN)}; font-siz
 .runfig .hover-line {{ stroke: var(--ink-3); stroke-width: 1; stroke-dasharray: 3 3; }}
 @media (max-width: 560px) {{ .runfig svg text {{ font-size: 21px; }} .runfig svg .ttl, .runfig svg .lgd {{ display: none; }} }}
 
+/* ---------- real pictures and videos from elsewhere (added 2026-11-13 for RL 1) ----------
+   .frame .media[data-yt]: one YouTube video as a figure (site.js puts the thumbnail and a play button on it).
+   .duo: two pictures side by side with a label each. .cardgrid: clip cards in a visible grid instead of a rail.
+   .portrait: a small photo of a person beside its caption. */
+.frame > .media {{ aspect-ratio: 16 / 9; position: relative; overflow: hidden; border-radius: 8px; background: #0E0D0B; }}
+.frame > .media > img {{ width: 100%; height: 100%; object-fit: cover; }}
+.frame > .media iframe {{ position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }}
+.duo {{ display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; align-items: start; }}
+.duo > div {{ background: rgba(255, 253, 247, .9); border: 1px solid var(--line); border-radius: 8px 14px 8px 14px; padding: 8px; }}
+.duo img {{ display: block; width: 100%; height: auto; border-radius: 6px; }}
+.duo .label {{ margin: 8px 2px 2px; }}
+.cardgrid {{ display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; align-items: stretch; }}
+.cardgrid .card {{ flex: none; }}
+.portrait {{ display: grid; grid-template-columns: 170px minmax(0, 1fr); gap: 18px; align-items: center; }}
+.portrait img {{ width: 100%; height: auto; border-radius: 8px 14px 8px 14px; display: block; }}
+.portrait figcaption {{ margin: 0; }}
+.pic-paper {{ background: #fff; border: 1px solid var(--line); border-radius: 8px 14px 8px 14px; padding: 14px; }}
+.pic-paper img {{ display: block; width: 100%; height: auto; }}
+@media (max-width: 760px) {{ .cardgrid {{ grid-template-columns: 1fr; }} }}
+@media (max-width: 560px) {{ .duo {{ grid-template-columns: 1fr; }} .portrait {{ grid-template-columns: 110px minmax(0, 1fr); gap: 12px; }} }}
+
 /* ---------- painted figures ----------
    Shapes take filter="url(#wc-wash)" (ragged edge, granulation, darker rim) or url(#wc-line) (a wobbly brush line).
    The filters are defined once per page in a hidden <svg class="wc-defs">. Labels stay crisp. */

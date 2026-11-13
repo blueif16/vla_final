@@ -148,3 +148,28 @@ untimed:
 # Short videos that are whole clips (start at 0), found for the RL series, 2026-11-13.
 whole:
   - { id: tlOIHko8ySg, title: "CoastRunners 7", by: "Jack Clark (OpenAI)", about: "the boat circling a lagoon for targets instead of finishing the race; embedded in OpenAI's 'Faulty Reward Functions in the Wild' (2016-12-21)", length: "not checked", used: [] }
+  - { id: TmPfTpjtdgg, title: "DQN Breakout", by: "Google DeepMind (2016-06-13)", length: "1:12",
+      about: "DQN after 100, 200, 400 and 600 episodes; after 600 it tunnels round the side (from the video's own description, read 2026-11-13)", used: [RL 1 figure 1.11] }
+  - { id: kopoLzvh5jY, title: "Multi-Agent Hide and Seek", by: "OpenAI (2019-09-17)", length: "2:58",
+      about: "the stages of emergent strategy; narrator: 'note that we did not explicitly incentivize any of these behaviors' (transcript via Exa, 2026-11-13)", used: [RL 1 figure 1.11] }
+  - { id: hx_bgoTF7bs, title: "Emergence of Locomotion Behaviours in Rich Environments", by: "Google DeepMind (2017-07-14)", length: "3:25",
+      about: "simulated bodies trained with a policy-gradient method and a forward-progress reward run, jump, crouch and turn (Heess et al. 2017, arXiv 1707.02286)", used: [RL 1 figure 1.8] }
+  - { id: gn4nRCC9TwQ, title: "Google's DeepMind AI Just Taught Itself To Walk", by: "Insider Tech", note: "a re-upload of the DeepMind locomotion footage; use hx_bgoTF7bs instead", used: [] }
+
+# Long videos with times from YouTube's own chapter list (read from the watch page, 2026-11-13).
+chapters:
+  - id: WXuK6gekU1Y
+    title: "AlphaGo - The Movie | Full award-winning documentary (Google DeepMind)"
+    sections:
+      - { t: 0, title: "Introduction to Go and AI", about: "includes Demis Hassabis showing DQN learning Breakout: 'after 100 games ... missing the ball most of the time'; the researchers 'didn't know about that strategy' (transcript via Exa)" }
+      - { t: 266, title: "First match against Fan Hui" }
+      - { t: 638, title: "Technical challenges and AI" }
+      - { t: 816, title: "Preparing for Lee Sedol" }
+      - { t: 1157, title: "Game 1: History made" }
+      - { t: 1700, title: "Game 2: The god move", about: "the game with move 37", used: [RL 1 figure 1.11 (1700 to 2686)] }
+      - { t: 2687, title: "Game 3: AlphaGo wins series" }
+      - { t: 3324, title: "Game 4: Lee Sedol's comeback" }
+      - { t: 3717, title: "Game 5: Final showdown" }
+      - { t: 4319, title: "Legacy and impact" }
+    note: "videohighlight.com's AI summary put move 37 at 50:58, which is inside game 3 by YouTube's chapters; don't use it. The exact second of move 37 inside the game 2 chapter is not known yet."
+  - { id: l-GsfyVCBu0, title: "Match 2 - Google DeepMind Challenge Match: Lee Sedol vs AlphaGo", by: "Google DeepMind", note: "the live broadcast of game 2; hours long, move 37 not timed" }

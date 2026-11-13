@@ -133,18 +133,27 @@
 
   <p>Suppose the arm already reaches for the bowl now and then, and lands it on the plate in some of its tries but not most. <button class="term" data-term="reinforcement-learning">Reinforcement learning</button>, or RL, is the rule that makes the lucky tries a little more likely next time, and then again after the next batch of tries, until the bowl ends up on the plate most of the time.</p>
   <p><strong class="key">Nobody ever tells the arm which move was right. It only ever learns how well a whole try went.</strong></p>
+  <p>The idea is older than computers. In 1898 the psychologist Edward Thorndike shut cats in small cages, now known as puzzle boxes, like the one in figure 1.2. A cat could get out and reach its reward, such as food, only by working a lever or a button, and at first it hit on that by trying things at random. Over repeated trials it got out faster and faster. In 1911 Thorndike called the rule behind this the law of effect: "Of several responses made to the same situation, those which are accompanied or closely followed by satisfaction to the animal will, other things being equal, be more firmly connected with the situation." Reinforcement learning gives the same rule to a computer.</p>
+</div>
+
+<figure class="fig narrow" id="fig-1-2">
+  <div class="pic-paper" style="max-width:500px;margin:0 auto"><img src="../assets/img/rl/thorndike-puzzle-box-1898.jpg" alt="An old line drawing of a wooden cage with slatted sides, a door at the front and a pulley and string mechanism on top that opens the door." loading="lazy"></div>
+  <figcaption><b>Figure 1.2 · A puzzle box, 1898.</b> Thorndike's own drawing of one of his boxes. The cat inside had to find the one action that opened the door. Fig. 1 of <em>Animal Intelligence</em> (Thorndike 1898), public domain, via <a href="https://commons.wikimedia.org/wiki/File:Original_%22Puzzle_Box%22_Apparatus_Design.png">Wikimedia Commons</a>.</figcaption>
+</figure>
+
+<div class="prose">
 
   <h2 id="cartpole">A second example: a pole on a cart</h2>
   <p>The second example is much smaller. It's called CartPole, and it comes from a 1983 paper by Andrew Barto, Richard Sutton and Charles Anderson. A pole stands on a cart, fixed at the bottom by a hinge, and the cart runs along a short track. At every step the learner moves the cart left or right. When the pole leans to the right, moving the cart right brings it back under the pole, and moving it left lets the pole fall further.</p>
   <p>The score is 1 point for every step the pole stays up. A try ends when the pole leans more than 12 degrees, when the cart runs off the end of the track, or after 500 steps. So a try's score is how many steps it lasted, and 500 is the most it can get. The simulation runs 50 steps a second, which makes 500 steps ten seconds of balancing.</p>
-  <p>We ran CartPole in Gymnasium, a free library of test problems for RL, with a learner that starts out moving left or right at random, half the time each. Figure 1.2 shows its first four tries.</p>
+  <p>We ran CartPole in Gymnasium, a free library of test problems for RL, with a learner that starts out moving left or right at random, half the time each. Figure 1.3 shows its first four tries.</p>
 </div>
 
-<figure class="fig narrow" id="fig-1-2">
+<figure class="fig narrow" id="fig-1-3">
   <div class="frame clip">
     <video data-play="view" src="../assets/video/rl01-cartpole-round1.mp4" poster="../assets/video/rl01-cartpole-round1.jpg" muted playsinline preload="metadata" aria-label="Four short tries of CartPole, one after another. In each, the pole tips over within a second and the score in the corner stops counting."></video>
   </div>
-  <figcaption><b>Figure 1.2 · The first four tries.</b> Our learner's first four tries, one after another, slowed to half speed. The number at the top right is the score so far, one point per step. They scored 31, 66, 22 and 47. The clip plays twice when you scroll to it; tap it to pause or play again. Our own run, rendered with <a href="https://gymnasium.farama.org/environments/classic_control/cart_pole/">Gymnasium</a> (MIT licence).</figcaption>
+  <figcaption><b>Figure 1.3 · The first four tries.</b> Our learner's first four tries, one after another, slowed to half speed. The number at the top right is the score so far, one point per step. They scored 31, 66, 22 and 47. The clip plays twice when you scroll to it; tap it to pause or play again. Our own run, rendered with <a href="https://gymnasium.farama.org/environments/classic_control/cart_pole/">Gymnasium</a> (MIT licence).</figcaption>
 </figure>
 
 <div class="prose">
@@ -168,10 +177,20 @@
       <tr><th>policy</th><td>how likely it is to make each move, in each situation</td><td>how likely it is to move left, for each position of the cart and the pole</td></tr>
     </tbody>
   </table>
-  <p>These words fit together as a loop. The agent looks at the situation. For the arm that's a camera picture, and for CartPole it's four numbers: where the cart is, how fast it's going, how far the pole leans and how fast it's tipping. The agent acts, the environment changes, and a reward comes back. In CartPole it comes at every step, and for the arm only when a try ends. One try from start to finish is an <button class="term" data-term="episode">episode</button>. After a batch of episodes the policy is adjusted towards whatever scored higher, and the loop starts again. Point at any part of figure 1.3 to pick it out.</p>
 </div>
 
-<figure class="fig" id="fig-1-3">
+<figure class="fig narrow" id="fig-1-4">
+  <div class="portrait">
+    <img src="../assets/img/rl/richard-sutton-2021.jpg" alt="Richard Sutton, smiling, with a white beard and a checked shirt." loading="lazy">
+    <figcaption><b>Figure 1.4 · Richard Sutton</b>, in 2021. The five words are the vocabulary of the field's textbook, <em>Reinforcement Learning: An Introduction</em>, which he wrote with Andrew Barto. In March 2025 the two of them received the 2024 ACM Turing Award "for developing the conceptual and algorithmic foundations of reinforcement learning." Photo: Numenta, CC BY 3.0, via <a href="https://commons.wikimedia.org/wiki/File:Richard_Sutton_2021_(cropped).jpg">Wikimedia Commons</a>.</figcaption>
+  </div>
+</figure>
+
+<div class="prose">
+  <p>These words fit together as a loop. The agent looks at the situation. For the arm that's a camera picture, and for CartPole it's four numbers: where the cart is, how fast it's going, how far the pole leans and how fast it's tipping. The agent acts, the environment changes, and a reward comes back. In CartPole it comes at every step, and for the arm only when a try ends. One try from start to finish is an <button class="term" data-term="episode">episode</button>. After a batch of episodes the policy is adjusted towards whatever scored higher, and the loop starts again. Point at any part of figure 1.5 to pick it out.</p>
+</div>
+
+<figure class="fig" id="fig-1-5">
   <div class="pan"><svg class="dg wide" data-hover viewBox="0 0 960 400" role="img" aria-labelledby="f12t f12d">
     <title id="f12t">Five words and a loop</title>
     <desc id="f12d">On the left, the agent, whose habits are the policy. On the right, the environment. An action goes from agent to environment along the top. Along the bottom, a camera picture and, when a try ends, a reward of 1 or 0 come back to the agent, which adjusts its habits after a batch of tries.</desc>
@@ -218,7 +237,7 @@
       <text class="sub" x="560" y="380">only when a try ends</text>
     </g>
   </svg></div>
-  <figcaption><b>Figure 1.3 · Five words and a loop.</b> Ochre is the learner, sap green is the action and the world it acts on, and burnt sienna is the score. The picture comes back every step; the score comes back only once per try. Point at a part, or tap it, to pick it out.</figcaption>
+  <figcaption><b>Figure 1.5 · Five words and a loop.</b> Ochre is the learner, sap green is the action and the world it acts on, and burnt sienna is the score. The picture comes back every step; the score comes back only once per try. Point at a part, or tap it, to pick it out.</figcaption>
 </figure>
 
 <div class="prose">
@@ -251,31 +270,31 @@
     <div class="label">∝ means "goes up and down with"</div>
   </div>
   <p>People call the difference on the right the <button class="term" data-term="advantage">advantage</button>, because it measures how much better than usual a try went. Each change is kept small, so one lucky try can't rewrite the habits. Ronald Williams wrote this rule down in 1992, and his algorithm, <button class="term" data-term="reinforce">REINFORCE</button>, still sits under most of the methods in this series.</p>
-  <p>Figure 1.4 starts with those four tries. Tap any score to flip it, and the arrows and the chance of reaching left change straight away.</p>
+  <p>Figure 1.6 starts with those four tries. Tap any score to flip it, and the arrows and the chance of reaching left change straight away.</p>
 </div>
 
-<figure class="fig" id="fig-1-4">
+<figure class="fig" id="fig-1-6">
   <div class="tries" data-widget="tries" data-lr="0.2">
     <p class="tries-task">Tap a score to flip it between 0 and 1.</p>
     <svg class="tries-plot" viewBox="0 0 470 236" role="group" aria-label="Four tries, each with its score, the average score and an arrow from the average to the score"></svg>
     <div class="tries-out"><span>Chance of reaching left next time</span><div class="bar" aria-hidden="true"><i style="width:55%"></i><s></s></div><b>50% → 55%</b></div>
     <p class="tries-say" aria-live="polite"></p>
   </div>
-  <figcaption><b>Figure 1.4 · Four tries and the push each one gives.</b> Each arrow runs from the average score to a try's own score, and its length is the try's score minus the average. An arrow pointing up makes what that try did more likely next time, and one pointing down makes it less likely. The bar shows what one push does to the chance of reaching left, which started at 50% (the dotted mark). It opens on the four tries from the text. The rule is the one above. How big a step it takes is our choice, made so that the text's example comes out at 55%.</figcaption>
+  <figcaption><b>Figure 1.6 · Four tries and the push each one gives.</b> Each arrow runs from the average score to a try's own score, and its length is the try's score minus the average. An arrow pointing up makes what that try did more likely next time, and one pointing down makes it less likely. The bar shows what one push does to the chance of reaching left, which started at 50% (the dotted mark). It opens on the four tries from the text. The rule is the one above. How big a step it takes is our choice, made so that the text's example comes out at 55%.</figcaption>
 </figure>
 
 <div class="prose">
   <p>Taking away the average matters more than it looks. In CartPole every try earns some points, so pushing up every move by its raw score would push up whatever the learner happened to do, good or bad. With the average taken off, only the tries that beat the usual result get pushed up.</p>
   <div class="predict">
     <div class="label">Predict, then try it</div>
-    <p>Say the bowl is almost out of reach, and all four tries score 0. What happens to the chance of reaching left? Write a guess, then set the four scores in figure 1.4 to 0.</p>
+    <p>Say the bowl is almost out of reach, and all four tries score 0. What happens to the chance of reaching left? Write a guess, then set the four scores in figure 1.6 to 0.</p>
     <textarea aria-label="Your guess" placeholder="Write a guess in a few words. Nothing is saved."></textarea>
   </div>
   <p>The average is 0, so every try's score minus the average is 0, and the chance stays at 50%. A learner that never succeeds has nothing to learn from. That's the first problem in chapter 2. Four scores of 1 leave it at 50% as well, because when every try does equally well there's nothing to tell them apart.</p>
-  <p>Can a rule this small learn anything real? We gave it to the CartPole learner from figure 1.2. In each round it makes 16 tries and works out their average score. Then every move in every try is made a little more or a little less likely, by that try's score minus the average, the same rule as in figure 1.4. Figure 1.5 shows 300 rounds of it.</p>
+  <p>Can a rule this small learn anything real? We gave it to the CartPole learner from figure 1.3. In each round it makes 16 tries and works out their average score. Then every move in every try is made a little more or a little less likely, by that try's score minus the average, the same rule as in figure 1.6. Figure 1.7 shows 300 rounds of it.</p>
 </div>
 
-<figure class="fig narrow" id="fig-1-5">
+<figure class="fig narrow" id="fig-1-7">
   <div class="runfig" data-widget="run">
 <!-- run-chart:start -->
 <svg viewBox="0 0 640 272" role="img" aria-labelledby="f15t f15d">
@@ -312,12 +331,18 @@
       <video data-play="tap" src="../assets/video/rl01-cartpole-round300.mp4" poster="../assets/video/rl01-cartpole-round300.jpg" muted playsinline preload="metadata" aria-label="The first try of round 300: the cart moves back and forth under the pole, which stays up while the score counts to 500."></video>
     </div>
   </div>
-  <figcaption><b>Figure 1.5 · 300 rounds of the same rule.</b> Top, the average score of each round's 16 tries. The dark line is the run we filmed, and the two pale lines are the same rule run again from other random starts. Point at the chart to read off a round. Below, the first try of round 300 at real speed. It lasted the full 500 steps. Our own run (<a href="https://github.com/blueif16/vla_final/blob/main/tools/cartpole/train_and_film.py">the script</a>, <a href="../assets/data/rl01-cartpole.json">every score</a>), rendered with Gymnasium (MIT licence).</figcaption>
+  <figcaption><b>Figure 1.7 · 300 rounds of the same rule.</b> Top, the average score of each round's 16 tries. The dark line is the run we filmed, and the two pale lines are the same rule run again from other random starts. Point at the chart to read off a round. Below, the first try of round 300 at real speed. It lasted the full 500 steps. Our own run (<a href="https://github.com/blueif16/vla_final/blob/main/tools/cartpole/train_and_film.py">the script</a>, <a href="../assets/data/rl01-cartpole.json">every score</a>), rendered with Gymnasium (MIT licence).</figcaption>
 </figure>
 
 <div class="prose">
   <p>In the first round the 16 tries lasted 22.9 steps on average. By round 300 the average was 497.5, close to the most a try can score. We ran the whole thing twice more from different random starts, and those runs ended at 500 and 456.7. Nobody told the learner to move the cart towards the side the pole leans. By round 300 it does: the further the pole leans or tips to one side, the more likely it is to move the cart that way. All it ever saw was scores.</p>
+  <p>Rules from the same family work on much harder problems. In 2017 DeepMind put simulated bodies on courses of "challenging terrains and obstacles" and gave them "a simple reward function based on forward progress". With a policy-gradient method, the family this chapter's rule belongs to, they learned to "run, jump, crouch and turn" (figure 1.8).</p>
 </div>
+
+<figure class="fig narrow" id="fig-1-8">
+  <div class="frame"><div class="media" data-yt="hx_bgoTF7bs" data-start="0" data-title="Emergence of Locomotion Behaviours in Rich Environments (Google DeepMind)"></div></div>
+  <figcaption><b>Figure 1.8 · Learning to run from one reward.</b> DeepMind's video of the trained bodies, 3 min 25 s. The only reward was for moving forward. Heess et al. (2017), <a href="https://arxiv.org/abs/1707.02286">"Emergence of Locomotion Behaviours in Rich Environments"</a>; video by Google DeepMind on YouTube.</figcaption>
+</figure>
 
 <section class="rail" aria-label="Go deeper: learning from a score">
   <div class="rail-head">
@@ -329,7 +354,7 @@
       <div class="media pic"><img src="../assets/video/rl01-cartpole-round300.jpg" alt="A frame from CartPole: a black cart on a track with a tan pole standing almost upright, and a score counter." loading="lazy"></div>
       <div class="body">
         <span class="tag">Our code</span>
-        <h4>The run in figure 1.5, in about 110 lines</h4>
+        <h4>The run in figure 1.7, in about 110 lines</h4>
         <p>The script trains the CartPole learner with this chapter's rule, saves every round's scores and films the tries. Change the step size or the number of tries a round and run it again.</p>
         <p class="src"><a href="https://github.com/blueif16/vla_final/blob/main/tools/cartpole/train_and_film.py">tools/cartpole/train_and_film.py</a> · Python, Gymnasium</p>
       </div>
@@ -367,7 +392,7 @@
   </div>
 </div>
 
-<figure class="fig" id="fig-1-6">
+<figure class="fig" id="fig-1-9">
   <div class="pan"><svg class="dg wide" viewBox="0 0 960 300" role="img" aria-labelledby="f14t f14d">
     <title id="f14t">Copying examples and learning from a score</title>
     <desc id="f14d">Two panels with the same layout. Left: a picture goes in, the learner acts, and its action is compared with the expert's action at every step; at best it matches the expert. Right: a picture goes in, the learner acts, and only a grade of 1 or 0 comes back when the try ends; it needs many more tries but can go past the expert.</desc>
@@ -410,11 +435,58 @@
     <text class="lbl-i" x="760" y="258" text-anchor="middle">one grade when the try ends</text>
     <text class="sub" x="510" y="290">needs many more tries; can go past the expert</text>
   </svg></div>
-  <figcaption><b>Figure 1.6 · Two ways to learn.</b> Same layout, one difference: on the left every action is compared with the expert's, and on the right the only feedback is one score per try.</figcaption>
+  <figcaption><b>Figure 1.9 · Two ways to learn.</b> Same layout, one difference: on the left every action is compared with the expert's, and on the right the only feedback is one score per try.</figcaption>
 </figure>
 
 <div class="prose">
   <p>RL is like doing practice problems where the teacher only tells you your grade. A grade says how well you did but not what you should have written, so the feedback is weaker and the learner needs many more tries. In return, nothing caps it at the level of its teacher. A learner that copies people can at best match them. <strong class="key">A learner pushed towards a higher score can find moves no person showed it.</strong> <button class="term" data-term="alphazero">AlphaZero</button> learned chess, shogi and Go only by playing against itself, starting from random play, and it beat a world-champion program in each of the three. Chapter 3 tells that story.</p>
+  <p>Three famous results show it happening. The first is DeepMind's DQN, published in <em>Nature</em> in 2015. It learned Atari games "receiving only the pixels and the game score as inputs", and reached "a level comparable to that of a professional human games tester across a set of 49 games, using the same algorithm, network architecture and hyperparameters". In Breakout, after about 600 games, it began digging a tunnel up one side of the wall and sending the ball round the back. In the AlphaGo film, Demis Hassabis says the researchers "didn't know about that strategy".</p>
+  <p>The second is AlphaGo. It learned first from human games and then by playing against itself, and in March 2016 it beat the Go champion Lee Sedol 4 games to 1 in Seoul. In game 2 it played a stone that, by DeepMind's account, "had a 1 in 10,000 chance of being played by a human". That stone is move 37, ringed in figure 1.10.</p>
+  <p>The third is OpenAI's hide-and-seek, from 2019. Two teams played in a room with boxes, ramps and walls, and over millions of rounds the hiders learned to build shelters out of boxes. Then the seekers learned to use ramps to get over the walls, and the hiders learned to lock the ramps away before building. "We did not explicitly incentivize any of these behaviors," says the narrator of OpenAI's video. The makers' own videos of all three are in figure 1.11.</p>
+</div>
+
+<figure class="fig" id="fig-1-10">
+  <div class="duo">
+    <div><img src="../assets/img/rl/alphago-game2-move37.svg" alt="A Go board after 37 moves. Most stones sit near the corners and edges; the last black stone, move 37, stands out on the right side towards the middle, ringed." loading="lazy"><div class="label">The board after move 37</div></div>
+    <div><img src="../assets/img/rl/alphago-rack.jpg" alt="Two tall glass-fronted racks full of computer hardware, with a small placard reading AlphaGo on the left one." loading="lazy"><div class="label">The computers AlphaGo ran on, now retired</div></div>
+  </div>
+  <figcaption><b>Figure 1.10 · Move 37.</b> Left, game 2 on 10 March 2016, with AlphaGo playing black: the ringed stone is move 37. Right, AlphaGo's racks of computers on display after they were taken out of service; the placard on the left one says AlphaGo. Board: our drawing from the game record in the <a href="https://homepages.cwi.nl/~aeb/go/games/games/AlphaGo/">CWI Go archive</a>, made by <code>tools/go/board.py</code>. Photo: Wikimedia Commons user Immigrant laborer, 2025, <a href="https://commons.wikimedia.org/wiki/File:AlphaGo_computer_rack.jpg">CC0</a>.</figcaption>
+</figure>
+
+<figure class="fig" id="fig-1-11">
+  <div class="cardgrid">
+    <article class="card">
+      <div class="media" data-yt="TmPfTpjtdgg" data-start="0" data-title="DQN Breakout (Google DeepMind)"></div>
+      <div class="body">
+        <span class="tag">Video · 1 min</span>
+        <h4>DQN digs a tunnel in Breakout</h4>
+        <p>The same agent after 100, 200, 400 and 600 games. By the last, it sends the ball round the back of the wall.</p>
+        <p class="src">Google DeepMind, "DQN Breakout", 2016 · <a href="https://www.youtube.com/watch?v=TmPfTpjtdgg">YouTube</a></p>
+      </div>
+    </article>
+    <article class="card">
+      <div class="media" data-yt="WXuK6gekU1Y" data-start="1700" data-end="2686" data-title="AlphaGo - The Movie, game 2 (Google DeepMind)"></div>
+      <div class="body">
+        <span class="tag">Film chapter · 16 min</span>
+        <h4>AlphaGo, game 2</h4>
+        <p>The chapter of DeepMind's documentary that YouTube lists as "Game 2: The god move", the game with move 37.</p>
+        <p class="src">Google DeepMind, <em>AlphaGo – The Movie</em> · <a href="https://www.youtube.com/watch?v=WXuK6gekU1Y&amp;t=1700s">YouTube at 28:20</a></p>
+      </div>
+    </article>
+    <article class="card">
+      <div class="media" data-yt="kopoLzvh5jY" data-start="0" data-title="Multi-Agent Hide and Seek (OpenAI)"></div>
+      <div class="body">
+        <span class="tag">Video · 3 min</span>
+        <h4>Hide-and-seek strategies nobody asked for</h4>
+        <p>Each stage in turn: running away, box shelters, ramps, locked ramps, and seekers who learn to "surf" boxes.</p>
+        <p class="src">OpenAI, "Multi-Agent Hide and Seek", 2019 · <a href="https://www.youtube.com/watch?v=kopoLzvh5jY">YouTube</a></p>
+      </div>
+    </article>
+  </div>
+  <figcaption><b>Figure 1.11 · Three results, in their makers' own videos.</b> Each clip starts where its story starts. Nobody showed these learners the tunnel, move 37 or the box shelters; each found them by being pushed towards a higher score.</figcaption>
+</figure>
+
+<div class="prose">
 
   <div class="note">
     <div class="label">A common wrong belief</div>
@@ -459,10 +531,16 @@
     <li>Sutton and Barto (2018), <em>Reinforcement Learning: An Introduction</em>, 2nd ed., MIT Press: chapter 1 for the five words, chapter 13 for policy gradients and the baseline. <a href="http://incompleteideas.net/book/the-book-2nd.html">Free online</a>.</li>
     <li>Williams (1992), "Simple statistical gradient-following algorithms for connectionist reinforcement learning", <em>Machine Learning</em> 8(3–4), 229–256. <a href="https://doi.org/10.1007/BF00992696">doi.org/10.1007/BF00992696</a>. Checked on Crossref, 2026-11-13.</li>
     <li>Silver et al. (2017), "Mastering Chess and Shogi by Self-Play with a General Reinforcement Learning Algorithm". <a href="https://arxiv.org/abs/1712.01815">arXiv 1712.01815</a>: "Starting from random play … convincingly defeated a world-champion program in each case." Checked 2026-11-13.</li>
+    <li>Thorndike (1898), <em>Animal Intelligence: An Experimental Study of the Associative Processes in Animals</em>, Fig. 1 (figure 1.2, public domain, via <a href="https://commons.wikimedia.org/wiki/File:Original_%22Puzzle_Box%22_Apparatus_Design.png">Wikimedia Commons</a>). The law of effect is quoted from Thorndike (1911), <em>Animal Intelligence</em>, p. 244, <a href="https://archive.org/details/cu31924003032954">archive.org</a>. What the cats had to do: Britannica, <a href="https://www.britannica.com/topic/Thorndike-puzzle-box">"Thorndike puzzle box"</a>, checked 2026-11-13.</li>
+    <li>The Turing Award: ACM, <a href="https://www.acm.org/media-center/2025/march/turing-award-2024">5 March 2025</a>. Photo of Richard Sutton: Numenta, 2021, CC BY 3.0, <a href="https://commons.wikimedia.org/wiki/File:Richard_Sutton_2021_(cropped).jpg">Wikimedia Commons</a>.</li>
+    <li>Heess et al. (2017), "Emergence of Locomotion Behaviours in Rich Environments", <a href="https://arxiv.org/abs/1707.02286">arXiv 1707.02286</a> (abstract, checked 2026-11-13); video by Google DeepMind, <a href="https://www.youtube.com/watch?v=hx_bgoTF7bs">YouTube</a>.</li>
+    <li>Mnih et al. (2015), "Human-level control through deep reinforcement learning", <em>Nature</em> 518, <a href="https://www.nature.com/articles/nature14236">nature.com/articles/nature14236</a> (abstract, checked 2026-11-13). The 600 games and the tunnel are from the description of Google DeepMind's <a href="https://www.youtube.com/watch?v=TmPfTpjtdgg">"DQN Breakout"</a> video; Hassabis's words are from <em>AlphaGo – The Movie</em>.</li>
+    <li>AlphaGo: Google DeepMind, <a href="https://deepmind.google/research/alphago/">AlphaGo</a> (the 4–1 result and the 1 in 10,000 chance); Silver et al. (2016), <a href="https://www.nature.com/articles/nature16961"><em>Nature</em> 529</a>. The game record of game 2 is from the <a href="https://homepages.cwi.nl/~aeb/go/games/games/AlphaGo/LeeSedol/2.sgf">CWI Go archive</a>. The film's chapter times are YouTube's own chapter list for <a href="https://www.youtube.com/watch?v=WXuK6gekU1Y">WXuK6gekU1Y</a>, read 2026-11-13. The rack photo is CC0, <a href="https://commons.wikimedia.org/wiki/File:AlphaGo_computer_rack.jpg">Wikimedia Commons</a>.</li>
+    <li>Baker et al. (2019), "Emergent Tool Use From Multi-Agent Autocurricula", <a href="https://arxiv.org/abs/1909.07528">arXiv 1909.07528</a> (the six stages, Figure 1 caption); the quote is from OpenAI's video <a href="https://www.youtube.com/watch?v=kopoLzvh5jY">"Multi-Agent Hide and Seek"</a>.</li>
     <li>Barto, Sutton and Anderson (1983), "Neuronlike adaptive elements that can solve difficult learning control problems", <em>IEEE Transactions on Systems, Man, and Cybernetics</em> SMC-13(5), 834–846. <a href="https://doi.org/10.1109/TSMC.1983.6313077">doi.org/10.1109/TSMC.1983.6313077</a>. Where CartPole comes from.</li>
     <li>Gymnasium, <a href="https://gymnasium.farama.org/environments/classic_control/cart_pole/">CartPole-v1</a>: two actions, 1 point for every step including the last, and a try ends past 12 degrees, at the end of the track or after 500 steps. Checked 2026-11-13. The 50 steps a second are from <code>tau = 0.02</code> in its <code>cartpole.py</code> (Gymnasium 1.0.0). MIT licence.</li>
-    <li>Our CartPole run: <a href="https://github.com/blueif16/vla_final/blob/main/tools/cartpole/train_and_film.py"><code>tools/cartpole/train_and_film.py</code></a> (step size 0.001, 16 tries a round, 300 rounds, random seeds 0, 1 and 2; seed 0 is filmed). Every score is in <a href="../assets/data/rl01-cartpole.json"><code>rl01-cartpole.json</code></a>, and figure 1.5's chart is drawn from it by <code>tools/cartpole/make_chart.py</code>.</li>
-    <li>The step size in figure 1.4 (0.2) is our choice. Every other number on this page is in <code>library/rl.yaml</code> or in our run's data file.</li>
+    <li>Our CartPole run: <a href="https://github.com/blueif16/vla_final/blob/main/tools/cartpole/train_and_film.py"><code>tools/cartpole/train_and_film.py</code></a> (step size 0.001, 16 tries a round, 300 rounds, random seeds 0, 1 and 2; seed 0 is filmed). Every score is in <a href="../assets/data/rl01-cartpole.json"><code>rl01-cartpole.json</code></a>, and figure 1.7's chart is drawn from it by <code>tools/cartpole/make_chart.py</code>.</li>
+    <li>The step size in figure 1.6 (0.2) is our choice. Every other number on this page is in <code>library/rl.yaml</code> or in our run's data file.</li>
   </ul>
 </div>
 </main>

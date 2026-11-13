@@ -56,12 +56,14 @@ judges the result; their verdicts go at the end.
 
 ## Footage ("image videos")
 
-- **Film the thing itself, and prefer our own footage.** A simulator run filmed by a script in the repo gives a clip
-  whose licence is ours and whose numbers are checked: every frame is a real state, the script and the data file
-  are published, and the page links both. RL 1's CartPole clips are made by `tools/cartpole/train_and_film.py` in
-  `vla_final`.
-- Other people's footage only with a licence that allows it (CC BY, MIT repos), credited in the caption, or as a
-  YouTube embed of a demo. Never re-host a company's video.
+- **Real pictures and the makers' own videos come first** (user, 2026-11-13, after a round with only our own footage:
+  "There are still no images, no image at all. We need to plug in videos and images. They're fetched online"). Embed
+  the famous results' videos from their makers' channels (DeepMind's "DQN Breakout", OpenAI's "Multi-Agent Hide and
+  Seek") inside the text, and add openly licensed pictures (Wikimedia Commons, public-domain books). How to find and
+  check them is in `teaching-web`, "Images and licences". Never re-host a company's video.
+- **Our own footage adds to them.** A simulator run filmed by a script in the repo shows the chapter's exact rule
+  working, with every frame a real state and the script and data published (RL 1's CartPole clips,
+  `tools/cartpole/train_and_film.py` in `vla_final`). It never stands in for the real-world pictures.
 - **Keep a clip to one event**: one try, one result, under about 15 s. An overlay is fine when it is part of the
   lesson (RL 1's score counter shows the reward adding up, one point a step). Say in the caption if it's slowed down.
 - **How it plays is open** (2026-11-13). Two versions are on RL 1 for the user to compare: figure 1.2 plays muted when

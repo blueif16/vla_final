@@ -216,6 +216,22 @@ each page about 15 to 20 minutes of reading, "sort of a new lesson and a new way
 
 ## Images and licences
 
+**Every chapter shows its subject in real pictures and real videos, in the text, not only in rails** (user, 2026-11-13:
+"We need to plug in videos and images. They're fetched online. There are just so many about RLs, about OpenAI, about
+AlphaGo"). Where to find them:
+- Wikimedia Commons through its API, which returns each file's licence: `commons.wikimedia.org/w/api.php?action=query
+  &generator=search&gsrsearch=<words>&gsrnamespace=6&prop=imageinfo&iiprop=url|size|extmetadata` (send a plain
+  User-Agent). Public domain and CC0 need no credit; CC BY and CC BY-SA need the author and licence in the caption.
+  Old books (before 1929) are public domain: Thorndike's 1898 puzzle box came from there.
+- The famous results' own videos, embedded with the `data-yt` facade inside a figure or a `.cardgrid` (their thumbnails
+  are real pictures on the page). Check every ID with `youtube.com/oembed?url=...` (title and channel; prefer the
+  maker's channel over re-uploads). Times come from YouTube's own chapter list: fetch the watch page and read the
+  `chapterRenderer` entries, or the video's description. Never take a time from an AI summary site: videohighlight.com
+  put AlphaGo's move 37 at 50:58, which YouTube's chapters place inside game 3.
+- When a paper's figure can't be copied, draw our own from the data (a Go board from the game record) or embed the
+  makers' video.
+- Strip EXIF from photos (`ffmpeg -map_metadata -1`); phone photos carry GPS.
+
 - Check the licence on the arXiv abstract page first. CC BY 4.0: download the figure from `arxiv.org/html/<id>`, credit
   it in the caption. arXiv's default licence: don't copy figures; link, or draw our own.
 - Convert to JPG at most 1600 px wide (`ffmpeg -vf "scale='min(1600,iw)':-2" -q:v 3`). Record every file in
@@ -252,6 +268,13 @@ After the user judges a page, add a dated line: what held, what failed and why.
   not just hard to manage and hard to interact with, but not straightforward." The user asked for a separate skill for
   designing them, starting from "what exactly are we teaching? How exactly are we setting these interactions so that
   it benefits teaching?" Not fixed yet; next session.
+
+- 2026-11-13, RL 1 second round (CartPole footage made by us, the explorable rebuilt, robot text removed). Failed: "There
+  are still no images, no image at all. We need to plug in videos and images. They're fetched online... Can we just
+  have videos, fetch and plug in those fucking corelated nice images? Why not?" Cause: I read "reuse only CC BY figures;
+  company images are link-only" as "make our own", so I filmed our own simulator and never searched Wikimedia Commons or
+  embedded the famous results' own videos. Fixed the same day: Thorndike's 1898 drawing, a photo of Rich Sutton, the
+  AlphaGo racks, a move-37 board drawn from the game record, and DeepMind's and OpenAI's own videos inline (rule above).
 
 ## Sources
 

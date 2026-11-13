@@ -4,7 +4,7 @@ After this chapter you can explain reinforcement learning with five words and on
 scores which tries a learner should repeat more often, and say why a learner that is only given a score can end up
 better than the people it learned from.
 Needs: nothing. Reading time: 10 min.
-Web version, with predict-first questions, an explorable and video of a learner we trained (15–20 min):
+Web version, with pictures, videos of DQN, AlphaGo and hide-and-seek, an explorable and a learner we trained (15–20 min):
 https://blueif16.github.io/vla_final/learn/rl-01-learning-from-a-score.html
 
 Picture a robot arm at a table with a black bowl and a plate on it. No one steers the arm through the task, and no
@@ -15,6 +15,13 @@ that makes the lucky tries a little more likely next time, and then again after 
 bowl ends up on the plate most of the time.
 
 Nobody ever tells the arm which move was right. It only ever learns how well a whole try went.
+
+The idea is older than computers. In 1898 the psychologist Edward Thorndike shut cats in small cages, now known as
+puzzle boxes. A cat could get out and reach its reward, such as food, only by working a lever or a button, and at first
+it hit on that by trying things at random. Over repeated trials it got out faster and faster. In 1911 Thorndike called
+the rule behind this the law of effect: "Of several responses made to the same situation, those which are accompanied
+or closely followed by satisfaction to the animal will, other things being equal, be more firmly connected with the
+situation." Reinforcement learning gives the same rule to a computer.
 
 ## A second example: a pole on a cart
 
@@ -46,6 +53,10 @@ examples.
 | action | one small move of the hand or the gripper | moving the cart left or right |
 | reward | 1 if the bowl is on the plate when the try ends, otherwise 0 | 1 point for every step the pole stays up |
 | policy | how likely it is to make each move, in each situation | how likely it is to move left, for each position of the cart and the pole |
+
+The five words are the vocabulary of the field's textbook, *Reinforcement Learning: An Introduction*, by Richard Sutton
+and Andrew Barto. In March 2025 the two of them received the 2024 ACM Turing Award "for developing the conceptual and
+algorithmic foundations of reinforcement learning."
 
 These words fit together as a loop. The agent looks at the situation. For the arm that's a camera picture, and for
 CartPole it's four numbers: where the cart is, how fast it's going, how far the pole leans and how fast it's tipping.
@@ -100,6 +111,11 @@ those runs ended at 500 and 456.7. Nobody told the learner to move the cart towa
 ever saw was scores. The script is `tools/cartpole/train_and_film.py`, and every score is in
 `docs/assets/data/rl01-cartpole.json`.
 
+Rules from the same family work on much harder problems. In 2017 DeepMind put simulated bodies on courses of
+"challenging terrains and obstacles" and gave them "a simple reward function based on forward progress". With a
+policy-gradient method, the family this chapter's rule belongs to, they learned to "run, jump, crouch and turn"
+(video: https://www.youtube.com/watch?v=hx_bgoTF7bs).
+
 ## Learning from a score versus learning from examples
 
 Most machine learning is supervised. Every training example comes with the right answer, and the model is corrected
@@ -111,6 +127,23 @@ what you should have written, so the feedback is weaker and the learner needs ma
 caps it at the level of its teacher. A learner that copies people can at best match them. A learner pushed towards a
 higher score can find moves no person showed it. AlphaZero learned chess, shogi and Go only by playing against itself,
 starting from random play, and it beat a world-champion program in each of the three (chapter 3).
+
+Three famous results show it happening. The first is DeepMind's DQN, published in *Nature* in 2015. It learned Atari
+games "receiving only the pixels and the game score as inputs", and reached "a level comparable to that of a
+professional human games tester across a set of 49 games, using the same algorithm, network architecture and
+hyperparameters". In Breakout, after about 600 games, it began digging a tunnel up one side of the wall and sending the
+ball round the back (video: https://www.youtube.com/watch?v=TmPfTpjtdgg). In the AlphaGo film, Demis Hassabis says the
+researchers "didn't know about that strategy".
+
+The second is AlphaGo. It learned first from human games and then by playing against itself, and in March 2016 it beat
+the Go champion Lee Sedol 4 games to 1 in Seoul. In game 2 it played a stone that, by DeepMind's account, "had a 1 in
+10,000 chance of being played by a human": move 37, at P10 (the film's chapter on game 2:
+https://www.youtube.com/watch?v=WXuK6gekU1Y&t=1700s).
+
+The third is OpenAI's hide-and-seek, from 2019. Two teams played in a room with boxes, ramps and walls, and over
+millions of rounds the hiders learned to build shelters out of boxes. Then the seekers learned to use ramps to get over
+the walls, and the hiders learned to lock the ramps away before building. "We did not explicitly incentivize any of
+these behaviors," says the narrator of OpenAI's video (https://www.youtube.com/watch?v=kopoLzvh5jY).
 
 A common belief is that a reward works like a label, telling the model which move was right. It doesn't. In the bowl
 example the score comes once, after up to a few hundred steps, and it never says which of those steps helped. Sorting
@@ -159,6 +192,17 @@ that out is one of the three things that make RL hard, and chapter 2 is about th
   reward).
 - Silver et al. (2017), "Mastering Chess and Shogi by Self-Play with a General Reinforcement Learning Algorithm",
   https://arxiv.org/abs/1712.01815 (AlphaZero).
+- Thorndike (1898), *Animal Intelligence: An Experimental Study of the Associative Processes in Animals*; the law of
+  effect is quoted from Thorndike (1911), *Animal Intelligence*, p. 244, https://archive.org/details/cu31924003032954.
+  What the cats had to do: Britannica, "Thorndike puzzle box" (checked 2026-11-13).
+- ACM (2025-03-05), the 2024 Turing Award, https://www.acm.org/media-center/2025/march/turing-award-2024.
+- Heess et al. (2017), "Emergence of Locomotion Behaviours in Rich Environments", https://arxiv.org/abs/1707.02286.
+- Mnih et al. (2015), "Human-level control through deep reinforcement learning", *Nature* 518,
+  https://www.nature.com/articles/nature14236. The 600 games and the tunnel: the description of Google DeepMind's
+  "DQN Breakout" video.
+- AlphaGo: https://deepmind.google/research/alphago/ (4–1, the 1 in 10,000 chance); the game 2 record from
+  https://homepages.cwi.nl/~aeb/go/games/games/AlphaGo/LeeSedol/2.sgf.
+- Baker et al. (2019), "Emergent Tool Use From Multi-Agent Autocurricula", https://arxiv.org/abs/1909.07528.
 - Barto, Sutton and Anderson (1983), "Neuronlike adaptive elements that can solve difficult learning control problems",
   *IEEE Transactions on Systems, Man, and Cybernetics* SMC-13(5), 834–846, https://doi.org/10.1109/TSMC.1983.6313077
   (where CartPole comes from).
