@@ -238,7 +238,14 @@ GitHub Pages from the `main` branch, `/docs` folder, with `docs/.nojekyll`. Chap
 
 ## Verdicts
 
-None yet. After the user judges a page, add a dated line: what held, what failed and why.
+After the user judges a page, add a dated line: what held, what failed and why.
+- 2026-11-13, RL 1 (watercolour theme, painted SVG figures, predict-first boxes, the `.tries` explorable). Held: "I
+  like your drawing, and every time, I want us to incorporate more image visuals." Failed: (1) we keep reaching for
+  YouTube talk clips instead of finding images and short videos to put on the page ("These are harder to understand
+  … We need more image videos"); (2) the interactive components on every page "are just showing too much stuff. They're
+  not just hard to manage and hard to interact with, but not straightforward." The user asked for a separate skill for
+  designing them, starting from "what exactly are we teaching? How exactly are we setting these interactions so that
+  it benefits teaching?" Not fixed yet; next session.
 
 ## Sources
 
