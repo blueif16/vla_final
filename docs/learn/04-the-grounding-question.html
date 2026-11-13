@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Understanding the Instruction · Chapter 4</title>
+<meta name="description" content="Chapter 4 of our learning path on vision-language-action models: what it means for a robot to follow the words, the four prompt tests in our plan, and our own first run of one of them.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,400&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/site.css">
+<link rel="stylesheet" href="../assets/css/ch4.css">
+</head>
+<body>
+<div class="progress" aria-hidden="true"></div>
+
+<header class="site-head">
+  <a class="brand" href="../index.html">Learning VLAs</a>
+  <nav class="nav" aria-label="Site">
+    <a href="../index.html" aria-current="page">Chapters</a>
+    <a href="https://github.com/blueif16/vla_final">GitHub</a>
+  </nav>
+</header>
+
+<nav class="toc" aria-label="On this page">
+  <div class="label">Chapter 4</div>
+  <a href="#define">A definition we can measure</a>
+  <a href="#conditions">The four conditions</a>
+  <a href="#different">A different task</a>
+  <a href="#paraphrase">A paraphrase</a>
+  <a href="#why">Why the words might not matter</a>
+  <a href="#for-us">What this means for us</a>
+  <a href="#check">Check yourself</a>
+  <a href="#sources">Sources</a>
+</nav>
+
+<header class="doc-head">
+  <h1>What “understanding the instruction” means, and how to test it</h1>
+  <p class="subtitle">Change the words and watch what the robot does. This chapter turns that idea into the four tests in our plan, starting from our own first run of one of them.</p>
+  <div class="meta"><span>Chapter 4 of 6</span><span>12 min read</span><span>Needs chapters 1 to 3</span></div>
+  <div class="outcomes">
+    <div class="label">After this chapter you can</div>
+    <ul>
+      <li>define language grounding by what the robot does</li>
+      <li>describe the four prompt conditions in our submitted plan and say what a high or low success rate means in each</li>
+      <li>explain why a test with a different task's sentence needs more than a success rate, and why a model might ignore the words</li>
+    </ul>
+  </div>
+  <details class="contents">
+    <summary>Contents</summary>
+    <ol>
+      <li><a href="#define">A definition we can measure</a></li>
+      <li><a href="#conditions">The four conditions in our submitted plan</a></li>
+      <li><a href="#different">A different task needs more than a success rate</a></li>
+      <li><a href="#paraphrase">A paraphrase must point at the same bowl</a></li>
+      <li><a href="#why">Why a model might ignore the words</a></li>
+      <li><a href="#for-us">What this means for our project</a></li>
+      <li><a href="#check">Check yourself</a></li>
+    </ol>
+  </details>
+</header>
+
+<main>
+<div class="prose">
+  <div class="has-side">
+  <p>Two tasks in <button class="term" data-term="libero">LIBERO-Spatial</button> start from the same table. One black bowl sits on the stove and an identical one sits on top of the wooden cabinet. Task 7 says <span class="q">pick up the black bowl on the stove and place it on the plate</span>, and task 9 says the same thing with <span class="q">on the wooden cabinet</span> in place of <span class="q">on the stove</span>. Chapter 3 found this pair in LIBERO's task files. The two files differ only in the sentence and in which of the two bowls starts where, so the picture can't say which bowl to take. Only the sentence can.</p>
+  <p>On 2026-11-11 we ran <code>pi05_libero</code>, the <button class="term" data-term="checkpoint">checkpoint</button> from chapter 2, on both tasks. Each task ran from ten of its stored starting arrangements, once with its own sentence and once with an empty string where the sentence goes. Everything else was the same, down to where each object stood. If the arm makes the same reach both times, grabs the same bowl and puts it on the same plate, the sentence wasn't what drove the motion.</p>
+  <aside class="side" aria-label="Side note: how the two task files differ">
+    <div class="label">The two task files, side by side</div>
+    <table class="side-tbl files">
+      <tr><th></th><td><b>task 7</b></td><td><b>task 9</b></td></tr>
+      <tr><th>sentence</th><td>“…on the stove…”</td><td>“…on the wooden cabinet…”</td></tr>
+      <tr><th>bowl 1</th><td>on the stove</td><td>on the cabinet</td></tr>
+      <tr><th>bowl 2</th><td>on the cabinet</td><td>on the stove</td></tr>
+    </table>
+    <p>Every other line is the same, and both bowls are the same black bowl. Each task asks for its bowl 1.</p>
+  </aside>
+  </div>
+
+  <div class="predict">
+    <div class="label">Predict first</div>
+    <p>Figure 4.1 runs one of those starting arrangements both ways. On the left the robot gets task 9's sentence, and on the right it gets nothing. What will the arm on the right do?</p>
+    <textarea aria-label="Your guess" placeholder="Write a guess in a few words. Nothing is saved."></textarea>
+  </div>
+</div>
+
+<figure class="fig pair">
+  <div class="pair-head">
+    <div><div class="label">Its own sentence</div><div class="say">“pick up the black bowl on the wooden cabinet and place it on the plate”</div></div>
+    <div><div class="label">An empty string</div><div class="say empty">“” (nothing)</div></div>
+  </div>
+  <div class="frame clip"><video data-play="tap" controls poster="../assets/video/ch4-same-start.jpg" src="../assets/video/ch4-same-start.mp4" preload="none" muted playsinline width="896" height="448" aria-label="Two runs of the robot from the same starting table, side by side. Left, with the sentence, the arm reaches up to the bowl on top of the cabinet and carries it to the plate. Right, with an empty string, the arm takes the bowl from the stove and carries it to the plate."></video></div>
+  <noscript><p class="caption"><a href="../assets/video/ch4-same-start.mp4">Open the clip</a> (MP4, 7 seconds).</p></noscript>
+  <figcaption><b>Figure 4.1 · One table, two sentences.</b> Both runs start from the same arrangement, number 2 of the 50 LIBERO stores for task 9. With its sentence (left) the arm reaches up to the bowl on the cabinet and carries it to the plate. With an empty string (right) it takes the bowl on the stove, and the simulator scores the run a failure. We chose this pair because it shows the change plainly. Most blank runs didn't end like this, and figure 4.2 shows how they all ended. The pictures are the table camera exactly as the model received it, turned 180 degrees the way openpi's client does. The clip plays at the simulator's own pace of 20 steps a second, twice the speed we saved it at, and holds its last frame for a second. <span class="credit">Recording: our run of openpi's pi05_libero checkpoint, 2026-11-11, LIBERO-Spatial task 9, starting arrangement 2. Clip made by tools/ch4/make_assets.py.</span></figcaption>
+</figure>
+
+<div class="prose">
+  <p>Across all the runs, the robot did the right task 19 times in 20 with its sentence. With an empty string it did the right task 8 times in 40. (The empty string ran from 20 starting arrangements per task: the ten used with the sentence, and ten more in which the <button class="term" data-term="simulator">simulator</button> checked more objects.) The motion changed when the words went away, so on this pair the words are doing real work.</p>
+
+  <h2 id="define">A definition we can measure</h2>
+  <p>We can't look inside the model and see “understanding”, so we define it by behaviour. <strong class="key">An instruction is <button class="term" data-term="grounding">grounded</button> when changing the words changes what the robot does, in the way the new words say.</strong> When the words change and the behaviour doesn't, the model is running on the picture.</p>
+  <p>Our run passes the first half of that test and can't reach the second. Taking the words away changed what the robot did. But an empty string doesn't ask for anything, so there was no “way the new words say” for the robot to follow. Figure 4.2 shows what it did instead, in the 20 blank runs where the simulator also checked the cookie box.</p>
+</div>
+
+<figure class="fig">
+  <div class="endings">
+    <div class="ending">
+      <img src="../assets/img/ch4/ending-stove.jpg" alt="The arm has just set a black bowl on the plate. The stove is empty and the other bowl still sits on top of the cabinet." width="224" height="224" loading="lazy">
+      <div class="label">The stove bowl on the plate</div>
+      <div class="tally"><span>task 7</span><span class="dots"><i class="win" title="task 7, arrangement 12: success"></i><i class="win" title="task 7, arrangement 14: success"></i><i class="win" title="task 7, arrangement 19: success"></i></span><b>3</b></div>
+      <div class="tally"><span>task 9</span><span class="dots"><i title="task 9, arrangement 10: failure"></i><i title="task 9, arrangement 15: failure"></i><i title="task 9, arrangement 16: failure"></i><i title="task 9, arrangement 18: failure"></i><i title="task 9, arrangement 19: failure"></i></span><b>5</b></div>
+    </div>
+    <div class="ending">
+      <img src="../assets/img/ch4/ending-cabinet.jpg" alt="The arm sets a black bowl on the plate. The bowl on the stove is still there and the top of the cabinet is empty." width="224" height="224" loading="lazy">
+      <div class="label">The cabinet bowl on the plate</div>
+      <div class="tally"><span>task 7</span><span class="dots"></span><b>0</b></div>
+      <div class="tally"><span>task 9</span><span class="dots"><i class="win" title="task 9, arrangement 17: success"></i></span><b>1</b></div>
+    </div>
+    <div class="ending">
+      <img src="../assets/img/ch4/ending-cookie.jpg" alt="The gripper hovers over the plate, where the cookie box now lies. Both bowls are still in their places." width="224" height="224" loading="lazy">
+      <div class="label">The cookie box on the plate</div>
+      <div class="tally"><span>task 7</span><span class="dots"><i title="task 7, arrangement 15: failure"></i><i title="task 7, arrangement 18: failure"></i></span><b>2</b></div>
+      <div class="tally"><span>task 9</span><span class="dots"><i title="task 9, arrangement 13: failure"></i></span><b>1</b></div>
+    </div>
+    <div class="ending">
+      <img src="../assets/img/ch4/ending-none.jpg" alt="At the end of the run the arm is low over the plate's edge. The small ramekin sits on the plate and the cookie box has been knocked over. Both bowls are still in their places." width="224" height="224" loading="lazy">
+      <div class="label">None of the checked objects on the plate</div>
+      <div class="tally"><span>task 7</span><span class="dots"><i title="task 7, arrangement 10: failure"></i><i title="task 7, arrangement 11: failure"></i><i title="task 7, arrangement 13: failure"></i><i title="task 7, arrangement 16: failure"></i><i title="task 7, arrangement 17: failure"></i></span><b>5</b></div>
+      <div class="tally"><span>task 9</span><span class="dots"><i title="task 9, arrangement 11: failure"></i><i title="task 9, arrangement 12: failure"></i><i title="task 9, arrangement 14: failure"></i></span><b>3</b></div>
+    </div>
+  </div>
+  <div class="tally-key"><span><i class="win"></i>one run the simulator scored a success</span><span><i></i>one run it scored a failure</span><span>task 7 asks for the stove bowl, task 9 for the cabinet bowl</span></div>
+  <figcaption><b>Figure 4.2 · How the 20 checked blank runs ended.</b> Each column is one ending. Its picture comes from the first run that ended that way, at the moment the object reached the plate, or at the run's last frame in the last column. The robot took the stove bowl in both tasks, and that same move counts as a success for task 7 and a failure for task 9. In the last column neither bowl nor the cookie box reached the plate. The simulator didn't check the small ramekin, though, and in the run pictured, by our eye, the arm put the ramekin on the plate. <span class="credit">Recording: our runs of openpi's pi05_libero checkpoint, 2026-11-11, starting arrangements 10 to 19 of each task; counts from stage1/runs/exp1-shared-table/episodes.jsonl. Frames chosen by rule in tools/ch4/make_assets.py.</span></figcaption>
+</figure>
+
+<div class="prose">
+  <p>In most blank runs no bowl reached the plate at all. Across all 40, a bowl got there 15 times, and 12 of those 15 times it was the bowl on the stove. We don't know yet why the robot prefers that one; one guess of ours is that the stove sits closer to where the arm starts. Every LIBERO-Spatial task ends with <span class="q">place it on the plate</span>, and even without a sentence the robot kept moving things towards the plate, just not always the right thing.</p>
+  <p>There's a catch in reading figure 4.2. The model never saw an empty instruction in training, because every training example came with its task's sentence (<code>prompt_from_task=True</code> in the <code>pi05_libero</code> config). So part of what it shows may be the model reacting to an input it has never seen, on top of the missing information. A sentence for a different task, the last of the four conditions below, would separate the two.</p>
+
+  <h2 id="conditions">The four conditions in our submitted plan</h2>
+  <p>Our submitted plan runs the test from figure 4.1, and three more, on every task of LIBERO's four main suites. Each condition keeps the starting picture and changes only the sentence. Figure 4.3 shows the four sentences for LIBERO-Spatial's first task, whose recorded run chapter 2 stepped through, and what a high or a low success rate would mean for each. The success rate here is the share of <button class="term" data-term="episode">episodes</button> that end with LIBERO's own check for this table's task met, the bowl between the plate and the ramekin on the plate.</p>
+</div>
+
+<figure class="fig">
+  <div class="conds">
+    <div class="cond">
+      <img src="../assets/img/ch4/spatial-t0-start.png" alt="The starting table of LIBERO-Spatial task 0: two black bowls and a small ramekin at the left, a plate below them, a cookie box, and the stove and cabinet at the right." width="224" height="224" loading="lazy">
+      <div><div class="label">1 · Original</div><div class="say">“pick up the black bowl between the plate and the ramekin and place it on the plate”</div></div>
+      <dl><dt>Stays high</dt><dd>This is the baseline. It should match openpi's published 98.8 on LIBERO-Spatial.</dd><dt>Drops</dt><dd>Our setup has a problem, and we fix it before anything else.</dd></dl>
+    </div>
+    <div class="cond">
+      <img src="../assets/img/ch4/spatial-t0-start.png" alt="The same starting table." width="224" height="224" loading="lazy">
+      <div><div class="label">2 · Paraphrase</div><div class="say">“pick up the black bowl sitting between the ramekin and the plate and put it on the plate”</div></div>
+      <dl><dt>Stays high</dt><dd>The model copes with wording it never trained on.</dd><dt>Drops</dt><dd>It matches the exact training strings.</dd></dl>
+    </div>
+    <div class="cond">
+      <img src="../assets/img/ch4/spatial-t0-start.png" alt="The same starting table." width="224" height="224" loading="lazy">
+      <div><div class="label">3 · Blank</div><div class="say empty">“” (nothing)</div></div>
+      <dl><dt>Stays high</dt><dd>The picture alone was enough to choose the task.</dd><dt>Drops</dt><dd>The model needed the words.</dd></dl>
+    </div>
+    <div class="cond">
+      <img src="../assets/img/ch4/spatial-t0-start.png" alt="The same starting table." width="224" height="224" loading="lazy">
+      <div><div class="label">4 · Different task, same table</div><div class="say">“pick up the cookie box and place it on the plate”</div></div>
+      <dl><dt>Stays high</dt><dd>A warning sign. The robot did the table's usual task and ignored the new words.</dd><dt>Drops</dt><dd>It may be listening, or it may have stalled. The next section explains why that needs care.</dd></dl>
+    </div>
+  </div>
+  <figcaption><b>Figure 4.3 · The four conditions on one table.</b> The picture is the same in all four, and only the sentence changes. The different-task sentence is one the LIBERO-CF paper wrote for this same table (its CF-Spatial task 1). <span class="credit">Picture: the first frame of our recorded run of LIBERO-Spatial task 0, as the model received it, 2026-11-11.</span></figcaption>
+</figure>
+
+<div class="prose">
+  <h2 id="different">A different task needs more than a success rate</h2>
+  <div class="note">
+    <div class="label">A common wrong belief</div>
+    <p>“When a different instruction makes the original task's success rate drop, the model must have followed the new words.”</p>
+  </div>
+  <p>A drop says only that the robot stopped doing the original task. It doesn't say what the robot did instead. It might have done the new task, or it might have frozen or flailed. Our blank run already shows a drop with nothing to follow. Success fell from 19 in 20 to 8 in 40, there were no new words at all, and in most of those runs no bowl reached the plate. <strong class="key">So for this condition we need to record which task, if any, the robot actually completed.</strong></p>
+  <p>The LIBERO-CF paper, which chapter 5 covers, wrote 50 instructions of this kind for LIBERO's tables. It calls each one a <button class="term" data-term="counterfactual-instruction">counterfactual instruction</button>, a task the table allows but the model wasn't trained to do there. The paper uses three measures to score them, and we can reuse them. The <button class="term" data-term="grounding-rate">grounding rate</button> is how often the gripper touches the object the new instruction names, whether or not the task gets finished. <button class="term" data-term="faithful-success">Faithful success</button> counts episodes where the robot completed the new task, and <button class="term" data-term="biased-success">biased success</button> counts those where it did the table's original task instead. Figure 4.4 sorts the ways one episode can end into these measures.</p>
+</div>
+
+<figure class="fig">
+  <div class="score-in">
+    <img src="../assets/img/ch4/spatial-t0-start.png" alt="The starting table of LIBERO-Spatial task 0." width="224" height="224" loading="lazy">
+    <div>
+      <div class="say"><small>sentence sent</small>“pick up the cookie box and place it on the plate”</div>
+      <p>This table was built for task 0, the bowl between the plate and the ramekin. The sentence asks for the cookie box instead.</p>
+    </div>
+  </div>
+  <ol class="score-ends">
+    <li>
+      <svg class="mini" viewBox="0 0 160 124" role="img" aria-label="Drawing: the cookie box lies on the plate; both bowls and the ramekin are where they started."><rect class="tbl" width="160" height="124" rx="8"/><circle class="bowl" cx="38" cy="27" r="11"/><circle class="ram" cx="79" cy="29" r="7"/><circle class="bowl" cx="69" cy="54" r="11"/><circle class="plate" cx="62" cy="94" r="22"/><rect class="was" x="120" y="84" width="12" height="18" rx="1.5"/><rect class="box" x="56" y="85" width="12" height="18" rx="1.5"/></svg>
+      <p class="what">The cookie box ends on the plate.</p>
+      <ul class="marks"><li class="y">grounding</li><li class="y">faithful success</li><li class="n">biased success</li><li class="n own">LIBERO's own score: failure</li></ul>
+    </li>
+    <li>
+      <svg class="mini" viewBox="0 0 160 124" role="img" aria-label="Drawing: the gripper has closed on the cookie box beside the plate; the plate is empty."><rect class="tbl" width="160" height="124" rx="8"/><circle class="bowl" cx="38" cy="27" r="11"/><circle class="ram" cx="79" cy="29" r="7"/><circle class="bowl" cx="69" cy="54" r="11"/><circle class="plate" cx="62" cy="94" r="22"/><rect class="box" x="114" y="80" width="12" height="18" rx="1.5" transform="rotate(-14 120 89)"/><path class="grip" d="M120 52v14M109 66h22M109 66v18M131 66v18"/></svg>
+      <p class="what">The gripper touches the cookie box, but nothing reaches the plate.</p>
+      <ul class="marks"><li class="y">grounding</li><li class="n">faithful success</li><li class="n">biased success</li><li class="n own">LIBERO's own score: failure</li></ul>
+    </li>
+    <li>
+      <svg class="mini" viewBox="0 0 160 124" role="img" aria-label="Drawing: the bowl that sat between the plate and the ramekin is now on the plate; the cookie box hasn't moved."><rect class="tbl" width="160" height="124" rx="8"/><circle class="bowl" cx="38" cy="27" r="11"/><circle class="ram" cx="79" cy="29" r="7"/><circle class="was" cx="69" cy="54" r="11"/><circle class="plate" cx="62" cy="94" r="22"/><circle class="bowl" cx="62" cy="94" r="11"/><rect class="box" x="120" y="84" width="12" height="18" rx="1.5"/></svg>
+      <p class="what">The bowl between the plate and the ramekin ends on the plate, which is the table's usual task.</p>
+      <ul class="marks"><li class="n">grounding</li><li class="n">faithful success</li><li class="y">biased success</li><li class="y own">LIBERO's own score: success</li></ul>
+    </li>
+    <li>
+      <svg class="mini" viewBox="0 0 160 124" role="img" aria-label="Drawing: nothing has moved; the gripper hangs over the table away from every object."><rect class="tbl" width="160" height="124" rx="8"/><circle class="bowl" cx="38" cy="27" r="11"/><circle class="ram" cx="79" cy="29" r="7"/><circle class="bowl" cx="69" cy="54" r="11"/><circle class="plate" cx="62" cy="94" r="22"/><rect class="box" x="120" y="84" width="12" height="18" rx="1.5"/><path class="grip away" d="M128 14v10M117 24h22M117 24v14M139 24v14"/></svg>
+      <p class="what">The gripper never touches the cookie box, and nothing reaches the plate.</p>
+      <ul class="marks"><li class="n">grounding</li><li class="n">faithful success</li><li class="n">biased success</li><li class="n own">LIBERO's own score: failure</li></ul>
+    </li>
+  </ol>
+  <figcaption><b>Figure 4.4 · Four ways one different-task episode can end, and what each one counts towards.</b> The sentence is the LIBERO-CF paper's CF-Spatial task 1, sent on the table of LIBERO-Spatial task 0. Only the third ending counts as biased success, and it's also the only one that LIBERO's own check for this table scores as a success. So when that score drops, the cause could be the first, the second or the fourth ending, and only the first is the robot doing what it was told. <span class="credit">Endings drawn by us; we haven't run this condition yet. Start picture: our recorded run of task 0, 2026-11-11. Sentence: LIBERO-CF's code, libero_cf_spatial task 01, built on task 0's starting arrangement.</span></figcaption>
+</figure>
+
+<div class="prose">
+  <p>The paper also counts how often the gripper touched the original task's object. Chapter 5 shows what it measured when it ran these 50 tasks on our checkpoint.</p>
+</div>
+
+<section class="rail" aria-label="Go deeper: different-task tests">
+  <div class="rail-head">
+    <div><div class="label">Go deeper</div><p class="rail-title">Different-task tests, in pictures and in code</p></div>
+    <div class="rail-nav"><button class="rail-prev" type="button" aria-label="Previous card">←</button><button class="rail-next" type="button" aria-label="Next card">→</button></div>
+  </div>
+  <div class="rail-track">
+    <article class="card text">
+      <div class="body">
+        <span class="tag">Real robot · videos</span>
+        <h4>π0.5 given a different task on a real arm</h4>
+        <p>The LIBERO-CF project page shows videos of π0.5 on a real Franka arm, given instructions such as “pick up the fanta”, each beside the same robot with the paper's fix, which chapter 5 explains.</p>
+        <p class="src">Fang et al. 2026 · <a href="https://vla-cf.github.io/">vla-cf.github.io</a></p>
+      </div>
+    </article>
+    <article class="card text">
+      <div class="body">
+        <span class="tag">Code · MIT licence</span>
+        <h4>The 50 tasks and what each one checks</h4>
+        <p>LIBERO-CF's code keeps a task file for each counterfactual instruction, built on an existing LIBERO table, and a list of the endings each task watches for, such as the cookie box, either bowl or the ramekin reaching the plate.</p>
+        <p class="src">yuffish/VLA-CF · <a href="https://github.com/yuffish/VLA-CF/tree/main/libero/libero/conditions">libero/libero/conditions/</a></p>
+      </div>
+    </article>
+    <article class="card">
+      <div class="media pic"><img src="../assets/video/ch4-same-start.jpg" alt="The first frame of our two-run clip: the same starting table twice, side by side." loading="lazy"></div>
+      <div class="body">
+        <span class="tag">Our code</span>
+        <h4>How we ran figure 4.1</h4>
+        <p>Our runner keeps openpi's settings, swaps in any sentence or an empty one, and records which objects reached the plate and when. The records of all 60 runs are in the repo.</p>
+        <p class="src"><a href="https://github.com/blueif16/vla_final/blob/main/stage1/run_libero.py">stage1/run_libero.py</a> · <a href="https://github.com/blueif16/vla_final/blob/main/stage1/results/exp1-shared-table.md">results</a></p>
+      </div>
+    </article>
+  </div>
+</section>
+
+<div class="prose">
+  <h2 id="paraphrase">A paraphrase must point at the same bowl</h2>
+  <p>The paraphrase condition needs care too. In LIBERO-Spatial the sentence picks a bowl by where it is, so a paraphrase must still point at the same bowl, or we've changed the task by accident. Figure 4.5 shows how easily that happens on task 0's table.</p>
+</div>
+
+<figure class="fig narrow">
+  <div class="duo para">
+    <div>
+      <div class="say">“pick up the black bowl <b>sitting between the ramekin and the plate</b> and put it on the plate”</div>
+      <svg viewBox="0 0 150 130" role="img" aria-label="Task 0's table with the bowl between the plate and the ramekin ringed."><image href="../assets/img/ch4/spatial-t0-start.png" x="0" y="-70" width="224" height="224"/><circle class="ring-o" cx="57" cy="60" r="16"/><circle class="ring-i" cx="57" cy="60" r="16"/><rect class="tagbg" x="76" y="53" width="61" height="10" rx="2.5"/><text class="tag-t" x="79.5" y="59.8">the bowl it names</text></svg>
+      <div class="label">The same bowl</div>
+      <p class="why">This one is a paraphrase. It names the bowl the original names.</p>
+    </div>
+    <div>
+      <div class="say">“pick up the black bowl <b>next to the ramekin</b> and place it on the plate”</div>
+      <svg viewBox="0 0 150 130" role="img" aria-label="The same table with the other bowl, the one beside the ramekin, ringed."><image href="../assets/img/ch4/spatial-t0-start.png" x="0" y="-70" width="224" height="224"/><circle class="ring-o" cx="32" cy="38" r="16"/><circle class="ring-i" cx="32" cy="38" r="16"/><rect class="tagbg" x="6" y="6" width="61" height="10" rx="2.5"/><text class="tag-t" x="9.5" y="12.8">the bowl it names</text></svg>
+      <div class="label">The other bowl</div>
+      <p class="why">This one is a different task. It's also word for word the sentence of LIBERO-Spatial task 1.</p>
+    </div>
+  </div>
+  <figcaption><b>Figure 4.5 · Two rewordings of task 0's sentence.</b> Both sound close to the original, <span class="q">pick up the black bowl between the plate and the ramekin</span>. The left one still names the bowl between the two. The right one shortens the place to “next to the ramekin”, which is where task 0's file puts the second bowl. It is also another task's exact sentence, so the model has seen it in training, on task 1's table. <span class="credit">Picture: the first frame of our recorded run of task 0, as the model received it, 2026-11-11. Where each bowl starts: LIBERO's task file for task 0.</span></figcaption>
+</figure>
+
+<div class="prose">
+  <p>A paraphrase that names the other bowl isn't testing wording any more. It has turned into the different-task condition, run without anyone meaning to.</p>
+
+  <h2 id="why">Why a model might ignore the words</h2>
+  <div class="has-side">
+  <p>Chapter 1 gave the reason. Imitation learning, or <button class="term" data-term="behaviour-cloning">behaviour cloning</button>, rewards whatever predicts the action in the <button class="term" data-term="demonstration">demonstrations</button>. <strong class="key">In three of the four LIBERO suites, the starting picture already predicts that action for almost every task, so the words add almost nothing during training.</strong> In LIBERO-Goal the words are the only thing that tells the tasks apart, so there the model has to use them. <a href="03-libero.html">Chapter 3</a> shows the first picture of every task, and the two pairs of tasks that share one.</p>
+  <p>Our pair from figure 4.1 is one of those two exceptions, and it behaved the way this reasoning predicts. The picture can't choose between its two tasks, so the model needed the sentence, and without it the robot mostly failed. That says nothing yet about LIBERO-Spatial as a whole, where eight of the ten tasks start from a table of their own.</p>
+  <aside class="side" aria-label="Side note: how many starting tables each suite has">
+    <div class="label">Ten tasks, how many tables?</div>
+    <table class="layouts">
+      <tr><th>Goal</th><td><svg viewBox="0 0 116 14" role="img" aria-label="Ten tasks, all on one table"><rect class="j" x="0" y="0.5" width="116" height="13" rx="3"/><rect class="t" x="2" y="2.5" width="9" height="9" rx="1.5"/><rect class="t" x="13.4" y="2.5" width="9" height="9" rx="1.5"/><rect class="t" x="24.8" y="2.5" width="9" height="9" rx="1.5"/><rect class="t" x="36.2" y="2.5" width="9" height="9" rx="1.5"/><rect class="t" x="47.6" y="2.5" width="9" height="9" rx="1.5"/><rect class="t" x="59" y="2.5" width="9" height="9" rx="1.5"/><rect class="t" x="70.4" y="2.5" width="9" height="9" rx="1.5"/><rect class="t" x="81.8" y="2.5" width="9" height="9" rx="1.5"/><rect class="t" x="93.2" y="2.5" width="9" height="9" rx="1.5"/><rect class="t" x="104.6" y="2.5" width="9" height="9" rx="1.5"/></svg></td><td>1</td></tr>
+      <tr><th>Spatial</th><td><svg viewBox="0 0 116 14" role="img" aria-label="Ten tasks on nine tables: one pair shares a table"><rect class="j" x="91.7" y="0.5" width="24.3" height="13" rx="3"/><rect class="t" x="2" y="2.5" width="9" height="9" rx="1.5"/><rect class="t" x="13.4" y="2.5" width="9" height="9" rx="1.5"/><rect class="t" x="24.8" y="2.5" width="9" height="9" rx="1.5"/><rect class="t" x="36.2" y="2.5" width="9" height="9" rx="1.5"/><rect class="t" x="47.6" y="2.5" width="9" height="9" rx="1.5"/><rect class="t" x="59" y="2.5" width="9" height="9" rx="1.5"/><rect class="t" x="70.4" y="2.5" width="9" height="9" rx="1.5"/><rect class="t" x="81.8" y="2.5" width="9" height="9" rx="1.5"/><rect class="t" x="93.2" y="2.5" width="9" height="9" rx="1.5"/><rect class="t" x="104.6" y="2.5" width="9" height="9" rx="1.5"/></svg></td><td>9</td></tr>
+      <tr><th>Object</th><td><svg viewBox="0 0 116 14" role="img" aria-label="Ten tasks on ten tables"><rect class="t" x="2" y="2.5" width="9" height="9" rx="1.5"/><rect class="t" x="13.4" y="2.5" width="9" height="9" rx="1.5"/><rect class="t" x="24.8" y="2.5" width="9" height="9" rx="1.5"/><rect class="t" x="36.2" y="2.5" width="9" height="9" rx="1.5"/><rect class="t" x="47.6" y="2.5" width="9" height="9" rx="1.5"/><rect class="t" x="59" y="2.5" width="9" height="9" rx="1.5"/><rect class="t" x="70.4" y="2.5" width="9" height="9" rx="1.5"/><rect class="t" x="81.8" y="2.5" width="9" height="9" rx="1.5"/><rect class="t" x="93.2" y="2.5" width="9" height="9" rx="1.5"/><rect class="t" x="104.6" y="2.5" width="9" height="9" rx="1.5"/></svg></td><td>10</td></tr>
+      <tr><th>LIBERO-10</th><td><svg viewBox="0 0 116 14" role="img" aria-label="Ten tasks on nine tables: one pair shares a table"><rect class="j" x="91.7" y="0.5" width="24.3" height="13" rx="3"/><rect class="t" x="2" y="2.5" width="9" height="9" rx="1.5"/><rect class="t" x="13.4" y="2.5" width="9" height="9" rx="1.5"/><rect class="t" x="24.8" y="2.5" width="9" height="9" rx="1.5"/><rect class="t" x="36.2" y="2.5" width="9" height="9" rx="1.5"/><rect class="t" x="47.6" y="2.5" width="9" height="9" rx="1.5"/><rect class="t" x="59" y="2.5" width="9" height="9" rx="1.5"/><rect class="t" x="70.4" y="2.5" width="9" height="9" rx="1.5"/><rect class="t" x="81.8" y="2.5" width="9" height="9" rx="1.5"/><rect class="t" x="93.2" y="2.5" width="9" height="9" rx="1.5"/><rect class="t" x="104.6" y="2.5" width="9" height="9" rx="1.5"/></svg></td><td>9</td></tr>
+    </table>
+    <p>Each square is a task, and a band joins tasks that start from the same table. Only tasks in a band can't be told apart by the picture.</p>
+  </aside>
+  </div>
+
+  <div class="predict">
+    <div class="label">Predict first</div>
+    <p>Run every suite with a blank instruction. Which suite would lose the most, and which the least?</p>
+    <textarea aria-label="Your guess" placeholder="Write a guess in a few words. Nothing is saved."></textarea>
+  </div>
+  <p>This gives a prediction we can check. It is our reading, not yet a result. A blank or wrong instruction should hurt little on Spatial, Object and LIBERO-10, and hurt a lot on Goal. If the model reads the words only where the data forced it to, then “does <button class="term" data-term="pi05">π0.5</button> understand language?” has no single answer. It depends on what the <button class="term" data-term="fine-tuning">fine-tuning</button> data asked of it. Chapter 5 has the published blank-instruction numbers for our checkpoint, suite by suite.</p>
+
+  <h2 id="for-us">What this means for our project</h2>
+  <p>The question we submitted, “how does a VLA actually understand the instruction?”, becomes a set of numbers. They are the success rates under four conditions on four suites, plus which task the robot did under the wrong instruction. Our first run covered one condition on one pair of tasks. Its other half, giving each task the other task's sentence, would show whether the model follows the words or only reacts to losing them. Chapter 5 shows that other groups have already measured several of these numbers for the same checkpoint, which changes what is worth our time.</p>
+
+  <h2 id="check">Check yourself</h2>
+  <ol class="quiz">
+    <li><p>Define “grounded” in terms of what the robot does.</p>
+      <details><summary>Show answer</summary><p>Changing the words changes what the robot does, in the way the new words say.</p></details></li>
+    <li><p>Under a different-task instruction, the original task's success falls from 98% to 40%. What else do you need to measure before saying the model followed the new words?</p>
+      <details><summary>Show answer</summary><p>Which task the robot did in the other 60%. Did it complete the new task, touch the new object, or do nothing useful? The grounding rate and faithful versus biased success answer this.</p></details></li>
+    <li><p>Why does our reading predict that a blank instruction hurts most on LIBERO-Goal?</p>
+      <details><summary>Show answer</summary><p>Goal is the only suite where all ten tasks share one starting picture. Without words the model can't tell them apart, so it can only guess.</p></details></li>
+    <li><p>In figure 4.1 the empty string sent the arm to the other bowl. Why is this pair a good place to see the words matter, and why doesn't it tell us how LIBERO-Spatial behaves as a whole? Say it in your own words.</p>
+      <details><summary>Show answer</summary><p>Its two tasks start from the same table, so only the sentence can say which bowl to take, and the model can't succeed without reading it. In eight of Spatial's ten tasks the table alone identifies the task, so a blank instruction might change little there.</p></details></li>
+  </ol>
+
+  <p class="quiz-intro">In questions 5 to 8, pick the answer you think is right. The option opens and says whether it's right and why, and you can open the others afterwards to see what's wrong with them.</p>
+  <ol class="quiz" style="counter-reset: q 4">
+    <li class="mcq"><p>We send task 0's table the sentence “pick up the cookie box and place it on the plate”, and task 0's success rate falls from 98% to 40%. What can we say about the other 60% of episodes?</p>
+      <ol class="mcq-opts">
+        <li><details class="mcq-opt" name="mcq-5"><summary>The robot followed the new words in them, since it stopped doing the old task.</summary><p>No, and this is the wrong belief the chapter warns about. Stopping the old task is all a drop shows. The robot may have done the new task, touched the cookie box and given up, or done nothing useful.</p></details></li>
+        <li><details class="mcq-opt right" name="mcq-5"><summary>Nothing yet. We need to see what the robot did in them, for example with the grounding rate and faithful success.</summary><p>Right. The grounding rate says whether it touched the cookie box, and faithful success whether it put the box on the plate. LIBERO's own check for task 0 can't tell either apart from a robot that froze.</p></details></li>
+        <li><details class="mcq-opt" name="mcq-5"><summary>The model ignores language, because it still did the old task 40% of the time.</summary><p>No. The 40% does count against it, as biased success, but behaviour changed in the other 60%. Whether that change followed the words is the open part.</p></details></li>
+      </ol></li>
+    <li class="mcq"><p>Which of these would work as a paraphrase of task 0's sentence, “pick up the black bowl between the plate and the ramekin and place it on the plate”?</p>
+      <ol class="mcq-opts">
+        <li><details class="mcq-opt" name="mcq-6"><summary>“pick up the black bowl next to the ramekin and place it on the plate”</summary><p>No. On task 0's table the second bowl starts next to the ramekin, so this names the other bowl. It's also the exact sentence of LIBERO-Spatial task 1.</p></details></li>
+        <li><details class="mcq-opt" name="mcq-6"><summary>“pick up a black bowl and place it on the plate”</summary><p>No. There are two black bowls on the table and this doesn't say which one, so either would count as doing what it asks.</p></details></li>
+        <li><details class="mcq-opt right" name="mcq-6"><summary>“put the black bowl that sits between the ramekin and the plate onto the plate”</summary><p>Right. The words are different, and it still names the same bowl, so success still means the same thing.</p></details></li>
+      </ol></li>
+    <li class="mcq"><p>On our shared-table pair, an empty string cut success from 19 in 20 to 8 in 40. Why doesn't that yet show the model follows the words in the way they say?</p>
+      <ol class="mcq-opts">
+        <li><details class="mcq-opt right" name="mcq-7"><summary>An empty string asks for nothing, so there was nothing for the robot to follow. Part of the drop may also be the model reacting to an input it never saw in training.</summary><p>Right. The drop shows the words matter on this pair. Whether the robot does what new words say needs a sentence that asks for something else, such as the other task's sentence.</p></details></li>
+        <li><details class="mcq-opt" name="mcq-7"><summary>Because 8 in 40 is too close to 19 in 20 to tell apart.</summary><p>No. Our results give 76–99% and 10–35% as the likely ranges for the two rates, far apart. The gap is real; what it shows is the limit.</p></details></li>
+        <li><details class="mcq-opt" name="mcq-7"><summary>Because LIBERO-Spatial is a suite where the picture decides the task.</summary><p>No. That holds for eight of Spatial's ten tasks, but this pair is the exception: both tasks start from the same table, so the picture can't decide.</p></details></li>
+      </ol></li>
+    <li class="mcq"><p>By our reading, on which suite should a blank instruction hurt the most?</p>
+      <ol class="mcq-opts">
+        <li><details class="mcq-opt" name="mcq-8"><summary>LIBERO-Spatial, because its sentences describe where things are.</summary><p>No. Its sentences do name places, but in eight of its ten tasks the starting table already tells the tasks apart, so the model can manage without the words.</p></details></li>
+        <li><details class="mcq-opt right" name="mcq-8"><summary>LIBERO-Goal, because all ten of its tasks start from the same table.</summary><p>Right. With one picture for ten tasks, only the words tell the model what to do. Chapter 5 shows the published number for our checkpoint.</p></details></li>
+        <li><details class="mcq-opt" name="mcq-8"><summary>LIBERO-10, because its tasks are the longest.</summary><p>No. Length makes tasks harder, but a blank instruction hurts where the picture can't tell the tasks apart, and eight of LIBERO-10's ten tasks start from a table of their own.</p></details></li>
+      </ol></li>
+  </ol>
+
+  <h2 id="sources">Sources</h2>
+  <ul class="sources">
+    <li>Our experiment 1, run on 2026-11-11 with openpi's <code>pi05_libero</code> checkpoint and openpi's evaluation settings: <a href="https://github.com/blueif16/vla_final/blob/main/stage1/results/exp1-shared-table.md">stage1/results/exp1-shared-table.md</a> (results, the endings table, the 95% ranges, our readings) and <code>stage1/runs/exp1-shared-table/episodes.jsonl</code> (one record per run). The videos stay on our machine; figure 4.1's clip and figure 4.2's frames were made from them by <code>tools/ch4/make_assets.py</code>, which also records the rule for each pick.</li>
+    <li>Our recorded run of LIBERO-Spatial task 0 from its first starting arrangement, 2026-11-11 (<code>stage1/runs/recorded-call-spatial0/</code>), for the starting picture in figures 4.3 to 4.5.</li>
+    <li>Fang et al. (2026), When Vision Overrides Language: Evaluating and Mitigating Counterfactual Failures in VLAs (LIBERO-CF). <a href="https://arxiv.org/abs/2602.17659">arXiv 2602.17659</a>, CC BY 4.0, v3 read 2026-11-13: the grounding rate (Section 4, “Metrics”), faithful and biased (“Evaluation Dimensions”), 50 counterfactual tasks in four suites of 15, 10, 10 and 15. Code, MIT licence: <a href="https://github.com/yuffish/VLA-CF">github.com/yuffish/VLA-CF</a>; its task file <code>libero_cf_spatial/01-pick_up_the_cookie_box_and_place_it_on_the_plate.bddl</code> starts from task 0's arrangement (checked 2026-11-13). Project page: <a href="https://vla-cf.github.io/">vla-cf.github.io</a>.</li>
+    <li>LIBERO's task files for LIBERO-Spatial, at the version openpi pins (<code>libero/libero/bddl_files/libero_spatial/</code>): the task 7 and task 9 files differ only in the sentence and in which bowl starts where; in task 0's file, bowl 1 starts between the plate and the ramekin and bowl 2 next to the ramekin. LIBERO's environment steps at 20 per second (<code>control_freq=20</code> in <code>libero/envs/env_wrapper.py</code>). Checked 2026-11-11 and 2026-11-13. <a href="https://github.com/Lifelong-Robot-Learning/LIBERO">github.com/Lifelong-Robot-Learning/LIBERO</a></li>
+    <li>openpi: the <code>pi05_libero</code> config (<code>prompt_from_task=True</code>), <code>examples/libero/main.py</code> (both pictures turned 180 degrees before they are sent), and the published 98.8 on LIBERO-Spatial (<code>examples/libero/README.md</code>), checked 2026-11-11. <a href="https://github.com/Physical-Intelligence/openpi">github.com/Physical-Intelligence/openpi</a></li>
+    <li>Our submitted plan, CS 6180 team sign-up sheet, November 2026 (quoted in <a href="https://github.com/blueif16/vla_final/blob/main/docs/learn/06-where-we-stand.md">chapter 6</a>).</li>
+  </ul>
+</div>
+</main>
+
+<nav class="chapter-nav" aria-label="Chapters">
+  <a class="prev" href="03-libero.html"><div class="label">Back · chapter 3</div>← LIBERO, the benchmark</a>
+  <a class="next" href="05-what-others-found.html"><div class="label">Next · chapter 5</div>What other groups have already found →</a>
+</nav>
+
+<footer class="site-foot">
+  <span class="brand">Learning VLAs</span>
+  <nav class="nav"><a href="../index.html">Chapters</a><a href="https://github.com/blueif16/vla_final">GitHub</a></nav>
+</footer>
+
+<script src="../assets/js/glossary.js"></script>
+<script src="../assets/js/site.js"></script>
+</body>
+</html>

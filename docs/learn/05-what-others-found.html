@@ -1,0 +1,503 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What Others Already Found · Chapter 5</title>
+<meta name="description" content="Chapter 5 of our learning path on vision-language-action models: the published blank-instruction and different-task numbers for our π0.5 checkpoint, the CAG fix, the other papers, and what still looks open.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,400&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/site.css">
+<link rel="stylesheet" href="../assets/css/ch5.css">
+</head>
+<body>
+<div class="progress" aria-hidden="true"></div>
+
+<header class="site-head">
+  <a class="brand" href="../index.html">Learning VLAs</a>
+  <nav class="nav" aria-label="Site">
+    <a href="../index.html" aria-current="page">Chapters</a>
+    <a href="https://github.com/blueif16/vla_final">GitHub</a>
+  </nav>
+</header>
+
+<nav class="toc" aria-label="On this page">
+  <div class="label">Chapter 5</div>
+  <a href="#closest">The closest numbers</a>
+  <a href="#different">A different task</a>
+  <a href="#cag">CAG, a fix at run time</a>
+  <a href="#others">The other papers</a>
+  <a href="#open">What still looks open</a>
+  <a href="#check">Check yourself</a>
+  <a href="#sources">Sources</a>
+</nav>
+
+<header class="doc-head">
+  <h1>What other groups have already found</h1>
+  <p class="subtitle">Other groups have already run most of the tests in our plan, and the blank and different-task tests on the very checkpoint we use. This chapter goes through what they found and ends with what still looks open.</p>
+  <div class="meta"><span>Chapter 5 of 6</span><span>12 min read</span><span>Needs chapters 1 to 4</span></div>
+  <div class="outcomes">
+    <div class="label">After this chapter you can</div>
+    <ul>
+      <li>say which parts of our submitted plan have already been measured, and on which models</li>
+      <li>quote the published blank-instruction numbers for our checkpoint, and say why Goal's 10.2% is close to one in ten</li>
+      <li>say in one sentence each how CAG and LangGap's extra data try to fix the problem</li>
+      <li>name what still looks open, as our own reading</li>
+    </ul>
+  </div>
+  <details class="contents">
+    <summary>Contents</summary>
+    <ol>
+      <li><a href="#closest">The numbers closest to our plan</a></li>
+      <li><a href="#different">A different task in the same scene</a></li>
+      <li><a href="#cag">CAG, a fix at run time</a></li>
+      <li><a href="#others">The other papers</a></li>
+      <li><a href="#open">What still looks open</a></li>
+      <li><a href="#check">Check yourself</a></li>
+    </ol>
+  </details>
+</header>
+
+<main>
+<div class="prose">
+  <p>In February 2026 a group at the University of North Carolina ran the official <button class="term" data-term="pi05">π0.5</button> <button class="term" data-term="libero">LIBERO</button> <button class="term" data-term="checkpoint">checkpoint</button> with the instruction removed. On LIBERO-Spatial it still did the task 68.2% of the time. On LIBERO-Goal it managed 10.2%. <strong class="key">That is the blank arm of our plan, on our model, already published.</strong></p>
+  <p>Figure 5.1 puts the two results next to the first pictures the robot sees. Each Spatial task starts from its own arrangement of bowls, plate and cabinet, so the picture already says which task this is. All ten Goal tasks start from the same table, so without the sentence the robot can only guess.</p>
+</div>
+
+<figure class="fig" aria-label="Figure 5.1">
+  <div class="suites">
+    <div class="suite">
+      <div class="suite-head">
+        <div class="label">LIBERO-Spatial</div>
+        <span class="suite-score">68.2%</span>
+        <p>with no instruction<br>98.8% with it</p>
+      </div>
+      <div class="suite-frames">
+        <figure><img src="../assets/img/libero-first/spatial-ep1262.jpg" alt="First picture of a Spatial task: one black bowl sits in the cabinet's open top drawer, another on the table." width="256" height="256" loading="lazy"><figcaption>“…in the top drawer of the wooden cabinet…”</figcaption></figure>
+        <figure><img src="../assets/img/libero-first/spatial-ep1264.jpg" alt="First picture of another Spatial task: a black bowl sits on top of the ramekin, and the drawer is closed." width="256" height="256" loading="lazy"><figcaption>“…on the ramekin…”</figcaption></figure>
+        <figure><img src="../assets/img/libero-first/spatial-ep1283.jpg" alt="First picture of a third Spatial task: one black bowl stands in the middle of the table, another next to the plate." width="256" height="256" loading="lazy"><figcaption>“…from table center…”</figcaption></figure>
+      </div>
+    </div>
+    <div class="suite">
+      <div class="suite-head">
+        <div class="label">LIBERO-Goal</div>
+        <span class="suite-score">10.2%</span>
+        <p>with no instruction<br>98.0% with it</p>
+      </div>
+      <div class="suite-frames">
+        <figure><img src="../assets/img/libero-ep379/table-000.jpg" alt="First picture of a Goal task: stove, wine bottle, bowl, plate, a small box and the cabinet." width="256" height="256" loading="lazy"><figcaption>“put the bowl on the plate”</figcaption></figure>
+        <figure><img src="../assets/img/libero-first/goal-ep392.jpg" alt="First picture of another Goal task: the same table with the same objects in the same places." width="256" height="256" loading="lazy"><figcaption>“put the bowl on the stove”</figcaption></figure>
+        <figure><img src="../assets/img/libero-first/goal-ep388.jpg" alt="First picture of a third Goal task: again the same table and objects." width="256" height="256" loading="lazy"><figcaption>“turn on the stove”</figcaption></figure>
+      </div>
+    </div>
+  </div>
+  <figcaption><b>Figure 5.1 · Three tasks from each suite, as the first camera picture shows them, and π0.5's success with no instruction.</b> The three Spatial tasks each start from their own arrangement. Two of the ten Spatial tasks do share one table, and we come back to them below. The three Goal pictures show one table, and the other seven Goal tasks start from it too. <span class="credit">Pictures: physical-intelligence/libero, CC BY 4.0, frame 0 of episodes 1262, 1264, 1283, 379, 392 and 388. Scores: Fang et al. 2026, LIBERO-CF, Table I.</span></figcaption>
+</figure>
+
+<div class="prose">
+  <p>This chapter lists what we found in a search on <span style="white-space:nowrap">2026-11-11</span>, which we rechecked on <span style="white-space:nowrap">2026-11-13</span>. The search wasn't exhaustive, so a paper we missed can still change the picture.</p>
+
+  <h2 id="closest">The numbers closest to our plan</h2>
+  <p>The paper is <button class="term" data-term="libero-cf">LIBERO-CF</button>, named after the benchmark it built, and its title is “When Vision Overrides Language” (Fang et al., a spotlight paper at CoRL 2026). It ran each official LIBERO checkpoint in more than one way. V+L means both camera pictures and the instruction, as in normal use. Vision-only means the pictures with the instruction removed. In its first two versions the paper also ran language-only, the instruction with the pictures removed, and the third version, from 4 November 2026, leaves that setting out. Figure 5.2 shows π0.5 with and without the instruction.</p>
+</div>
+
+<figure class="fig narrow">
+  <div class="chart">
+<!-- ch5-chart:suites:start -->
+<svg class="dg ch5-wide" viewBox="0 0 720 300" role="img" aria-label="π0.5 success rate per LIBERO suite, from LIBERO-CF Table I. With the instruction: Spatial 98.8, Object 98.2, Goal 98.0, LIBERO-10 92.4. With no instruction: Spatial 68.2, Object 56.6, Goal 10.2, LIBERO-10 71.6. On Goal the no-instruction result sits on the 10% mark of a random pick among ten tasks."><rect class="bg" width="720" height="300"/><path d="M132.0 34V236" stroke="#D7CFB6" stroke-width="1"/><text class="tiny" x="132.0" y="26" text-anchor="middle">0%</text><path d="M271.5 34V236" stroke="#D7CFB6" stroke-width="1"/><text class="tiny" x="271.5" y="26" text-anchor="middle">25%</text><path d="M411.0 34V236" stroke="#D7CFB6" stroke-width="1"/><text class="tiny" x="411.0" y="26" text-anchor="middle">50%</text><path d="M550.5 34V236" stroke="#D7CFB6" stroke-width="1"/><text class="tiny" x="550.5" y="26" text-anchor="middle">75%</text><path d="M690.0 34V236" stroke="#D7CFB6" stroke-width="1"/><text class="tiny" x="690.0" y="26" text-anchor="middle">100%</text><text class="sub" x="116" y="63" text-anchor="end" style="font-size:13px">Spatial</text><path d="M512.6 58H683.3" stroke="#AAA184" stroke-width="2.5"/><circle cx="512.6" cy="58" r="7" fill="#F5F4EF" stroke="#625C4B" stroke-width="2.5"><title>Spatial, no instruction: 68.2% (LIBERO-CF Table I)</title></circle><circle cx="683.3" cy="58" r="8" fill="#FBD45B" stroke="#C9A533" stroke-width="2"><title>Spatial, with the instruction: 98.8% (LIBERO-CF Table I)</title></circle><text class="lbl-s" x="683.3" y="45" text-anchor="middle">98.8</text><text class="lbl-s" x="499.6" y="63" text-anchor="end" style="fill:#625C4B">68.2</text><text class="sub" x="116" y="115" text-anchor="end" style="font-size:13px">Object</text><path d="M447.8 110H680.0" stroke="#AAA184" stroke-width="2.5"/><circle cx="447.8" cy="110" r="7" fill="#F5F4EF" stroke="#625C4B" stroke-width="2.5"><title>Object, no instruction: 56.6% (LIBERO-CF Table I)</title></circle><circle cx="680.0" cy="110" r="8" fill="#FBD45B" stroke="#C9A533" stroke-width="2"><title>Object, with the instruction: 98.2% (LIBERO-CF Table I)</title></circle><text class="lbl-s" x="680.0" y="97" text-anchor="middle">98.2</text><text class="lbl-s" x="434.8" y="115" text-anchor="end" style="fill:#625C4B">56.6</text><text class="sub" x="116" y="167" text-anchor="end" style="font-size:13px">Goal</text><path d="M187.8 144V180" stroke="#29271F" stroke-width="1.6" stroke-dasharray="3 3"/><path d="M188.9 162H678.8" stroke="#AAA184" stroke-width="2.5"/><circle cx="188.9" cy="162" r="7" fill="#F5F4EF" stroke="#625C4B" stroke-width="2.5"><title>Goal, no instruction: 10.2% (LIBERO-CF Table I)</title></circle><circle cx="678.8" cy="162" r="8" fill="#FBD45B" stroke="#C9A533" stroke-width="2"><title>Goal, with the instruction: 98.0% (LIBERO-CF Table I)</title></circle><text class="lbl-s" x="678.8" y="149" text-anchor="middle">98.0</text><text class="lbl-s" x="175.9" y="167" text-anchor="end" style="fill:#625C4B">10.2</text><text class="tiny" x="183.8" y="193" style="font-size:11.5px;fill:#29271F">↑ 1 in 10, picking one of the ten tasks at random</text><text class="sub" x="116" y="219" text-anchor="end" style="font-size:13px">LIBERO-10</text><path d="M531.5 214H647.6" stroke="#AAA184" stroke-width="2.5"/><circle cx="531.5" cy="214" r="7" fill="#F5F4EF" stroke="#625C4B" stroke-width="2.5"><title>LIBERO-10, no instruction: 71.6% (LIBERO-CF Table I)</title></circle><circle cx="647.6" cy="214" r="8" fill="#FBD45B" stroke="#C9A533" stroke-width="2"><title>LIBERO-10, with the instruction: 92.4% (LIBERO-CF Table I)</title></circle><text class="lbl-s" x="660.6" y="219" style="font-size:13px">92.4</text><text class="lbl-s" x="518.5" y="219" text-anchor="end" style="fill:#625C4B">71.6</text><circle cx="139.0" cy="272" r="7" fill="#FBD45B" stroke="#C9A533" stroke-width="2"><title>with the instruction</title></circle><text class="tiny" x="152" y="276" style="fill:#29271F">with the instruction</text><circle cx="332.0" cy="272" r="6" fill="#F5F4EF" stroke="#625C4B" stroke-width="2.5"><title>no instruction</title></circle><text class="tiny" x="345" y="276" style="fill:#29271F">no instruction</text><path d="M482 263V281" stroke="#29271F" stroke-width="1.6" stroke-dasharray="3 3"/><text class="tiny" x="492" y="276" style="fill:#29271F">random guess on Goal</text></svg>
+<svg class="dg ch5-narrow" viewBox="0 0 360 360" role="img" aria-label="π0.5 success rate per LIBERO suite, from LIBERO-CF Table I. With the instruction: Spatial 98.8, Object 98.2, Goal 98.0, LIBERO-10 92.4. With no instruction: Spatial 68.2, Object 56.6, Goal 10.2, LIBERO-10 71.6. On Goal the no-instruction result sits on the 10% mark of a random pick among ten tasks."><rect class="bg" width="360" height="360"/><path d="M112.0 36V290" stroke="#D7CFB6" stroke-width="1"/><text class="sub" x="112.0" y="28" text-anchor="middle">0%</text><path d="M168.0 36V290" stroke="#D7CFB6" stroke-width="1"/><text class="sub" x="168.0" y="28" text-anchor="middle">25%</text><path d="M224.0 36V290" stroke="#D7CFB6" stroke-width="1"/><text class="sub" x="224.0" y="28" text-anchor="middle">50%</text><path d="M280.0 36V290" stroke="#D7CFB6" stroke-width="1"/><text class="sub" x="280.0" y="28" text-anchor="middle">75%</text><path d="M336.0 36V290" stroke="#D7CFB6" stroke-width="1"/><text class="sub" x="336.0" y="28" text-anchor="middle">100%</text><text class="lbl-s" x="100" y="63" text-anchor="end" style="font-size:13px">Spatial</text><path d="M264.8 58H333.3" stroke="#AAA184" stroke-width="2.5"/><circle cx="264.8" cy="58" r="7" fill="#F5F4EF" stroke="#625C4B" stroke-width="2.5"><title>Spatial, no instruction: 68.2% (LIBERO-CF Table I)</title></circle><circle cx="333.3" cy="58" r="8" fill="#FBD45B" stroke="#C9A533" stroke-width="2"><title>Spatial, with the instruction: 98.8% (LIBERO-CF Table I)</title></circle><text class="lbl-s" x="333.3" y="85" text-anchor="middle">98.8</text><text class="lbl-s" x="264.8" y="85" text-anchor="middle" style="fill:#625C4B">68.2</text><text class="lbl-s" x="100" y="133" text-anchor="end" style="font-size:13px">Object</text><path d="M238.8 128H332.0" stroke="#AAA184" stroke-width="2.5"/><circle cx="238.8" cy="128" r="7" fill="#F5F4EF" stroke="#625C4B" stroke-width="2.5"><title>Object, no instruction: 56.6% (LIBERO-CF Table I)</title></circle><circle cx="332.0" cy="128" r="8" fill="#FBD45B" stroke="#C9A533" stroke-width="2"><title>Object, with the instruction: 98.2% (LIBERO-CF Table I)</title></circle><text class="lbl-s" x="332.0" y="155" text-anchor="middle">98.2</text><text class="lbl-s" x="238.8" y="155" text-anchor="middle" style="fill:#625C4B">56.6</text><text class="lbl-s" x="100" y="203" text-anchor="end" style="font-size:13px">Goal</text><path d="M134.4 180V216" stroke="#29271F" stroke-width="1.6" stroke-dasharray="3 3"/><path d="M134.8 198H331.5" stroke="#AAA184" stroke-width="2.5"/><circle cx="134.8" cy="198" r="7" fill="#F5F4EF" stroke="#625C4B" stroke-width="2.5"><title>Goal, no instruction: 10.2% (LIBERO-CF Table I)</title></circle><circle cx="331.5" cy="198" r="8" fill="#FBD45B" stroke="#C9A533" stroke-width="2"><title>Goal, with the instruction: 98.0% (LIBERO-CF Table I)</title></circle><text class="lbl-s" x="331.5" y="225" text-anchor="middle">98.0</text><text class="lbl-s" x="134.8" y="225" text-anchor="middle" style="fill:#625C4B">10.2</text><text class="sub" x="130.4" y="243" style="fill:#29271F">↑ 1 in 10, a random pick</text><text class="lbl-s" x="100" y="273" text-anchor="end" style="font-size:13px">LIBERO-10</text><path d="M272.4 268H319.0" stroke="#AAA184" stroke-width="2.5"/><circle cx="272.4" cy="268" r="7" fill="#F5F4EF" stroke="#625C4B" stroke-width="2.5"><title>LIBERO-10, no instruction: 71.6% (LIBERO-CF Table I)</title></circle><circle cx="319.0" cy="268" r="8" fill="#FBD45B" stroke="#C9A533" stroke-width="2"><title>LIBERO-10, with the instruction: 92.4% (LIBERO-CF Table I)</title></circle><text class="lbl-s" x="319.0" y="295" text-anchor="middle">92.4</text><text class="lbl-s" x="272.4" y="295" text-anchor="middle" style="fill:#625C4B">71.6</text><circle cx="27.0" cy="330" r="7" fill="#FBD45B" stroke="#C9A533" stroke-width="2"><title>with the instruction</title></circle><text class="sub" x="40" y="334" style="fill:#29271F">with the instruction</text><circle cx="210.0" cy="330" r="6" fill="#F5F4EF" stroke="#625C4B" stroke-width="2.5"><title>no instruction</title></circle><text class="sub" x="223" y="334" style="fill:#29271F">no instruction</text></svg>
+<!-- ch5-chart:suites:end -->
+  </div>
+  <div class="tablewrap">
+    <table class="ch5-table">
+      <caption>LIBERO-CF Table I · success rate in percent</caption>
+      <thead><tr><th>Model</th><th>Input</th><th>Spatial</th><th>Object</th><th>Goal</th><th>LIBERO-10</th><th>Average</th></tr></thead>
+      <tbody>
+        <tr class="ours"><td>π0.5</td><td>V+L</td><td>98.8</td><td>98.2</td><td>98.0</td><td>92.4</td><td>96.9</td></tr>
+        <tr class="ours"><td>π0.5</td><td>vision-only</td><td>68.2</td><td>56.6</td><td>10.2</td><td>71.6</td><td>51.7</td></tr>
+        <tr class="old"><td>π0.5</td><td>language-only*</td><td>0.0</td><td>0.0</td><td>0.0</td><td>0.0</td><td>0.0</td></tr>
+        <tr><td>π0</td><td>V+L</td><td>96.8</td><td>98.8</td><td>95.8</td><td>85.2</td><td>94.2</td></tr>
+        <tr><td>π0</td><td>vision-only</td><td>28.0</td><td>26.8</td><td>3.4</td><td>15.6</td><td>18.5</td></tr>
+        <tr class="old"><td>π0</td><td>language-only*</td><td>0.0</td><td>0.0</td><td>2.2</td><td>0.0</td><td>0.6</td></tr>
+        <tr><td>OpenVLA-OFT</td><td>V+L</td><td>97.6</td><td>98.4</td><td>97.9</td><td>94.5</td><td>97.1</td></tr>
+        <tr><td>OpenVLA-OFT</td><td>vision-only</td><td>83.2</td><td>98.2</td><td>10.0</td><td>85.0</td><td>69.1</td></tr>
+        <tr class="old"><td>OpenVLA-OFT</td><td>language-only*</td><td>0.0</td><td>0.0</td><td>3.4</td><td>0.0</td><td>0.9</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <figcaption><b>Figure 5.2 · π0.5's success rate in each LIBERO suite, with the instruction (gold) and without it (hollow).</b> The dashed mark on the Goal row is 10%, what a robot would score by picking one of the ten Goal tasks at random. Hover a dot for its source. The table is the paper's whole Table I. Rows marked * are in versions 1 and 2 only, and the other rows are the same in all three versions (Table 1 in version 3). π0.5's V+L row matches openpi's own LIBERO README exactly, which is why we read it as the checkpoint we run. <span class="credit">Source: Fang et al. 2026, LIBERO-CF, arXiv 2602.17659.</span></figcaption>
+</figure>
+
+<div class="prose">
+  <div class="has-side">
+  <p>π0.5 with no instruction still does the right task two times in three on Spatial and LIBERO-10, and more than half the time on Object. <strong class="key">On Goal it lands at 10.2%, close to the one-in-ten guess from chapter 3.</strong> That fits the prediction in chapter 4. Where the table tells the tasks apart, the model can manage without the words, and where it can't, the model can only guess.</p>
+  <aside class="side" aria-label="Side note: our own run on the Spatial pair that shares a table">
+    <div class="label">Our run on Spatial's shared table</div>
+    <table class="side-tbl">
+      <tr><th>with the sentence</th><td>19 of 20</td></tr>
+      <tr><th>no sentence</th><td>8 of 40</td></tr>
+    </table>
+    <p>These two tasks start from one table and differ only in which bowl to take. With 10 episodes per task and setting, the intervals are wide. The clips are in <a href="04-the-grounding-question.html">chapter 4</a>.</p>
+  </aside>
+  </div>
+  <p>The other two models in the table dip on Goal as well. <button class="term" data-term="openvla-oft">OpenVLA-OFT</button> falls to 10.0% there and <button class="term" data-term="pi0">π0</button> to 3.4%. Away from Goal they differ a lot. Without the words OpenVLA-OFT keeps 69.1% on average and π0 keeps 18.5%.</p>
+
+  <div class="note">
+    <div class="label">A common wrong belief</div>
+    <p>“π0.5 keeps 68.2% on Spatial with no instruction, so it ignores the words there.”</p>
+  </div>
+  <p>With the instruction it scores 98.8% on the same suite, so the words are what carry it from 68.2% up to 98.8%. And on the one Spatial pair whose two tasks start from the same table, our own run went from 19 of 20 with the sentence to 8 of 40 without it. The table settles most Spatial episodes by itself, and the words decide the rest.</p>
+
+  <h2 id="different">A different task in the same scene</h2>
+  <p>LIBERO-CF also built 50 new tasks. Each one is a <button class="term" data-term="counterfactual-instruction">counterfactual instruction</button>, a different task the robot could do in an existing LIBERO scene, often about an object that was only in the background during training. That is the “different task, same scene” arm of our plan. Figure 5.3 is the paper's own picture of what π0.5 does with such an instruction.</p>
+</div>
+
+<figure class="fig">
+  <div class="pan"><div class="frame paper wideimg"><img src="../assets/img/ch5/libero-cf-fig2-vision-shortcuts.jpg" alt="Left, panel (a): six simulator pictures with a heat map of grasp positions. Top row, case 2: with 'Pick up the black bowl' the heat sits on one bowl; with 'Pick up the cookie box' it spreads from that bowl to the box; with no instruction it sits on the bowl. Bottom row, case 1: the same pattern for 'Pick up the black bowl from table center'. Right, panel (b): two rows of four frames for 'Pick up the cookie box and place it on the plate'. With the training-task bowl present the arm grabs the bowl and fails three times; with the bowl removed it lifts the cookie box onto the plate." width="1600" height="574" loading="lazy"></div></div>
+  <figcaption><b>Figure 5.3 · Where the gripper goes.</b> In (a) the colour shows where π0.5 grasped over 50 trials, in two scenes from the benchmark's Spatial part. Given the task it was trained on, the grasps cluster on the black bowl. Asked for the cookie box, they spread between the box and the bowl. With no instruction they centre on the bowl. In (b) the robot is asked for the cookie box twice, and it fails with the bowl on the table and succeeds with the bowl taken away. The paper's caption doesn't say which model (b) shows. <span class="credit">Image: Fang et al. 2026, LIBERO-CF, Figure 2, CC BY 4.0.</span></figcaption>
+</figure>
+
+<div class="prose">
+  <p>The paper counts two outcomes for each new task. Faithful means the robot did the task it was asked for, and biased means it did the scene's original training task instead. Averaged over the benchmark's four parts, π0.5 finished the task it was asked for in 13.2% of episodes and the old task in 60.9%. Its <button class="term" data-term="grounding-rate">grounding rate</button>, how often the gripper touched the object the instruction named, was 30.8%.</p>
+
+  <h2 id="cag">CAG, a fix at run time</h2>
+  <p>LIBERO-CF then proposes Counterfactual Action Guidance, <button class="term" data-term="cag">CAG</button> for short. It runs the <button class="term" data-term="policy">policy</button> twice on the same pictures, once with the instruction and once without, and pushes the <button class="term" data-term="action">action</button> further in the direction the instruction moved it. Figure 5.4 draws the two runs and the push.</p>
+</div>
+
+<figure class="fig">
+  <svg class="dg ch5-wide" viewBox="0 0 960 330" role="img" aria-labelledby="f54t f54d"><title id="f54t">How CAG picks the action it sends</title><desc id="f54d">Run 1: two pictures and the instruction go into π0.5, which returns an action with the words. Run 2: the same two pictures and no instruction go into the same π0.5, which returns an action without the words. On a number line, the action without the words, then the action with the words one step further, then the CAG action half a step beyond that. CAG equals the action without the words plus 1.5 times the difference.</desc>
+    <defs><pattern id="f54-dots" width="16" height="16" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1" fill="#D7CFB6" opacity=".65"/></pattern>
+      <marker id="f54-gold" viewBox="0 0 12 12" refX="8" refY="6" markerWidth="3" markerHeight="3" orient="auto"><path d="M0 0L12 6 0 12z" fill="#FBD45B"/></marker>
+      <marker id="f54-green" viewBox="0 0 12 12" refX="8" refY="6" markerWidth="3.4" markerHeight="3.4" orient="auto"><path d="M0 0L12 6 0 12z" fill="#9BBC6C"/></marker>
+      <marker id="f54-dk" viewBox="0 0 12 12" refX="9" refY="6" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0L12 6 0 12z" fill="#577B37"/></marker></defs>
+    <rect class="bg" width="960" height="330"/><rect x="6" y="6" width="948" height="318" fill="url(#f54-dots)"/>
+    <text class="lbl-s" x="40" y="46">RUN 1 · THE PICTURES AND THE WORDS</text>
+    <rect class="box" x="40" y="60" width="118" height="64" rx="12"/><text class="lbl-s" x="99" y="88" text-anchor="middle">TWO PICTURES</text><text class="sub" x="99" y="108" text-anchor="middle">table + wrist</text>
+    <text class="lbl" x="172" y="98" text-anchor="middle">+</text>
+    <rect class="wcard" x="186" y="60" width="196" height="64" rx="12"/><text class="tiny" x="284" y="82" text-anchor="middle">INSTRUCTION</text><text class="sub" x="284" y="104" text-anchor="middle">"pick up the cookie box…"</text>
+    <path class="flow" d="M384 92H408" marker-end="url(#f54-gold)"/><path class="dash-w" d="M384 92H408"/>
+    <rect class="hot" x="420" y="60" width="96" height="64" rx="12"/><text class="lbl" x="468" y="98" text-anchor="middle">π0.5</text>
+    <path class="loop" d="M518 92H536" marker-end="url(#f54-green)"/>
+    <rect class="act" x="548" y="60" width="152" height="64" rx="12"/><text class="lbl-s" x="614" y="88" text-anchor="middle">ACTION</text><text class="sub" x="614" y="108" text-anchor="middle" style="font-size:11px">with the words</text><circle cx="684" cy="92" r="8" fill="#9BBC6C" stroke="#577B37" stroke-width="2.5"/>
+    <text class="lbl-s" x="40" y="176">RUN 2 · THE SAME PICTURES, NO WORDS</text>
+    <rect class="box" x="40" y="190" width="118" height="64" rx="12"/><text class="lbl-s" x="99" y="218" text-anchor="middle">TWO PICTURES</text><text class="sub" x="99" y="238" text-anchor="middle">the same two</text>
+    <text class="lbl" x="172" y="228" text-anchor="middle">+</text>
+    <rect class="ghost" x="186" y="190" width="196" height="64" rx="12"/><text class="tiny" x="284" y="212" text-anchor="middle">NO INSTRUCTION</text><text class="sub" x="284" y="234" text-anchor="middle">an empty string</text>
+    <path class="flow" d="M384 222H408" marker-end="url(#f54-gold)"/><path class="dash-w" d="M384 222H408"/>
+    <rect class="hot" x="420" y="190" width="96" height="64" rx="12"/><text class="lbl" x="468" y="222" text-anchor="middle">π0.5</text><text class="tiny" x="468" y="242" text-anchor="middle">same model</text>
+    <path class="loop" d="M518 222H536" marker-end="url(#f54-green)"/>
+    <rect class="act" x="548" y="190" width="152" height="64" rx="12"/><text class="lbl-s" x="614" y="218" text-anchor="middle">ACTION</text><text class="sub" x="614" y="238" text-anchor="middle" style="font-size:11px">without the words</text><circle cx="684" cy="222" r="7.5" fill="#F5F4EF" stroke="#577B37" stroke-width="3"/>
+    <rect x="712" y="30" width="230" height="266" rx="20" fill="none" stroke="#AAA184" stroke-width="1.5" stroke-dasharray="6 6"/>
+    <rect x="730" y="22" width="168" height="16" fill="#F5F4EF"/><text class="tiny" x="738" y="34" style="fill:#29271F;font-weight:700">WHAT CAG SENDS</text>
+    <text class="tiny" x="827" y="62" text-anchor="middle">one number of the action,</text><text class="tiny" x="827" y="77" text-anchor="middle">e.g. how far the hand moves</text>
+    <path d="M728 170H926" stroke="#746D58" stroke-width="2"/>
+    <path d="M744 126H828" stroke="#577B37" stroke-width="3" marker-end="url(#f54-dk)"/><text class="tiny" x="788" y="116" text-anchor="middle" style="fill:#29271F">the words' step</text>
+    <path d="M840 126H874" stroke="#577B37" stroke-width="3" stroke-dasharray="5 4" marker-end="url(#f54-dk)"/><text class="tiny" x="862" y="150" text-anchor="middle" style="fill:#29271F">+ half again</text>
+    <circle cx="744" cy="170" r="8" fill="#F5F4EF" stroke="#577B37" stroke-width="3"/><circle cx="836" cy="170" r="8.5" fill="#9BBC6C" stroke="#577B37" stroke-width="2.5"/><circle cx="882" cy="170" r="10" fill="#577B37" stroke="#F5F4EF" stroke-width="2"/>
+    <text class="sub" x="746" y="200" text-anchor="middle" style="font-size:11px">without</text><text class="sub" x="746" y="214" text-anchor="middle" style="font-size:11px">the words</text>
+    <text class="sub" x="834" y="200" text-anchor="middle" style="font-size:11px">with</text><text class="sub" x="834" y="214" text-anchor="middle" style="font-size:11px">the words</text>
+    <text class="lbl-s" x="890" y="201" text-anchor="middle">CAG</text><text class="sub" x="890" y="214" text-anchor="middle" style="font-size:11px">sent</text>
+    <text class="tiny" x="827" y="250" text-anchor="middle" style="fill:#29271F">CAG = without the words</text><text class="tiny" x="827" y="266" text-anchor="middle" style="fill:#29271F">+ 1.5 × (with − without)</text>
+  </svg>
+  <svg class="dg ch5-narrow" viewBox="0 0 360 600" role="img" aria-label="How CAG picks the action it sends. Run 1: two pictures and the instruction go into π0.5, which returns an action with the words. Run 2: the same pictures and no instruction go into the same π0.5, which returns an action without the words. On a number line, the action without the words, the action with the words one step further, and the CAG action half a step beyond. CAG equals without plus 1.5 times the difference.">
+    <defs><pattern id="f54n-dots" width="16" height="16" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1" fill="#D7CFB6" opacity=".65"/></pattern>
+      <marker id="f54n-green" viewBox="0 0 12 12" refX="8" refY="6" markerWidth="3.4" markerHeight="3.4" orient="auto"><path d="M0 0L12 6 0 12z" fill="#9BBC6C"/></marker>
+      <marker id="f54n-tan" viewBox="0 0 12 12" refX="8" refY="6" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0L12 6 0 12z" fill="#AAA184"/></marker>
+      <marker id="f54n-dk" viewBox="0 0 12 12" refX="9" refY="6" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0L12 6 0 12z" fill="#577B37"/></marker></defs>
+    <rect class="bg" width="360" height="600"/><rect x="4" y="4" width="352" height="592" fill="url(#f54n-dots)"/>
+    <text class="lbl-s" x="20" y="32">RUN 1 · PICTURES AND WORDS</text>
+    <rect class="box" x="20" y="44" width="110" height="50" rx="12"/><text class="lbl-s" x="75" y="66" text-anchor="middle">TWO PICTURES</text><text class="sub" x="75" y="84" text-anchor="middle">table + wrist</text>
+    <text class="lbl" x="142" y="75" text-anchor="middle">+</text>
+    <rect class="wcard" x="154" y="44" width="186" height="50" rx="12"/><text class="tiny" x="247" y="63" text-anchor="middle">INSTRUCTION</text><text class="sub" x="247" y="82" text-anchor="middle">"pick up the cookie box"</text>
+    <path class="flow-t" d="M75 96V106" marker-end="url(#f54n-tan)"/>
+    <rect class="hot" x="20" y="112" width="110" height="44" rx="12"/><text class="lbl" x="75" y="140" text-anchor="middle">π0.5</text>
+    <path class="loop" d="M132 134H154" marker-end="url(#f54n-green)"/>
+    <rect class="act" x="166" y="112" width="174" height="44" rx="12"/><text class="lbl-s" x="238" y="131" text-anchor="middle">ACTION</text><text class="sub" x="238" y="148" text-anchor="middle">with the words</text><circle cx="322" cy="134" r="7.5" fill="#9BBC6C" stroke="#577B37" stroke-width="2.5"/>
+    <text class="lbl-s" x="20" y="196">RUN 2 · SAME PICTURES, NO WORDS</text>
+    <rect class="box" x="20" y="208" width="110" height="50" rx="12"/><text class="lbl-s" x="75" y="230" text-anchor="middle">TWO PICTURES</text><text class="sub" x="75" y="248" text-anchor="middle">the same two</text>
+    <text class="lbl" x="142" y="239" text-anchor="middle">+</text>
+    <rect class="ghost" x="154" y="208" width="186" height="50" rx="12"/><text class="tiny" x="247" y="227" text-anchor="middle">NO INSTRUCTION</text><text class="sub" x="247" y="246" text-anchor="middle">an empty string</text>
+    <path class="flow-t" d="M75 260V270" marker-end="url(#f54n-tan)"/>
+    <rect class="hot" x="20" y="276" width="110" height="44" rx="12"/><text class="lbl" x="75" y="304" text-anchor="middle">π0.5</text>
+    <path class="loop" d="M132 298H154" marker-end="url(#f54n-green)"/>
+    <rect class="act" x="166" y="276" width="174" height="44" rx="12"/><text class="lbl-s" x="238" y="295" text-anchor="middle">ACTION</text><text class="sub" x="238" y="312" text-anchor="middle">without the words</text><circle cx="322" cy="298" r="7" fill="#F5F4EF" stroke="#577B37" stroke-width="3"/>
+    <rect x="12" y="350" width="336" height="234" rx="20" fill="none" stroke="#AAA184" stroke-width="1.5" stroke-dasharray="6 6"/>
+    <rect x="28" y="342" width="124" height="16" fill="#F5F4EF"/><text class="tiny" x="36" y="354" style="fill:#29271F;font-weight:700">WHAT CAG SENDS</text>
+    <text class="sub" x="180" y="382" text-anchor="middle">one number of the action,</text><text class="sub" x="180" y="398" text-anchor="middle">e.g. how far the hand moves</text>
+    <path d="M30 482H330" stroke="#746D58" stroke-width="2"/>
+    <path d="M60 438H178" stroke="#577B37" stroke-width="3" marker-end="url(#f54n-dk)"/><text class="sub" x="120" y="428" text-anchor="middle" style="fill:#29271F">the words' step</text>
+    <path d="M188 438H232" stroke="#577B37" stroke-width="3" stroke-dasharray="5 4" marker-end="url(#f54n-dk)"/><text class="sub" x="226" y="464" text-anchor="middle" style="fill:#29271F">+ half again</text>
+    <circle cx="60" cy="482" r="8.5" fill="#F5F4EF" stroke="#577B37" stroke-width="3"/><circle cx="180" cy="482" r="9" fill="#9BBC6C" stroke="#577B37" stroke-width="2.5"/><circle cx="240" cy="482" r="11" fill="#577B37" stroke="#F5F4EF" stroke-width="2"/>
+    <text class="sub" x="60" y="512" text-anchor="middle">without</text><text class="sub" x="60" y="528" text-anchor="middle">the words</text>
+    <text class="sub" x="174" y="512" text-anchor="middle">with</text><text class="sub" x="174" y="528" text-anchor="middle">the words</text>
+    <text class="lbl-s" x="250" y="513" text-anchor="middle">CAG</text><text class="sub" x="250" y="528" text-anchor="middle">sent</text>
+    <text class="sub" x="180" y="562" text-anchor="middle" style="fill:#29271F">CAG = without + 1.5 × (with − without)</text>
+  </svg>
+  <figcaption><b>Figure 5.4 · How CAG picks the action it sends.</b> Both runs see the same two pictures, and only the second has no words. The gap between the two actions is the step the words made. CAG takes that step 1.5 times, the weight LIBERO-CF uses for π0.5, and a weight of 1 would send the ordinary action. The drawing shows one number of the action chunk, and the paper applies the same rule to every number in it. The positions are drawn to show the rule, not measured. <span class="credit">The rule: LIBERO-CF, equation 2 and section 6.2 (version 3).</span></figcaption>
+</figure>
+
+<div class="prose">
+  <p>CAG works like <button class="term" data-term="classifier-free-guidance">classifier-free guidance</button> in image generation, where a model makes one estimate with the text prompt and one without, and the picture is pushed further toward the prompt. CAG comes in two versions. In the training-free one, the run without words is π0.5 itself with the instruction removed, so nothing new is trained. The other version trains a separate model that never sees an instruction and uses it for the run without words. Both run two policies at every call.</p>
+  <p>The training-free version raised π0.5's grounding rate by 9.7 points and its task success by 3.6 points on LIBERO-CF. Figure 5.5 puts those gains next to what the robot did instead.</p>
+</div>
+
+<figure class="fig narrow">
+  <div class="chart">
+<!-- ch5-chart:cf:start -->
+<svg class="dg ch5-wide" viewBox="0 0 720 296" role="img" aria-label="π0.5 on LIBERO-CF, average of its four suites, from LIBERO-CF Table 3. asked-for task, touched the object named: 30.8% as released, 40.5% with training-free CAG; asked-for task, finished the task: 13.2% as released, 16.8% with training-free CAG; old task, touched the old task's object: 65.6% as released, 59.8% with training-free CAG; old task, finished the old task: 60.9% as released, 43.5% with training-free CAG."><rect class="bg" width="720" height="296"/><path d="M250.0 36V234" stroke="#D7CFB6" stroke-width="1"/><text class="tiny" x="250.0" y="28" text-anchor="middle">0%</text><path d="M360.0 36V234" stroke="#D7CFB6" stroke-width="1"/><text class="tiny" x="360.0" y="28" text-anchor="middle">25%</text><path d="M470.0 36V234" stroke="#D7CFB6" stroke-width="1"/><text class="tiny" x="470.0" y="28" text-anchor="middle">50%</text><path d="M580.0 36V234" stroke="#D7CFB6" stroke-width="1"/><text class="tiny" x="580.0" y="28" text-anchor="middle">75%</text><path d="M690.0 36V234" stroke="#D7CFB6" stroke-width="1"/><text class="tiny" x="690.0" y="28" text-anchor="middle">100%</text><text class="lbl-s" x="20" y="40">THE TASK IT WAS ASKED FOR</text><text class="sub" x="234" y="66" text-anchor="end" style="fill:#29271F">touched the object named</text><path d="M395.5 62H415.2" stroke="#746D58" stroke-width="2.2"/><path d="M419.2 62l-7 -5v10z" fill="#746D58"/><circle cx="385.5" cy="62" r="8" fill="#FBD45B" stroke="#C9A533" stroke-width="2"><title>touched the object named: 30.8% for π0.5 as released (LIBERO-CF Table 3, average)</title></circle><circle cx="428.2" cy="62" r="7" fill="#29271F" stroke="#F5F4EF" stroke-width="2"><title>touched the object named: 40.5% with training-free CAG (LIBERO-CF Table 3, average)</title></circle><text class="lbl-s" x="372.5" y="67" text-anchor="end" style="fill:#625C4B">30.8</text><text class="lbl-s" x="441.2" y="67">40.5</text><text class="sub" x="234" y="106" text-anchor="end" style="fill:#29271F">finished the task</text><path d="M318.1 102H310.9" stroke="#746D58" stroke-width="2.2"/><path d="M314.9 102l-7 -5v10z" fill="#746D58"/><circle cx="308.1" cy="102" r="8" fill="#FBD45B" stroke="#C9A533" stroke-width="2"><title>finished the task: 13.2% for π0.5 as released (LIBERO-CF Table 3, average)</title></circle><circle cx="323.9" cy="102" r="7" fill="#29271F" stroke="#F5F4EF" stroke-width="2"><title>finished the task: 16.8% with training-free CAG (LIBERO-CF Table 3, average)</title></circle><text class="lbl-s" x="295.1" y="107" text-anchor="end" style="fill:#625C4B">13.2</text><text class="lbl-s" x="336.9" y="107">16.8</text><text class="lbl-s" x="20" y="154">THE SCENE'S OLD TASK, INSTEAD</text><text class="sub" x="234" y="180" text-anchor="end" style="fill:#29271F">touched the old task's object</text><path d="M528.6 176H526.1" stroke="#746D58" stroke-width="2.2"/><path d="M522.1 176l7 -5v10z" fill="#746D58"/><circle cx="538.6" cy="176" r="8" fill="#FBD45B" stroke="#C9A533" stroke-width="2"><title>touched the old task's object: 65.6% for π0.5 as released (LIBERO-CF Table 3, average)</title></circle><circle cx="513.1" cy="176" r="7" fill="#29271F" stroke="#F5F4EF" stroke-width="2"><title>touched the old task's object: 59.8% with training-free CAG (LIBERO-CF Table 3, average)</title></circle><text class="lbl-s" x="500.1" y="181" text-anchor="end">59.8</text><text class="lbl-s" x="551.6" y="181" style="fill:#625C4B">65.6</text><text class="sub" x="234" y="220" text-anchor="end" style="fill:#29271F">finished the old task</text><path d="M508.0 216H454.4" stroke="#746D58" stroke-width="2.2"/><path d="M450.4 216l7 -5v10z" fill="#746D58"/><circle cx="518.0" cy="216" r="8" fill="#FBD45B" stroke="#C9A533" stroke-width="2"><title>finished the old task: 60.9% for π0.5 as released (LIBERO-CF Table 3, average)</title></circle><circle cx="441.4" cy="216" r="7" fill="#29271F" stroke="#F5F4EF" stroke-width="2"><title>finished the old task: 43.5% with training-free CAG (LIBERO-CF Table 3, average)</title></circle><text class="lbl-s" x="428.4" y="221" text-anchor="end">43.5</text><text class="lbl-s" x="531.0" y="221" style="fill:#625C4B">60.9</text><circle cx="257.0" cy="270" r="7" fill="#FBD45B" stroke="#C9A533" stroke-width="2"><title>π0.5 as released</title></circle><text class="tiny" x="270" y="274" style="fill:#29271F">π0.5 as released</text><circle cx="440.0" cy="270" r="6" fill="#29271F" stroke="#F5F4EF" stroke-width="2"><title>with training-free CAG</title></circle><text class="tiny" x="453" y="274" style="fill:#29271F">with training-free CAG</text></svg>
+<svg class="dg ch5-narrow" viewBox="0 0 360 404" role="img" aria-label="π0.5 on LIBERO-CF, average of its four suites, from LIBERO-CF Table 3. asked-for task, touched the object named: 30.8% as released, 40.5% with training-free CAG; asked-for task, finished the task: 13.2% as released, 16.8% with training-free CAG; old task, touched the old task's object: 65.6% as released, 59.8% with training-free CAG; old task, finished the old task: 60.9% as released, 43.5% with training-free CAG."><rect class="bg" width="360" height="404"/><path d="M22.0 48V316" stroke="#D7CFB6" stroke-width="1"/><text class="sub" x="22.0" y="336" text-anchor="middle">0%</text><path d="M99.0 48V316" stroke="#D7CFB6" stroke-width="1"/><text class="sub" x="99.0" y="336" text-anchor="middle">25%</text><path d="M176.0 48V316" stroke="#D7CFB6" stroke-width="1"/><text class="sub" x="176.0" y="336" text-anchor="middle">50%</text><path d="M253.0 48V316" stroke="#D7CFB6" stroke-width="1"/><text class="sub" x="253.0" y="336" text-anchor="middle">75%</text><path d="M330.0 48V316" stroke="#D7CFB6" stroke-width="1"/><text class="sub" x="330.0" y="336" text-anchor="middle">100%</text><text class="lbl-s" x="22" y="36" style="fill:#29271F;paint-order:stroke;stroke:#F5F4EF;stroke-width:5px;stroke-linejoin:round">THE TASK IT WAS ASKED FOR</text><text class="sub" x="22" y="60" style="fill:#29271F;paint-order:stroke;stroke:#F5F4EF;stroke-width:5px;stroke-linejoin:round">touched the object named</text><path d="M126.9 74H133.7" stroke="#746D58" stroke-width="2.2"/><path d="M137.7 74l-7 -5v10z" fill="#746D58"/><circle cx="116.9" cy="74" r="8" fill="#FBD45B" stroke="#C9A533" stroke-width="2"><title>touched the object named: 30.8% for π0.5 as released (LIBERO-CF Table 3, average)</title></circle><circle cx="146.7" cy="74" r="7" fill="#29271F" stroke="#F5F4EF" stroke-width="2"><title>touched the object named: 40.5% with training-free CAG (LIBERO-CF Table 3, average)</title></circle><text class="lbl" x="103.9" y="79" text-anchor="end" style="fill:#625C4B">30.8</text><text class="lbl" x="159.7" y="79">40.5</text><text class="sub" x="22" y="122" style="fill:#29271F;paint-order:stroke;stroke:#F5F4EF;stroke-width:5px;stroke-linejoin:round">finished the task</text><path d="M72.7 136H60.7" stroke="#746D58" stroke-width="2.2"/><path d="M64.7 136l-7 -5v10z" fill="#746D58"/><circle cx="62.7" cy="136" r="8" fill="#FBD45B" stroke="#C9A533" stroke-width="2"><title>finished the task: 13.2% for π0.5 as released (LIBERO-CF Table 3, average)</title></circle><circle cx="73.7" cy="136" r="7" fill="#29271F" stroke="#F5F4EF" stroke-width="2"><title>finished the task: 16.8% with training-free CAG (LIBERO-CF Table 3, average)</title></circle><text class="lbl" x="49.7" y="141" text-anchor="end" style="fill:#625C4B">13.2</text><text class="lbl" x="86.7" y="141">16.8</text><text class="lbl-s" x="22" y="200" style="fill:#29271F;paint-order:stroke;stroke:#F5F4EF;stroke-width:5px;stroke-linejoin:round">THE SCENE'S OLD TASK, INSTEAD</text><text class="sub" x="22" y="224" style="fill:#29271F;paint-order:stroke;stroke:#F5F4EF;stroke-width:5px;stroke-linejoin:round">touched the old task's object</text><path d="M214.0 238H219.2" stroke="#746D58" stroke-width="2.2"/><path d="M215.2 238l7 -5v10z" fill="#746D58"/><circle cx="224.0" cy="238" r="8" fill="#FBD45B" stroke="#C9A533" stroke-width="2"><title>touched the old task's object: 65.6% for π0.5 as released (LIBERO-CF Table 3, average)</title></circle><circle cx="206.2" cy="238" r="7" fill="#29271F" stroke="#F5F4EF" stroke-width="2"><title>touched the old task's object: 59.8% with training-free CAG (LIBERO-CF Table 3, average)</title></circle><text class="lbl" x="193.2" y="243" text-anchor="end">59.8</text><text class="lbl" x="237.0" y="243" style="fill:#625C4B">65.6</text><text class="sub" x="22" y="286" style="fill:#29271F;paint-order:stroke;stroke:#F5F4EF;stroke-width:5px;stroke-linejoin:round">finished the old task</text><path d="M199.6 300H169.0" stroke="#746D58" stroke-width="2.2"/><path d="M165.0 300l7 -5v10z" fill="#746D58"/><circle cx="209.6" cy="300" r="8" fill="#FBD45B" stroke="#C9A533" stroke-width="2"><title>finished the old task: 60.9% for π0.5 as released (LIBERO-CF Table 3, average)</title></circle><circle cx="156.0" cy="300" r="7" fill="#29271F" stroke="#F5F4EF" stroke-width="2"><title>finished the old task: 43.5% with training-free CAG (LIBERO-CF Table 3, average)</title></circle><text class="lbl" x="143.0" y="305" text-anchor="end">43.5</text><text class="lbl" x="222.6" y="305" style="fill:#625C4B">60.9</text><circle cx="29.0" cy="360" r="7" fill="#FBD45B" stroke="#C9A533" stroke-width="2"><title>π0.5 as released</title></circle><text class="sub" x="42" y="364" style="fill:#29271F">π0.5 as released</text><circle cx="29.0" cy="384" r="6" fill="#29271F" stroke="#F5F4EF" stroke-width="2"><title>with training-free CAG</title></circle><text class="sub" x="42" y="388" style="fill:#29271F">with training-free CAG</text></svg>
+<!-- ch5-chart:cf:end -->
+  </div>
+  <figcaption><b>Figure 5.5 · π0.5 on LIBERO-CF, before and after training-free CAG, averaged over the benchmark's four parts.</b> The top two rows count the task the robot was asked for, and the bottom two count the scene's old training task. Each arrow points from π0.5 as released to π0.5 with CAG. Hover a dot for its source. <span class="credit">Source: Fang et al. 2026, LIBERO-CF, Table 3 (version 3).</span></figcaption>
+</figure>
+
+<div class="prose">
+  <p>So CAG moves π0.5 toward the task it was asked for. <strong class="key">Even with CAG, the robot finished the scene's old task more often than the new one, 43.5% of episodes against 16.8%.</strong> The version with a separately trained model does better, 21.7% against 36.2%, and there too the old task comes out ahead.</p>
+</div>
+
+<section class="rail" aria-label="Go deeper: CAG in the paper">
+  <div class="rail-head">
+    <div><div class="label">Go deeper</div><p class="rail-title">CAG in the paper</p></div>
+    <div class="rail-nav"><button class="rail-prev" aria-label="Previous">←</button><button class="rail-next" aria-label="Next">→</button></div>
+  </div>
+  <div class="rail-track">
+    <article class="card">
+      <div class="media pic"><a href="../assets/img/ch5/libero-cf-fig4-guidance-scale.jpg"><img src="../assets/img/ch5/libero-cf-fig4-guidance-scale.jpg" alt="LIBERO-CF Figure 4, a line chart of rate against guidance scale 1.0 to 4.0. π0.5 grounding (orange, dashed) rises 39.3, 50.7, 56.8, 58.4; π0.5 success (orange, solid) goes 24.4, 31.6, 28.8, 16.4. OpenVLA-OFT (olive) grounding rises from 6.8 to 30.4 and its success stays between 1.1 and 7.9." loading="lazy"></a></div>
+      <div class="body">
+        <span class="tag">Figure · how hard to push</span>
+        <h4>Pushing harder, up to a point</h4>
+        <p>The paper tried several weights. For π0.5 (orange), touching the named object rises from 39.3% at a weight of 1 to 58.4% at 3, while finishing the task peaks at 31.6% at 1.5 and falls to 16.4% at 3. That is why it settles on 1.5. The caption doesn't name the setting, but the numbers at 1 and 1.5 match its CF-Spatial results with a separately trained model (our reading).</p>
+        <p class="src">Fang et al. 2026, LIBERO-CF, Figure 4, CC BY 4.0</p>
+      </div>
+    </article>
+    <article class="card">
+      <div class="media pic"><a href="../assets/img/ch5/libero-cf-fig3-cag.jpg"><img src="../assets/img/ch5/libero-cf-fig3-cag.jpg" alt="LIBERO-CF Figure 3: a language-conditioned VLA model takes vision and language; a language-unconditioned VA model takes vision only; their actions combine as π_uncond + ω · (π_cond − π_uncond) into the CAG action." loading="lazy"></a></div>
+      <div class="body">
+        <span class="tag">Figure · the two runs</span>
+        <h4>The paper's own drawing of CAG</h4>
+        <p>This is the version with a separate model. The bottom branch is a vision-action model, trained on the same LIBERO data with the instructions left out, and it supplies the action without words. In the training-free version π0.5 itself fills that branch.</p>
+        <p class="src">Fang et al. 2026, LIBERO-CF, Figure 3, CC BY 4.0</p>
+      </div>
+    </article>
+    <article class="card">
+      <div class="media pic"><a href="../assets/img/ch5/libero-cf-fig5-cans.jpg"><img src="../assets/img/ch5/libero-cf-fig5-cans.jpg" alt="Three photos of a real white robot arm on a black table with a Coke, a Sprite and a Fanta can; in each photo the gripper holds a different can." loading="lazy"></a></div>
+      <div class="body">
+        <span class="tag">Figure · a real arm</span>
+        <h4>The same test on a real arm</h4>
+        <p>The paper fine-tuned π0.5 on a real Franka arm with 20 demonstrations of one task in each scene and one or none of the others. Here the three cans have the same shape and differ only in look, and each photo shows one can being picked. With CAG and a separately trained model, grounding rose by 9.4 points and success by 17.2 on average across its real scenes.</p>
+        <p class="src">Fang et al. 2026, LIBERO-CF, Figure 5 (first scene), CC BY 4.0</p>
+      </div>
+    </article>
+  </div>
+</section>
+
+<div class="prose">
+  <h2 id="others">The other papers</h2>
+  <p>Five more papers come close to our question. The LIBERO-PRO, LIBERO-Plus, LangGap and Grant et al. entries come from their abstracts and project pages, plus the first two sections of LIBERO-PRO's paper. We haven't read their full tables yet.</p>
+  <ul class="paperlist">
+    <li>
+      <div class="pname">LIBERO-PRO<small>Zhou et al., Oct 2025</small></div>
+      <div><div class="label">What they did</div><p>Changed the objects, the starting positions, the instructions and the scenes around the robot.</p></div>
+      <div><div class="label">What they found</div><p>Models above 90% fall to 0.0% in the changed settings. Their outputs stayed the same when the instruction was corrupted or replaced by meaningless tokens.</p></div>
+      <div class="read">Read: abstract, and sections 1 and 2 of the paper (CC BY 4.0)</div>
+    </li>
+    <li>
+      <div class="pname">LIBERO-Plus<small>Fei et al., Oct 2025 · CVPR 2026</small></div>
+      <div><div class="label">What they did</div><p>Built 10,030 task variants across seven kinds of change, among them instructions rewritten by a language model.</p></div>
+      <div><div class="label">What they found</div><p>Models are largely insensitive to changes in wording and tend to ignore the instruction. A new camera angle or a new starting pose for the arm hurt most.</p></div>
+      <div class="read">Read: abstract and project page</div>
+    </li>
+    <li>
+      <div class="pname">LangGap<small>Hou and Zhao, Feb 2026</small></div>
+      <div><div class="label">What they did</div><p>Gave π0.5 new tasks that share one fixed layout, then trained it on extra data aimed at those tasks, a kind of <button class="term" data-term="data-augmentation">data augmentation</button>.</p></div>
+      <div><div class="label">What they found</div><p>The extra data raised success from 0% to 90% when trained on one task, but only from 0% to 28% with many tasks. As the tasks grew more varied, the model's capacity looked like the limit.</p></div>
+      <div class="read">Read: abstract</div>
+    </li>
+    <li>
+      <div class="pname">Not All Features Are Created Equal<small>Grant, Zhao and Wang, NeurIPS 2026 and an ICLR 2026 workshop</small></div>
+      <div><div class="label">What they did</div><p>Looked inside π0.5, OpenVLA-OFT and other models with <button class="term" data-term="linear-probe">linear probes</button>, <button class="term" data-term="sparse-autoencoder">sparse autoencoders</button> and <button class="term" data-term="activation-injection">activation injection</button>.</p></div>
+      <div><div class="label">What they found</div><p>Language matters only when the picture doesn't settle the goal. Inside the model, different prompts can be told apart with 99.3% accuracy while the behaviour stays the same. With an empty prompt their π0.5 kept 31.6% on LIBERO-Object and 5.8% on Goal, against 91.0% and 92.6% with the prompt.</p></div>
+      <div class="read">Read: abstract and project page (the 99.3% from its March 2026 version, the empty-prompt numbers from the version read on 2026-11-13)</div>
+    </li>
+    <li>
+      <div class="pname">Mechanistic Interpretability for Steering VLAs<small>Häon et al., CoRL 2025</small></div>
+      <div><div class="label">What they did</div><p>Found directions inside π0's and <button class="term" data-term="openvla">OpenVLA</button>'s layers that go with behaviours such as speed and direction.</p></div>
+      <div><div class="label">What they found</div><p>Pushing on those directions, <button class="term" data-term="activation-steering">activation steering</button>, steers the robot while it runs, in LIBERO and on a real arm.</p></div>
+      <div class="read">Read: abstract and the paper (CC BY 4.0)</div>
+    </li>
+  </ul>
+  <p>LIBERO-PRO's paper shows the meaningless-token case in pictures. Figure 5.6 is its Figure 3.</p>
+</div>
+
+<figure class="fig narrow">
+  <div class="pan"><div class="strips">
+    <div><div class="label">The instruction · <span class="q">pick up the salad dressing and place it in the basket</span></div><img src="../assets/img/ch5/libero-pro-fig3a-original.jpg" alt="Three simulator frames: the basket and the salad dressing bottle are boxed in green; the arm lifts the salad dressing; the arm puts it in the basket." width="1228" height="334" loading="lazy"></div>
+    <div><div class="label">The instruction · <span class="q">fdsgfdsgsd</span> and other nonsense</div><img src="../assets/img/ch5/libero-pro-fig3b-messy.jpg" alt="The same three frames marked in red: labelled 'Input: messy instruction', the arm still lifts the salad dressing, under a red cross, and puts it in the basket." width="1231" height="336" loading="lazy"></div>
+  </div></div>
+  <figcaption><b>Figure 5.6 · The same motion for a real instruction and for nonsense.</b> In the top row the policy is asked to pick up the salad dressing and place it in the basket, and it does. In the bottom row the instruction is a meaningless string such as “fdsgfdsgsd” or “xxx”, and the policy still picks up the salad dressing and puts it in the basket. The paper marks that pick-up with a red cross. It evaluates OpenVLA, π0 and π0.5 and doesn't say which one these frames show. <span class="credit">Image: Zhou et al. 2025, LIBERO-PRO, Figure 3, CC BY 4.0.</span></figcaption>
+</figure>
+
+<section class="rail" aria-label="Go deeper: the papers' own pages">
+  <div class="rail-head">
+    <div><div class="label">Go deeper</div><p class="rail-title">The papers' own pages</p></div>
+    <div class="rail-nav"><button class="rail-prev" aria-label="Previous">←</button><button class="rail-next" aria-label="Next">→</button></div>
+  </div>
+  <div class="rail-track">
+    <article class="card">
+      <div class="media pic"><a href="../assets/img/ch5/haon-fig1-steering.jpg"><img src="../assets/img/ch5/haon-fig1-steering.jpg" alt="Häon et al. Figure 1: extract FFN value vectors from the VLA's language model, project them onto the token space, cluster them (one cluster's top tokens are 'Quick', 'faster', 'fast'), activate a cluster during the forward pass, and steer π0 on a real UR5 arm and OpenVLA in LIBERO." loading="lazy"></a></div>
+      <div class="body">
+        <span class="tag">Figure · steering</span>
+        <h4>Turning up a word inside the model</h4>
+        <p>Häon et al. project the vectors in each feed-forward layer onto the model's word tokens, find clusters that mean things like “fast” or “up”, and turn a cluster up while the robot runs. On their real arm, turning a cluster up changed the motion more than adding the same word to the prompt did.</p>
+        <p class="src">Häon, Stocking, Chuang and Tomlin 2025, Figure 1, CC BY 4.0 · <a href="https://vla-mech-interp.github.io/">project page with videos</a></p>
+      </div>
+    </article>
+    <article class="card text">
+      <div class="body">
+        <span class="tag">Project page · videos</span>
+        <h4>LIBERO-Plus, failure by failure</h4>
+        <p>The project page shows rollout videos for each of its seven kinds of change, among them instructions rewritten in longer words. In its blank-instruction test, some models barely changed with no valid words at all. The paper's licence doesn't let us copy its figures, so here is the link.</p>
+        <p class="src"><a href="https://sylvestf.github.io/LIBERO-plus/">sylvestf.github.io/LIBERO-plus</a></p>
+      </div>
+    </article>
+    <article class="card text">
+      <div class="body">
+        <span class="tag">Explorer · videos</span>
+        <h4>Action Atlas, from Grant et al.</h4>
+        <p>An interactive site with the paper's sparse-autoencoder features for each model and a library of more than 10,000 rollout videos you can filter by model, suite, experiment and outcome.</p>
+        <p class="src"><a href="https://action-atlas.com">action-atlas.com</a> · <a href="https://cwru-aism.github.io/vla-interp-page/">project page</a></p>
+      </div>
+    </article>
+    <article class="card text">
+      <div class="body">
+        <span class="tag">Code</span>
+        <h4>LangGap and LIBERO-CF</h4>
+        <p>LangGap's benchmark and code are announced in its repository. LIBERO-CF's repository holds the 50 counterfactual tasks and a CAG version for openpi, the library our checkpoint comes from.</p>
+        <p class="src"><a href="https://github.com/YC11Hou/langgap">github.com/YC11Hou/langgap</a> · <a href="https://github.com/yuffish/VLA-CF">github.com/yuffish/VLA-CF</a></p>
+      </div>
+    </article>
+  </div>
+</section>
+
+<div class="prose">
+  <h2 id="open">What still looks open</h2>
+  <p>This part is our reading, written to be argued with. Figure 5.7 puts the papers next to the arms of our submitted plan.</p>
+</div>
+
+<figure class="fig narrow">
+  <div class="armmap" role="list" aria-label="Figure 5.7, which arms of our plan have been measured">
+    <div class="arm" role="listitem">
+      <div class="arm-name"><b>Original sentence</b><small>the task's own words</small></div>
+      <div class="arm-papers"><span class="chip hot"><b>openpi README</b> · pi05_libero</span><span class="chip hot"><b>LIBERO-CF</b> · Table I, V+L</span></div>
+    </div>
+    <div class="arm" role="listitem">
+      <div class="arm-name"><b>Paraphrase</b><small>the same request in other words</small></div>
+      <div class="arm-papers"><span class="chip"><b>LIBERO-PRO</b> · reworded instructions, OpenVLA, π0 and π0.5</span><span class="chip"><b>LIBERO-Plus</b> · instructions rewritten by a language model</span></div>
+    </div>
+    <div class="arm" role="listitem">
+      <div class="arm-name"><b>Blank</b><small>no instruction at all</small></div>
+      <div class="arm-papers"><span class="chip hot"><b>LIBERO-CF</b> · Table I, vision-only</span><span class="chip"><b>LIBERO-PRO</b> · nonsense tokens</span><span class="chip"><b>LIBERO-Plus</b> · blank-instruction test</span><span class="chip"><b>Grant et al.</b> · empty prompt</span></div>
+    </div>
+    <div class="arm" role="listitem">
+      <div class="arm-name"><b>Different task, same scene</b><small>a counterfactual instruction</small></div>
+      <div class="arm-papers"><span class="chip hot"><b>LIBERO-CF</b> · 50 new tasks</span><span class="chip"><b>LangGap</b> · new tasks on one layout</span><span class="chip"><b>LIBERO-Plus</b> · target object swapped</span></div>
+    </div>
+    <div class="arm open" role="listitem">
+      <div class="arm-name"><b>When reading stops</b><small>across the steps of fine-tuning</small></div>
+      <div class="arm-papers"><span class="chip none">none found in our search on 2026-11-11 · our reading</span></div>
+    </div>
+  </div>
+  <div class="armkey"><span><i class="hot"></i>measured on pi05_libero, our checkpoint</span><span><i></i>other models, or a setup we haven't checked</span><span><i class="none"></i>nothing found</span></div>
+  <figcaption><b>Figure 5.7 · The arms of our plan, and who has measured each.</b> We read LIBERO-CF's runs as our checkpoint because its V+L row matches openpi's own numbers exactly. The last row is our reading of a search that wasn't exhaustive. <span class="credit">Sources: the papers in this chapter; chapter 6 lists the plan as we submitted it.</span></figcaption>
+</figure>
+
+<div class="prose">
+  <ol class="points">
+    <li>The blank and different-task arms of our plan have been measured for <code>pi05_libero</code>, and the <button class="term" data-term="paraphrase">paraphrase</button> arm has been run at benchmark scale by LIBERO-PRO and LIBERO-Plus. Running the plan as submitted would mostly reproduce known results.</li>
+    <li><strong class="key">We found no study that tracks when during fine-tuning the model stops reading.</strong> The base π0.5 was trained to follow language. Somewhere between <code>pi05_base</code> and <code>pi05_libero</code>, reading stopped mattering outside LIBERO-Goal.</li>
+    <li>LangGap and Grant et al. both point at the training data, where one instruction per scene lets the picture stand in for the words. How much scene-sharing the data needs before the model reads is measured only in part.</li>
+    <li>CAG fixes the problem at run time. Whether a cheap <button class="term" data-term="fine-tuning">fine-tuning</button> change does as well on the same tests is open.</li>
+  </ol>
+  <p><a href="https://github.com/blueif16/vla_final/blob/main/docs/learn/06-where-we-stand.md">Chapter 6</a> holds the options we weighed with these results in hand, and the decisions made so far.</p>
+
+  <h2 id="check">Check yourself</h2>
+  <ol class="quiz">
+    <li><p>Which arm of our submitted plan has already been published for our exact checkpoint, and what did it show?</p>
+      <details><summary>Show answer</summary><p>The blank-instruction arm (LIBERO-CF, Table I). π0.5 kept 68.2% on Spatial, 56.6% on Object and 71.6% on LIBERO-10, and fell to 10.2% on Goal. The different-task arm was published for it too, in LIBERO-CF's 50 new tasks.</p></details></li>
+    <li><p>Why does π0.5's 10.2% on LIBERO-Goal with no instruction fit the explanation from chapter 4? Say it in your own words.</p>
+      <details><summary>Show answer</summary><p>All ten Goal tasks start from the same picture, so without words the model can only guess among ten, which gives about one in ten.</p></details></li>
+    <li><p>In one sentence each, how do LIBERO-CF's CAG and LangGap's augmentation try to fix the problem?</p>
+      <details><summary>Show answer</summary><p>CAG runs the policy with and without the instruction at test time and amplifies the difference the instruction makes. LangGap trains on extra data where tasks share a layout, so the model has to use the words.</p></details></li>
+  </ol>
+
+  <p class="quiz-intro">In questions 4 to 9, pick the answer you think is right. The option opens and says whether it's right and why, and you can open the others afterwards to see what's wrong with them.</p>
+  <ol class="quiz" style="counter-reset: q 3">
+    <li class="mcq"><p>π0.5 scores 68.2% on LIBERO-Spatial with no instruction. What does that tell you?</p>
+      <ol class="mcq-opts">
+        <li><details class="mcq-opt" name="mcq-4"><summary>It ignores the words on Spatial, since it does the task without them.</summary><p>No, and this is the wrong belief the chapter names. With the words it scores 98.8%, so the words still carry it from 68.2% up to 98.8%. On the Spatial pair that shares a table, our run fell from 19 of 20 to 8 of 40 without them.</p></details></li>
+        <li><details class="mcq-opt right" name="mcq-4"><summary>The starting table settles most Spatial episodes, and the words still decide the rest.</summary><p>Right. All but two Spatial tasks start from their own arrangement, so the picture names the task most of the time. The gap up to 98.8% is the part the words decided.</p></details></li>
+        <li><details class="mcq-opt" name="mcq-4"><summary>It understands spatial words such as “between” well enough to work out the task.</summary><p>No. With no instruction there are no spatial words to understand. The 68.2% comes from the picture alone, which names most Spatial tasks by their arrangement (chapter 3).</p></details></li>
+      </ol></li>
+    <li class="mcq"><p>Why does π0.5 land at 10.2% on LIBERO-Goal with no instruction?</p>
+      <ol class="mcq-opts">
+        <li><details class="mcq-opt right" name="mcq-5"><summary>All ten Goal tasks start from the same table, so without words it can't tell which one is wanted.</summary><p>Right. With one picture for ten tasks, a policy that ignores the words can at best pick one of them, which works about one time in ten. That was chapter 3's arithmetic and chapter 4's prediction.</p></details></li>
+        <li><details class="mcq-opt" name="mcq-5"><summary>Goal's tasks are harder to carry out, so it fails them more often.</summary><p>No. With the instruction it scores 98.0% on Goal, about as high as anywhere. What it loses without the words is the only way to tell the ten tasks apart.</p></details></li>
+        <li><details class="mcq-opt" name="mcq-5"><summary>Without an instruction the robot doesn't move at all.</summary><p>No. Without words it still finishes a Goal task 10.2% of the time, and two Spatial tasks in three, so it moves. On Goal it just can't know which of the ten tasks is wanted.</p></details></li>
+      </ol></li>
+    <li class="mcq"><p>CAG runs π0.5 once with the instruction and once without. With the weight LIBERO-CF uses for π0.5, which action does it send?</p>
+      <ol class="mcq-opts">
+        <li><details class="mcq-opt" name="mcq-6"><summary>The average of the two actions.</summary><p>No. The average would be a weight of 0.5, halfway back toward the action without words. CAG goes the other way, past the action with words.</p></details></li>
+        <li><details class="mcq-opt" name="mcq-6"><summary>The action without words, because the picture alone is the more reliable guide.</summary><p>No. That would be a weight of 0. The action without words is only the point the push is measured from.</p></details></li>
+        <li><details class="mcq-opt right" name="mcq-6"><summary>The action with words, pushed half as far again in the direction the words moved it.</summary><p>Right. The weight is 1.5, so the action sent is the one without words plus 1.5 times the difference the words made (figure 5.4).</p></details></li>
+      </ol></li>
+    <li class="mcq"><p>On LIBERO-CF, training-free CAG raised π0.5's success on the task it was asked for from 13.2% to 16.8%. What did the robot finish most often, even with CAG?</p>
+      <ol class="mcq-opts">
+        <li><details class="mcq-opt" name="mcq-7"><summary>The task it was asked for.</summary><p>No. 16.8% is well under half. The scene's old training task came out more often, in 43.5% of episodes with CAG.</p></details></li>
+        <li><details class="mcq-opt right" name="mcq-7"><summary>The scene's old training task.</summary><p>Right. With CAG it finished the old task in 43.5% of episodes and the asked-for one in 16.8%. CAG moved both numbers the right way, and the old task still came out ahead (figure 5.5).</p></details></li>
+        <li><details class="mcq-opt" name="mcq-7"><summary>Nothing, because running the policy twice made it freeze.</summary><p>No. The paper counts finished tasks, and with CAG the old one was finished in 43.5% of episodes. CAG made the old task less likely and the new one more likely.</p></details></li>
+      </ol></li>
+    <li class="mcq"><p>LangGap's extra data took π0.5 from 0% to 90% when it trained on one new task, and from 0% to 28% when it trained on many. What did the authors read from this?</p>
+      <ol class="mcq-opts">
+        <li><details class="mcq-opt right" name="mcq-8"><summary>Targeted data helps, but as the tasks grow more varied the model's capacity looks like the limit.</summary><p>Right. That is their reading in the abstract. The data partly closes the gap, and with more varied tasks even the trained ones did poorly.</p></details></li>
+        <li><details class="mcq-opt" name="mcq-8"><summary>Extra data solves the problem, since one task reached 90%.</summary><p>No. The 90% is for a single task. With many tasks it reached only 28%, and the authors say even trained tasks performed poorly.</p></details></li>
+        <li><details class="mcq-opt" name="mcq-8"><summary>The model can't learn new tasks in a layout it already knows.</summary><p>No. It went from 0% to 90% on one new task, so it can learn one. The trouble starts when many varied tasks share the layout.</p></details></li>
+      </ol></li>
+    <li class="mcq"><p>Which arm of our plan did our search find no study for?</p>
+      <ol class="mcq-opts">
+        <li><details class="mcq-opt" name="mcq-9"><summary>The blank instruction.</summary><p>No. LIBERO-CF's Table I measured it on our exact checkpoint: 68.2%, 56.6%, 10.2% and 71.6%.</p></details></li>
+        <li><details class="mcq-opt" name="mcq-9"><summary>The paraphrase.</summary><p>No. LIBERO-PRO and LIBERO-Plus both tested reworded instructions at benchmark scale, though we haven't checked that either used our checkpoint.</p></details></li>
+        <li><details class="mcq-opt right" name="mcq-9"><summary>When during fine-tuning the model stops reading the words.</summary><p>Right, as far as our search on 2026-11-11 went. None of the studies we found follows the words' effect across the training steps from <code>pi05_base</code> to <code>pi05_libero</code>. That is our reading, and the search wasn't exhaustive.</p></details></li>
+      </ol></li>
+  </ol>
+
+  <h2 id="sources">Sources</h2>
+  <ul class="sources">
+    <li>Fang et al. (2026), When Vision Overrides Language: Evaluating and Mitigating Counterfactual Failures in VLAs (LIBERO-CF), CoRL 2026 spotlight per the arXiv comments. <a href="https://arxiv.org/abs/2602.17659">arXiv 2602.17659</a>, CC BY 4.0: version 1 (19 Feb 2026), 2 (15 Jul 2026) and 3 (4 Nov 2026). Table I (versions 1 and 2; Table 1 in version 3), Table 3, equation 2 and the guidance weight of 1.5 for π0.5 (section 6.2), Figures 2 to 5, all read in the arXiv HTML on 2026-11-13. Project page <a href="https://vla-cf.github.io/">vla-cf.github.io</a>, code <a href="https://github.com/yuffish/VLA-CF">github.com/yuffish/VLA-CF</a>.</li>
+    <li>Zhou et al. (2025), LIBERO-PRO: Towards Robust and Fair Evaluation of Vision-Language-Action Models Beyond Memorization. <a href="https://arxiv.org/abs/2510.03827">arXiv 2510.03827</a>, CC BY 4.0. The abstract, sections 1 and 2 and Figure 3 of version 2, read 2026-11-13. Code <a href="https://github.com/Zxy-MLlab/LIBERO-PRO">github.com/Zxy-MLlab/LIBERO-PRO</a>.</li>
+    <li>Fei et al. (2025), LIBERO-Plus: In-depth Robustness Analysis of Vision-Language-Action Models, CVPR 2026. <a href="https://arxiv.org/abs/2510.13626">arXiv 2510.13626</a> (arXiv's default licence, so no figures are copied) and the project page <a href="https://sylvestf.github.io/LIBERO-plus/">sylvestf.github.io/LIBERO-plus</a>, read 2026-11-13.</li>
+    <li>Hou and Zhao (2026), LangGap: Diagnosing and Closing the Language Gap in Vision-Language-Action Models. <a href="https://arxiv.org/abs/2603.00592">arXiv 2603.00592</a>, submitted 28 Feb 2026 (arXiv's default licence). Abstract read 2026-11-13.</li>
+    <li>Grant, Zhao and Wang (2026), Not All Features Are Created Equal: A Mechanistic Study of Vision-Language-Action Models. <a href="https://arxiv.org/abs/2603.19233">arXiv 2603.19233</a> (arXiv's default licence; six versions, the latest 2 Nov 2026). The 99.3% is from the project page as archived on 20 Mar 2026 (<a href="https://web.archive.org/web/20260320025957/https://cwru-aism.github.io/vla-interp-page/">web.archive.org</a>); the current <a href="https://cwru-aism.github.io/vla-interp-page/">project page</a>, read 2026-11-13, says more than 99% and gives the empty-prompt numbers. Action Atlas: <a href="https://action-atlas.com">action-atlas.com</a>.</li>
+    <li>Häon, Stocking, Chuang and Tomlin (2025), Mechanistic Interpretability for Steering Vision-Language-Action Models, CoRL 2025. <a href="https://arxiv.org/abs/2509.00328">arXiv 2509.00328</a>, CC BY 4.0, read 2026-11-13. Project page <a href="https://vla-mech-interp.github.io/">vla-mech-interp.github.io</a>.</li>
+    <li>Ho and Salimans (2022), Classifier-Free Diffusion Guidance. <a href="https://arxiv.org/abs/2207.12598">arXiv 2207.12598</a>, abstract read 2026-11-13.</li>
+    <li>openpi, <code>examples/libero/README.md</code>: <code>pi05_libero</code> scores 98.8, 98.2, 98.0 and 92.4 (chapter 2). <a href="https://github.com/Physical-Intelligence/openpi">github.com/Physical-Intelligence/openpi</a></li>
+    <li>Our experiment 1 on 2026-11-11, the LIBERO-Spatial pair that shares a table: <code>stage1/results/exp1-shared-table.md</code> in our repository. The shared table itself was found in LIBERO's task files (chapter 3).</li>
+    <li>physical-intelligence/libero, CC BY 4.0: frame 0 of episodes 379, 388, 392, 1262, 1264 and 1283. <a href="https://huggingface.co/datasets/physical-intelligence/libero">huggingface.co/datasets/physical-intelligence/libero</a></li>
+  </ul>
+</div>
+</main>
+
+<nav class="chapter-nav" aria-label="Chapters">
+  <a class="prev" href="04-the-grounding-question.html"><div class="label">Back · chapter 4</div>← The grounding question</a>
+  <a class="next" href="https://github.com/blueif16/vla_final/blob/main/docs/learn/06-where-we-stand.md"><div class="label">Next · chapter 6</div>Where we stand →</a>
+</nav>
+
+<footer class="site-foot">
+  <span class="brand">Learning VLAs</span>
+  <nav class="nav"><a href="../index.html">Chapters</a><a href="https://github.com/blueif16/vla_final">GitHub</a></nav>
+</footer>
+
+<script src="../assets/js/glossary.js"></script>
+<script src="../assets/js/site.js"></script>
+</body>
+</html>

@@ -8,9 +8,7 @@
        theta = lr * sum_i (score_i - average) * (1[try i reached left] - 0.5),   chance of left = 1 / (1 + exp(-theta))
    With lr = 0.2 the chapter's example (left 1, right 0, right 0, left 1) gives 55%, the number the text uses.
 
-   video[data-play]: real footage. "view" plays muted when at least half of it is on screen, pauses when it leaves,
-   stops after two loops, and a tap pauses or replays it. "tap" opens still on its poster with a Play button and plays
-   once. Under prefers-reduced-motion every clip behaves like "tap".
+   video[data-play] (real footage) moved to site.js on 2026-11-13 so every page can use it.
 
    [data-widget=run]: a line chart already drawn in the HTML; this only adds a readout under the pointer. */
 (function () {
@@ -117,32 +115,6 @@
     }
     build(); draw();
     let rt; window.addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(() => { const was = compact; build(); if (was !== compact) draw(); }, 120); });
-  });
-
-  /* ---------- real footage ---------- */
-  $$("video[data-play]").forEach((v) => {
-    const mode = reduce ? "tap" : v.dataset.play;
-    const frame = v.closest(".frame");
-    v.muted = true; v.playsInline = true; v.loop = false; v.removeAttribute("autoplay");
-    let loops = 0;
-    const btn = document.createElement("button");
-    btn.type = "button"; btn.className = "play"; btn.textContent = "Play";
-    btn.setAttribute("aria-label", "Play the video");
-    frame.appendChild(btn);
-    const showBtn = (label) => { btn.hidden = false; btn.textContent = label; btn.setAttribute("aria-label", `${label} the video`); };
-    const start = () => { btn.hidden = true; v.play().catch(() => showBtn("Play")); };
-    btn.addEventListener("click", () => { loops = 0; v.currentTime = 0; start(); });
-    v.addEventListener("click", () => { if (v.paused) start(); else { v.pause(); showBtn("Play"); } });
-    if (mode === "view") {
-      btn.hidden = true;
-      v.addEventListener("ended", () => { if (++loops < 2) { v.currentTime = 0; v.play(); } else showBtn("Again"); });
-      new IntersectionObserver((es) => es.forEach((e) => {
-        if (e.isIntersecting && loops < 2 && btn.hidden) v.play().catch(() => showBtn("Play"));
-        else if (!e.isIntersecting && !v.paused) v.pause();
-      }), { threshold: 0.5 }).observe(v);
-    } else {
-      v.addEventListener("ended", () => showBtn("Again"));
-    }
   });
 
   /* ---------- a readout under the pointer on a line chart drawn in the HTML ---------- */

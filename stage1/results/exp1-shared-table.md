@@ -44,7 +44,11 @@ With the sentence erased, the robot usually didn't finish anything. In the 20 co
 | the stove bowl | 3 | 5 |
 | the cabinet bowl | 0 | 1 |
 | the cookie box | 2 | 1 |
-| nothing | 5 | 3 |
+| none of the checked objects | 5 | 3 |
+
+The last row isn't "nothing". The ramekin wasn't one of the checked objects, and in the videos two of task 7's
+five (starting states 10 and 13) end with the ramekin on the plate. That was seen in the last frames on 2026-11-13,
+not checked by the simulator.
 
 Across all 40 blank episodes, a bowl reached the plate 15 times. It was the stove bowl 12 times and the cabinet bowl 3
 times.

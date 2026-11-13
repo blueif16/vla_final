@@ -1,0 +1,89 @@
+/* Chapter 5 page (05-what-others-found.html): styles that site.css doesn't have yet. Load after site.css.
+   Every part is static: nothing here animates or needs a click. Written 2026-11-13.
+   - .suites (figure 5.1): real first frames of three tasks per suite, one row per suite, the suite's published
+     no-instruction score beside it. Teaches: where every task has its own table the picture names the task, and
+     where all ten share one it can't.
+   - svg.ch5-wide / svg.ch5-narrow: each number chart is drawn twice by tools/ch5/charts.py, a wide layout and a
+     compact one with bigger type for phones (teaching-interactives, step 9); one of the two shows by width.
+   - table.ch5-table: the full table behind a chart (dataviz: a table view exists).
+   - .paperlist (section "The other papers"): one card per paper, what they did and what they found side by side.
+   - .armmap (figure 5.7): the arms of our submitted plan, each with the papers that measured it; gold = measured on
+     our checkpoint, beige = other models or a setup we haven't checked, dashed = nothing found (our reading).
+   - .strips (figure 5.6): two strips of a paper's frames, one above the other, each with an HTML label.
+   - .wideimg: a paper figure that pans sideways on phones instead of shrinking below reading size. */
+
+/* ---------- figure 5.1 ---------- */
+.suites { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 14px; display: grid; gap: 14px; }
+.suite { display: grid; grid-template-columns: 170px minmax(0, 1fr); gap: 16px; align-items: center; }
+.suite + .suite { border-top: 1px solid var(--line); padding-top: 14px; }
+.suite-head .label { margin-bottom: 4px; color: var(--ink); }
+.suite-head p { margin: 0; font: 13px/1.45 var(--mono); color: var(--ink-2); }
+.suite-score { display: block; font: 400 40px/1.05 var(--serif); color: var(--ink); margin: 2px 0 2px; }
+.suite-frames { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.suite-frames figure { margin: 0; }
+.suite-frames img { width: 100%; aspect-ratio: 1; border-radius: 8px; background: var(--frame); }
+.suite-frames figcaption { font: 11.5px/1.4 var(--mono); color: var(--ink-2); margin-top: 5px; }
+@media (max-width: 640px) {
+  .suite { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .suite-head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+  .suite-score { font-size: 32px; }
+  .suite-frames { gap: 6px; }
+  .suite-frames figcaption { font-size: 11px; }
+}
+
+/* ---------- charts drawn twice ---------- */
+.fig svg.ch5-narrow { display: none; }
+@media (max-width: 560px) { .fig svg.ch5-wide { display: none; } .fig svg.ch5-narrow { display: block; } }
+.chart { background: var(--bg); border: 1px solid var(--line); border-radius: 14px; padding: 6px; }
+
+/* ---------- a table behind a chart ---------- */
+.tablewrap { overflow-x: auto; margin-top: 14px; }
+table.ch5-table { border-collapse: collapse; width: 100%; min-width: 520px; font: 13px/1.4 var(--mono); background: var(--white); border: 1px solid var(--line); border-radius: 10px; }
+.ch5-table caption { text-align: left; font: 600 12px/1.4 var(--mono); letter-spacing: .07em; text-transform: uppercase; color: var(--ink-3); padding: 0 0 6px; }
+.ch5-table th, .ch5-table td { padding: 6px 10px; text-align: right; border-top: 1px solid var(--line); white-space: nowrap; }
+.ch5-table thead th { border-top: 0; color: var(--ink-2); font-weight: 600; }
+.ch5-table th:first-child, .ch5-table td:first-child, .ch5-table th:nth-child(2), .ch5-table td:nth-child(2) { text-align: left; }
+.ch5-table tr.ours td { background: var(--gold-soft); }
+.ch5-table tr.old td { color: var(--ink-3); }
+
+/* ---------- the other papers ---------- */
+.paperlist { list-style: none; padding: 0 !important; margin: 8px 0 22px; display: grid; gap: 12px; }
+.prose .paperlist > li { margin: 0; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; display: grid; grid-template-columns: 180px minmax(0, 1fr) minmax(0, 1fr); gap: 6px 18px; }
+.paperlist .pname { font: 600 16px/1.35 var(--sans); }
+.paperlist .pname small { display: block; font: 12px/1.45 var(--mono); color: var(--ink-3); margin-top: 4px; font-weight: 400; }
+.paperlist .label { margin-bottom: 3px; }
+.paperlist p { margin: 0 !important; font-size: 15.5px; line-height: 1.5; }
+.paperlist .read { grid-column: 2 / -1; font: 12px/1.45 var(--mono); color: var(--ink-3); }
+@media (max-width: 760px) {
+  .prose .paperlist > li { grid-template-columns: minmax(0, 1fr); }
+  .paperlist .read { grid-column: auto; }
+}
+
+/* ---------- figure 5.7, the arms of our plan ---------- */
+.armmap { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 6px 16px; }
+.arm { display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: 8px 18px; align-items: center; padding: 12px 0; }
+.arm + .arm { border-top: 1px solid var(--line); }
+.arm-name b { display: block; font: 600 16px/1.35 var(--sans); }
+.arm-name small { display: block; font: 12px/1.45 var(--mono); color: var(--ink-3); }
+.arm-papers { display: flex; flex-wrap: wrap; gap: 6px; }
+.arm-papers .chip { font-weight: 500; font-size: 12px; }
+.arm-papers .chip b { font-weight: 700; }
+.chip.none { background: var(--bg); border-style: dashed; border-color: var(--ink-3); color: var(--ink-2); }
+.armkey { display: flex; gap: 8px 18px; flex-wrap: wrap; margin-top: 10px; font: 12px var(--mono); color: var(--ink-2); }
+.armkey i { display: inline-block; width: 14px; height: 12px; border-radius: 4px; border: 1.5px solid var(--line); background: var(--box); vertical-align: -1px; margin-right: 6px; }
+.armkey i.hot { background: var(--gold); border-color: var(--gold-edge); }
+.armkey i.none { background: var(--bg); border-style: dashed; border-color: var(--ink-3); }
+@media (max-width: 640px) { .arm { grid-template-columns: minmax(0, 1fr); } }
+
+/* ---------- figure 5.6, two strips of frames ---------- */
+.strips { display: grid; gap: 12px; }
+.strips > div { background: var(--white); border: 1px solid var(--line); border-radius: 12px; padding: 10px; }
+.strips .label { margin: 0 2px 8px; color: var(--ink); }
+.strips .label .q { text-transform: none; letter-spacing: 0; font-weight: 500; }
+.strips img { width: 100%; border-radius: 6px; }
+
+/* ---------- paper figures that pan on phones (site.css adds "Drag the figure sideways" to the caption) ---------- */
+@media (max-width: 760px) {
+  .pan > .wideimg { min-width: 720px; }
+  .pan > .strips { min-width: 640px; }
+}

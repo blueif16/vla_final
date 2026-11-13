@@ -96,3 +96,46 @@ sources:
   - "LW: Chinese translation of Lilian Weng, 'Reward Hacking in Reinforcement Learning' (2024)"
   - "澎湃新闻 2017-10-19, https://www.thepaper.cn/newsDetail_forward_1830073 (基于自我对弈的强化学习)"
   - "Hugging Face Chinese CV course, hugging-face.cn (知识蒸馏, 教师模型, 学生模型)"
+
+# added for the chapter 3 web page (2026-11-13). Sources: RLinf's Chinese LIBERO docs
+# (rlinf.readthedocs.io/zh-cn/latest/rst_source/examples/embodied/libero.html: 任务套件, 套件, 成功率, 试次),
+# Embodied AI reading station's LIBERO notes (estelledc.github.io/embodied-ai-reading-station/papers/libero/: 初始状态 μ0,
+# 目标谓词), SimBench's Chinese LIBERO dashboard (everloom-129.github.io/SimBench/libero/libero_dashboard_cn.html: 任务套件).
+# robosuite and the task file (.bddl) are names and get no zh.
+ch3_web_2026_11_13:
+  task-suite:      { zh: 任务套件, alt: [套件, 任务集, 任务组], note: "任务套件 in RLinf's docs and SimBench; RLinf's results table also says 任务组" }
+  initial-state:   { zh: 初始状态, alt: [初始布局, 初始配置], note: "初始状态 for μ0 in the reading-station notes; LIBERO's figure says 'init configuration' (初始配置)" }
+  goal-condition:  { zh: 目标条件, alt: [目标谓词, 成功条件], open: true, note: "the paper's own word is goal predicate (目标谓词, reading-station notes); we say 'goal condition' in English, so 目标条件, which is plainer" }
+  success-rate:    { zh: 成功率 }
+
+# added for the chapter 5 web page (2026-11-13), keys in docs/assets/js/glossary-ch5.js. Sources: alphaXiv's Chinese
+# page for LIBERO-CF (alphaxiv.org/zh/abs/2602.17659: 反事实失效, 视觉捷径, 反事实动作引导, 接地, 忠实, 偏置, 无分类器引导,
+# 引导系数; a machine translation, so weak evidence for usage), arXivDaily's Chinese abstract of arXiv 2610.06235
+# (接地缺口, 线性探针), 36氪 2026-08-24 on interpretability (线性探针, 稀疏自编码器, 操纵向量), CSDN on SAEs
+# (稀疏自编码器, 激活修补), ACL Anthology zh (稀疏自编码器, 引导). LIBERO-CF, CAG and OpenVLA-OFT are names and get no zh.
+ch5_web_2026_11_13:
+  counterfactual-instruction: { zh: 反事实指令, note: "already chosen for docs/learn/glossary.md (md_only above)" }
+  grounding-rate:     { zh: 接地率, alt: ["grounding rate (kept in English)", 接触率], open: true, note: "alphaXiv's Chinese LIBERO-CF writes 接地 for grounding; Chinese VLA writing often keeps 'grounding'. 接触率 would describe the metric (gripper contact) but we found nobody using it" }
+  paraphrase:         { zh: 改写, alt: [同义改写, 复述, 释义], note: "LIBERO-Plus's LLM rewrites are 改写 in Chinese write-ups; chapter 4 may choose too" }
+  classifier-free-guidance: { zh: 无分类器引导, alt: ["CFG (kept in English)"] }
+  data-augmentation:  { zh: 数据增强 }
+  linear-probe:       { zh: 线性探针, alt: [探针] }
+  sparse-autoencoder: { zh: 稀疏自编码器, alt: ["SAE (kept in English)"] }
+  activation-injection: { zh: 激活注入, alt: [激活修补], open: true, note: "激活修补 is activation patching (CSDN); Grant et al. say injection, so 激活注入" }
+  activation-steering: { zh: 激活引导, alt: [激活操纵, 操纵向量, 激活转向], open: true, note: "36氪 calls steering vectors 操纵向量; ACL Anthology zh uses 引导" }
+  # correction to the paraphrase note just above (2026-11-13): 改写 is the everyday Chinese word for rewording a
+  # sentence; we did not check it in a Chinese write-up of LIBERO-Plus, so treat that choice as open.
+
+# added for the chapter 4 web page (2026-11-13). Sources: 具身星图, Steerable Policies 细读
+# (zhuyun97.github.io/embodied-ai-learning/vla/papers/steerable-policies: “把这份知识接地到机器人行为”, “空间接地(grounding)”);
+# papernotes.org ECCV2026 notes on “Restoring Linguistic Grounding in VLA Models” (语言落地分数 for Linguistic Grounding
+# Score, 落地头); Alan Hou's Chinese summary of LIBERO-CF (alanhou.org, 2026-02-20: 反事实失效, 反事实基准, 语言基础).
+ch4_web_2026_11_13:
+  grounding:                  { zh: 语言接地, alt: [语言落地, "grounding (kept in English)", 语言基础], open: true,
+                                note: "接地 follows 符号接地 (symbol grounding) and 具身星图's usage; papernotes uses 落地; usage splits, and many notes keep 'grounding'" }
+  counterfactual-instruction: { zh: 反事实指令, note: "already in md_only; 反事实 is the word Chinese LIBERO-CF summaries use (反事实失效, 反事实基准)" }
+  not_found: [grounding rate, faithful success, biased success]   # no Chinese usage found 2026-11-13; glossary-ch4.js gives them no zh
+
+# Lead's merge, 2026-11-13: chapters 4 and 5 both defined counterfactual-instruction (same zh 反事实指令) and
+# grounding-rate. glossary.js keeps chapter 4's wording for both, and grounding-rate gets no zh: chapter 4 found no
+# Chinese usage of the metric's name, and 接地率 (chapter 5's open pick) is built from 接地 rather than seen in use.

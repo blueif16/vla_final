@@ -530,3 +530,45 @@ a:hover { color: var(--ink); text-decoration-color: var(--ink); }
 .quiz .mcq-first { margin: 8px 0 0; font: 12.5px/1.5 var(--mono); color: var(--ink-2); min-height: 0; }
 .quiz .mcq-first:empty { display: none; }
 .quiz-intro { font-size: 16.5px; color: var(--ink-2); }
+
+/* =====================================================================================================
+   Added 2026-11-13: real footage and real pictures on every page (moved here from the RL 1 watercolour layer so the
+   VLA chapters can use them too; watercolor.css still restyles them on watercolour pages).
+   .frame.clip > video[data-play=view|tap]: our own short clip; site.js adds the Play button (see its comment).
+   .frame > .media[data-yt]: one YouTube video as a figure (site.js puts the thumbnail and play button on it).
+   .duo: two pictures side by side, a .label under each. .cardgrid: clip cards in a visible grid instead of a rail.
+   .portrait: a small photo of a person beside its caption.
+   ===================================================================================================== */
+.frame.clip { position: relative; padding: 6px; }
+.frame.clip video { display: block; width: 100%; height: auto; border-radius: 8px; background: var(--frame); cursor: pointer; }
+.frame.clip .play { position: absolute; right: 18px; bottom: 18px; width: 64px; height: 64px; border-radius: 50%; border: 0; background: rgba(41, 39, 31, .82); color: #fff; font: 600 13px var(--mono); cursor: pointer; }
+.frame.clip .play[hidden] { display: none; }
+.frame.clip .play:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+.frame > .media { aspect-ratio: 16 / 9; position: relative; overflow: hidden; border-radius: 8px; background: var(--frame); }
+.frame > .media > img { width: 100%; height: 100%; object-fit: cover; }
+.frame > .media iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.duo { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; align-items: start; }
+.duo > div { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 8px; }
+.duo img, .duo video { display: block; width: 100%; height: auto; border-radius: 8px; }
+.duo .label { margin: 8px 2px 2px; }
+.cardgrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; align-items: stretch; }
+.cardgrid .card { flex: none; }
+.portrait { display: grid; grid-template-columns: 170px minmax(0, 1fr); gap: 18px; align-items: center; }
+.portrait img { width: 100%; height: auto; border-radius: 12px; display: block; }
+.portrait figcaption { margin: 0; }
+@media (max-width: 760px) { .cardgrid { grid-template-columns: 1fr; } }
+@media (max-width: 560px) { .duo { grid-template-columns: 1fr; } .portrait { grid-template-columns: 110px minmax(0, 1fr); gap: 12px; } }
+
+/* =====================================================================================================
+   Added 2026-11-13 (from the chapter 3 and 4 pages, which each drew one): .predict, a question the reader answers
+   before the page does (the teaching skill's "predict first"). A label, the question in serif, a textarea that saves
+   nothing, and optionally a <details> to compare when the next paragraph doesn't give the answer. Every rule is
+   scoped to non-watercolour pages, because watercolor.css paints its own and sets no border.
+   ===================================================================================================== */
+body:not(.wc) .predict { margin: 28px 0; padding: 16px 20px 14px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; }
+body:not(.wc) .predict .label { margin-bottom: 4px; }
+body:not(.wc) .prose .predict > p { margin: 0 0 10px; font: 400 21px/1.42 var(--serif); }
+body:not(.wc) .predict textarea { display: block; width: 100%; min-height: 3.2em; resize: vertical; box-sizing: border-box; font: 16px/1.5 var(--sans); color: var(--ink); background: var(--white); border: 1.5px dashed var(--line); border-radius: 8px; padding: 8px 10px; }
+body:not(.wc) .predict textarea:focus { outline: 2px solid var(--gold-edge); outline-offset: 1px; border-style: solid; }
+body:not(.wc) .predict details { margin-top: 10px; }
+body:not(.wc) .predict summary { cursor: pointer; font: 13px var(--mono); color: var(--ink-2); }

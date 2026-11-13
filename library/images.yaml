@@ -178,3 +178,121 @@ still_needed:
     follower arm); DROID Fig. 0 shows the hardware but no person"
   # done 2026-11-11: frames as pi05_libero receives them at evaluation, and a recorded call with its 10x7 output
   # (docs/assets/img/pi05-run/, from our own run)
+
+ch3_web_2026_11_13:   # chapter 3 web page (docs/learn/03-libero.html); added 2026-11-13
+  downloaded:
+    - files: docs/assets/img/ch3/paper-libero-{spatial,object,100,fig2}.jpg
+      source: https://arxiv.org/html/2306.03310v2/figures/{libero_spatial,libero_object,libero_100,libero_fig2}.png
+      paper: "LIBERO (Liu et al. 2023): Figure 8 LIBERO-Spatial, Figure 9 LIBERO-Object, Figure 11 LIBERO-100, Figure 2 procedural generation pipeline"
+      license: CC BY 4.0 (arXiv abstract page, rechecked 2026-11-13)
+      converted: "PNG -> JPG q3 with metadata stripped; spatial and object 1137x456, 100 1137x1138, fig2 3900x1500 -> 1600x616"
+      shows: "Fig 8: Spatial's ten STARTING tables; Figs 9-11: each task at its GOAL state (paper appendix C.1: 'All the figures visualize the goal states of tasks except for Figure 8'). Fig 11 does not mark which tiles are LIBERO-10. Fig 2: one task file, (A) objects and regions, (B) init configuration, (C) goal (Open cabinet_1_top_drawer)(In bowl_1 cabinet_1_top_drawer), with start and goal pictures; labels the file *.pddl (the code's files are .bddl)"
+      used: [ch3 figure 3.2 (fig 8, 9, 11, with libero-goal.jpg = fig 10), ch3 figure 3.3 (fig 2)]
+    - note: "docs/assets/img/libero-goal.jpg (Fig 10, entry above) is also used in ch3 figure 3.2; libero-suites.jpg (Fig 1) still unused, skipped again for its label problem"
+  our_renders:   # made by us from LIBERO's stored evaluation starting states; ours to reuse, credit "rendered by us"
+    - files: docs/assets/img/ch3/first/{spatial,object,goal,ten}-t{00..09}.jpg, docs/assets/img/ch3/tasks.json
+      made_by: tools/ch3/render_first_frames.py (2026-11-13), in openpi's LIBERO client venv; no policy server, no episodes
+      shows: "the first table-camera picture pi05_libero receives for every task of the four suites, from starting state 0 (init_files .pruned_init), with openpi's settings: 256x256 scene, env.seed(7), 10 settling steps of the dummy action, image turned 180 degrees, resize_with_pad to 224x224. File numbers are LIBERO's BENCHMARK task ids (not the HF dataset's task_index); tasks.json maps each file to its sentence and .bddl file"
+      check: "spatial-t00 state 0 matches our recorded run's call_00_table.png: mean abs difference 1.2 per pixel value (JPEG noise) vs 5.3 for state 1 (2026-11-13). Within Goal the ten state-0 pictures differ by 2.0-4.1 (start jitter); pixel distance does NOT separate shared tables from different ones in Spatial, so the shared-table claim rests on the task-file check (papers.yaml libero-bddl), not on pixels"
+      pairs: "Spatial benchmark tasks 7 (on the stove) and 9 (on the wooden cabinet); LIBERO-10 benchmark tasks 0 (alphabet soup + tomato sauce) and 1 (cream cheese box + butter), both LIVING_ROOM_SCENE2"
+      used: [ch3 figure 3.6 (all 40, pairs moved to row ends), ch3 figure 3.7 (spatial-t07, spatial-t09, ten-t00, ten-t01)]
+    - files: docs/assets/img/ch3/states/spatial-t00-s{00..49}.jpg
+      made_by: tools/ch3/render_first_frames.py --only states (2026-11-13)
+      shows: "the first picture from each of the 50 stored starting states of LIBERO-Spatial task 0 ('pick up the black bowl between the plate and the ramekin and place it on the plate'); same arrangement each time, objects shifted a little, cabinet turned a little"
+      used: [ch3 figure 3.4]
+  our_footage:
+    - files: docs/assets/video/ch3-goal-three-demos.{mp4,jpg}
+      made_by: tools/ch3/make_goal_demos_clip.py (2026-11-13)
+      source: "physical-intelligence/libero (CC BY 4.0), table camera ('image' column) of episodes 379 'put the bowl on the plate' (row 101469, 112 frames), 388 'turn on the stove' (row 102876, 90) and 385 'put the wine bottle on top of the cabinet' (row 102393, 90): the FIRST demonstration of each task in the dataset, fetched with the datasets-server rows API"
+      shows: "the three demonstrations side by side at recorded speed (10 fps), shorter ones hold their last frame; 784x256 (3 x 256 + 2 x 8 gap), 112 frames, 11.2 s, H.264 yuv420p CRF 28 +faststart; poster = first frame. Left/right swapped against the paper's figures, as the model sees them. Human demonstrations, NOT the benchmark's evaluation starting states"
+      credit: "our cut of physical-intelligence/libero, CC BY 4.0, episodes 379, 388 and 385"
+      used: [ch3 figure 3.1 (data-play=view)]
+    - files: docs/assets/img/pi05-run/call-{00,07,14,20}-table.jpg (entry above)
+      used: [ch3 figure 3.5 (steps 0, 35, 70, 100 above a 0-220 step ruler)]
+  link_only:
+    - { what: "LIBERO's demonstration reel", url: "https://libero-project.github.io/assets/videos/libero_demonstration_videos.mp4 (3.7 MB, on https://libero-project.github.io/datasets)", license: "none: the site's repo libero-project/libero-project.github.io has no licence (GitHub API, 2026-11-13); LIBERO's code repo is MIT", note: "not on YouTube as far as we found (Exa search 2026-11-13); linked from a ch3 rail card, not copied" }
+    - { what: "LIBERO Google site gallery", url: "https://sites.google.com/view/liberobenchmark/home", license: unknown, note: "environment gallery and suite pictures; not checked further" }
+
+ch5_web_2026_11_13:   # chapter 5 web page (docs/learn/05-what-others-found.html); added 2026-11-13
+  # Licences checked on each arXiv abstract page 2026-11-13: CC BY 4.0 for LIBERO-CF 2602.17659, LIBERO-PRO 2510.03827
+  # and Haon et al. 2509.00328; arXiv's default licence (link only, nothing copied) for LIBERO-Plus 2510.13626,
+  # LangGap 2603.00592 and Grant et al. 2603.19233. All files remade by tools/ch5/fetch_figures.sh (curl + ffmpeg,
+  # JPG q3, at most 1600 px wide, metadata stripped).
+  downloaded:
+    - file: docs/assets/img/ch5/libero-cf-fig2-vision-shortcuts.jpg
+      source: https://arxiv.org/html/2602.17659v3/visionshortcut-v7.png (3754x1347 -> 1600x574)
+      paper: "LIBERO-CF (Fang et al. 2026), Figure 2 'Evidence for Vision Shortcuts in VLAs'"
+      license: CC BY 4.0
+      shows: "(a) grasp-position heat maps of pi0.5 over 50 trials in two CF-Spatial scenes under the training-task instruction, a counterfactual one ('Pick up the cookie box') and no instruction; (b) 'Pick up the cookie box and place it on the plate' failing with the training-task bowl present (CF-Spatial) and succeeding with it removed (CF-Focused); the caption doesn't name the model in (b)"
+      used: [ch5 figure 5.3]
+    - file: docs/assets/img/ch5/libero-cf-fig3-cag.jpg
+      source: https://arxiv.org/html/2602.17659v3/method-v6.png (1808x781 -> 1600x692)
+      paper: "LIBERO-CF, Figure 3 'CAG Overview'"
+      license: CC BY 4.0
+      shows: "language-conditioned VLA branch and language-unconditioned VA branch combined as pi_uncond + omega * (pi_cond - pi_uncond)"
+      used: [ch5 rail 'CAG in the paper']
+    - file: docs/assets/img/ch5/libero-cf-fig4-guidance-scale.jpg
+      source: https://arxiv.org/html/2602.17659v3/guidance_scale-v3.svg, rendered on white at 1600 px in headless Chrome
+      paper: "LIBERO-CF, Figure 4 'Investigation of guidance scale'"
+      license: CC BY 4.0
+      shows: "grounding and success against guidance scale 1.0-4.0 for pi0.5 (grounding 39.3, 50.7, 56.8, 58.4; success 24.4, 31.6, 28.8, 16.4 at 1.0, 1.5, 2.0, 3.0) and OpenVLA-OFT; the values at 1.0 and 1.5 match Table 3's CF-Spatial baseline and VA rows (our reading; the caption doesn't name the setting)"
+      used: [ch5 rail 'CAG in the paper']
+    - file: docs/assets/img/ch5/libero-cf-fig5-cans.jpg
+      source: https://arxiv.org/html/2602.17659v3/real-fig-row-1-v3.png, cropped to its first scene (crop 980x376 at x 90)
+      paper: "LIBERO-CF, Figure 5 'Real-world experiments', first row, scene 'Coke / Sprite / Fanta'"
+      license: CC BY 4.0 (cropped; pixels otherwise unchanged)
+      shows: "a real Franka arm picking one of three same-shaped cans in each photo"
+      used: [ch5 rail 'CAG in the paper']
+    - files: docs/assets/img/ch5/libero-pro-fig3a-original.jpg, docs/assets/img/ch5/libero-pro-fig3b-messy.jpg
+      source: https://arxiv.org/html/2510.03827v2/language_ood_1.png and language_ood_3.png (kept at 1228 and 1231 px wide)
+      paper: "LIBERO-PRO (Zhou et al. 2025), Figure 3 'Pick up salad dressing and place it in basket', (a) original task, (b) meaningless task 'fdsgfdsgsd' or 'xxx'"
+      license: CC BY 4.0
+      shows: "three frames each: the policy picks up the salad dressing and puts it in the basket, with the real instruction and with nonsense; the paper doesn't say which of OpenVLA, pi0 and pi0.5 these frames show"
+      used: [ch5 figure 5.6]
+    - file: docs/assets/img/ch5/haon-fig1-steering.jpg
+      source: https://arxiv.org/html/2509.00328v1/Graphic_DOWN_UPSIZED.png (2045x986 -> 1600x772)
+      paper: "Haon, Stocking, Chuang and Tomlin 2025, Figure 1 (steering pipeline: extract FFN value vectors, project to token space, cluster, activate; pi0 on a UR5 and OpenVLA in LIBERO)"
+      license: CC BY 4.0
+      used: [ch5 rail 'The papers' own pages']
+  reused:
+    - { files: "docs/assets/img/libero-first/{spatial-ep1262,spatial-ep1264,spatial-ep1283,goal-ep392,goal-ep388}.jpg, docs/assets/img/libero-ep379/table-000.jpg", used: [ch5 figure 5.1 (three first frames per suite)] }
+  available_cc_by:   # looked at, not used yet
+    - { paper: "LIBERO-CF v3", base: "https://arxiv.org/html/2602.17659v3/", files: ["teaser-v8.png (877x372, low resolution: motivation, the four CF suites, CAG, bar charts 13.2->21.7 faithful and 60.9->36.2 biased)", "real-fig-row-2-v3.png (Tape/Mustard/Pringles, Table/Plate/Bowl, Cup/Cube/Basketball)", "comparisons.png (494x629, low resolution: pi0.5 vs pi0.5+CAG real rollouts with 'Counterfactual failure' labels)", "setup.png (Franka Research 3 setup)"] }
+    - { paper: "LIBERO-PRO v2", base: "https://arxiv.org/html/2510.03827v2/", files: ["object_ood_1/2/3.png (target swapped or removed, the arm still grasps)", "main_figure.png (overview of the five perturbation types)", "perburtation.png (success vs object displacement for OpenVLA, pi0, pi0.5)"] }
+  link_only:
+    - { what: "LIBERO-CF project page rollout videos (pi0.5 vs CAG on a real arm)", url: "https://vla-cf.github.io/", note: "self-hosted MP4s, not on YouTube (checked 2026-11-13); never re-host" }
+    - { what: "LIBERO-Plus case-study rollout videos", url: "https://sylvestf.github.io/LIBERO-plus/", note: "self-hosted MP4s of OpenVLA-OFT failures per perturbation; the page footer's CC BY-SA 4.0 is the Nerfies site template's licence, not a grant for the paper's media (our reading); linked from a ch5 rail card" }
+    - { what: "Grant et al. Action Atlas, 10,000+ rollout videos", url: "https://action-atlas.com", note: "linked from a ch5 rail card" }
+    - { what: "Haon et al. steering videos (fast/slow/low/high on a UR5)", url: "https://vla-mech-interp.github.io/", note: "self-hosted MP4s; linked" }
+    - { what: "LangGap grid GIF", url: "https://github.com/YC11Hou/langgap/blob/main/assets/langgap_grid_8x4.gif", note: "paper is arXiv default licence; not copied" }
+
+ch4_web_2026_11_13:   # chapter 4 web page (docs/learn/04-the-grounding-question.html); added 2026-11-13
+  our_footage:   # made by tools/ch4/make_assets.py from stage1/runs/exp1-shared-table/videos/ (local only); ours to reuse
+    - files: docs/assets/video/ch4-same-start.{mp4,jpg}
+      made_by: tools/ch4/make_assets.py (2026-11-13)
+      shows: "LIBERO-Spatial task 9, starting state 2, run twice: left with its own sentence (cabinet bowl to the plate, success at
+        step 120), right with an empty string (stove bowl to the plate at step 125, scored a failure). Table camera only, as the
+        model received it (turned 180 degrees as openpi's client does; looks upright). 896x448 (two 224 px views scaled 2x),
+        H.264 CRF 28, 20 fps = LIBERO's control rate (recorded at 10 fps), shorter run padded with its last frame, last frame
+        held 1 s; 7.2 s. Poster = first frame (the two starts are identical)"
+      choice: "a chosen pair, not a sample: the first starting state of either task (0-9) whose blank run ended with the other bowl
+        on the plate. That is task 9's most common counted blank ending (stove bowl 5 of 10), but across all 40 blank runs a bowl
+        reached the plate only 15 times; the caption says so and figure 4.2 shows every ending"
+      used: [ch4 figure 4.1 (data-play=tap, after a predict box), ch4 rail card 'Our code' (poster)]
+    - files: docs/assets/img/ch4/ending-{stove,cabinet,cookie,none}.jpg
+      made_by: tools/ch4/make_assets.py (2026-11-13)
+      shows: "224x224 table-camera frames of the counted blank run (starting states 10-19), one per ending, from the first run with
+        that ending (task 7 before task 9, lowest state first) at the step the object first reached the plate: stove = task 7
+        state 12 frame 149; cabinet = task 9 state 17 frame 210; cookie = task 7 state 15 frame 105; none = task 7 state 10,
+        last frame 219, in which (by eye) the arm has put the ramekin, which the run didn't check, on the plate"
+      used: [ch4 figure 4.2]
+    - file: docs/assets/img/ch4/spatial-t0-start.png
+      source: copy of stage1/runs/recorded-call-spatial0/call_00_table.png (our run, 2026-11-11; same picture as pi05-run/call-00-table.jpg, lossless)
+      shows: "LIBERO-Spatial task 0's first picture as the model received it. Left to right on the left of the table: bowl 2 (next to
+        the ramekin) at about (32,108) px, the ramekin (65,110), bowl 1 (between the plate and the ramekin) (57,130), the plate
+        (52,161), the cookie box (104,163); measured by eye on a 3x enlargement"
+      used: [ch4 figures 4.3, 4.4 (start picture), 4.5 (cropped to x 0-150, y 70-200, the named bowl ringed)]
+  drawn:
+    - { what: "figure 4.4's four ending drawings (inline SVG, ch4.css .mini) and the margin note's tasks-per-table squares", by: us }
+  not_used:
+    - { what: "LIBERO-CF Figure 2 (grasp heatmaps under training-task, counterfactual and empty instructions)", note: "CC BY 4.0 and a good picture of biased behaviour, but chapter 5 already holds it (docs/assets/img/ch5/libero-cf-fig2-vision-shortcuts.jpg); chapter 4 points forward instead" }

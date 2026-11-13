@@ -1,0 +1,105 @@
+/* Chapter 4 page parts that site.css lacks. Load after site.css. None of them is interactive; each one is a still
+   figure (or the frame around our one clip), designed with the teaching-interactives skill, 2026-11-13.
+   .say       a sentence sent to the model, drawn as a white card because text inputs are white cards on every page.
+   .pair-head figure 4.1: which sentence each half of the two-run clip received, set above its half.
+   .endings   figure 4.2: "the same move can score a success for one task and a failure for the other". Four real end
+              frames, one dot per run under each; a filled dot is a run the simulator scored a success.
+   .conds     figure 4.3: "only the sentence changes, and what a high or low score means depends on which one". The four
+              conditions as small multiples: the same picture four times, one sentence each, both outcomes spelled out.
+   .score     figure 4.4: "a drop in the original task's score can't tell following the new words from stalling".
+              The four ways one different-task episode can end, each with the measures it counts towards.
+   .para      figure 4.5: "a paraphrase must name the same bowl". Two rewordings, each with the bowl it names ringed.
+   .layouts   the margin note in "Why a model might ignore the words": tasks per suite, joined where they share a table. */
+
+/* ---------- a sentence sent to the model ---------- */
+.say { background: var(--white); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; font: 12.5px/1.45 var(--mono); color: var(--ink); }
+.say small { display: block; font-size: 11px; color: var(--ink-3); margin-bottom: 2px; }
+.say.empty { border-style: dashed; border-color: var(--ink-3); color: var(--ink-3); }
+
+/* ---------- figure 4.1: two runs in one clip ---------- */
+.pair-head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; margin: 0 0 10px; }
+.pair-head .label { margin: 0 0 4px; color: var(--ink); }
+/* a thin dark line between the two runs, so the two tables don't read as one wide table */
+.pair .frame.clip::after { content: ""; position: absolute; top: 6px; bottom: 6px; left: 50%; width: 4px; margin-left: -2px; background: var(--frame); pointer-events: none; }
+
+/* ---------- figure 4.2: where the blank runs ended ---------- */
+.endings { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.ending { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 8px 8px 10px; display: flex; flex-direction: column; }
+.ending img { width: 100%; aspect-ratio: 1; border-radius: 8px; background: var(--frame); }
+.ending .label { margin: 10px 2px 8px; color: var(--ink); min-height: 2.8em; }
+.tally { display: grid; grid-template-columns: 56px minmax(0, 1fr) 18px; align-items: center; gap: 6px; padding: 3px 2px; font: 12px/1.3 var(--mono); color: var(--ink-2); }
+.tally .dots { display: flex; gap: 4px; flex-wrap: wrap; min-height: 12px; }
+.tally i { display: block; width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--ink); }
+.tally i.win { background: var(--ink); }
+.tally b { font: 600 13px var(--mono); color: var(--ink); text-align: right; }
+.tally-key { display: flex; gap: 18px; flex-wrap: wrap; margin: 10px 2px 0; font: 12px var(--mono); color: var(--ink-2); }
+.tally-key i { display: inline-block; width: 11px; height: 11px; border-radius: 50%; border: 2px solid var(--ink); vertical-align: -1px; margin-right: 6px; }
+.tally-key i.win { background: var(--ink); }
+@media (max-width: 760px) { .endings { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* ---------- figure 4.3: the four conditions ---------- */
+.conds { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.cond { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 10px; display: grid; grid-template-rows: auto auto 1fr; gap: 10px; }
+.cond > img { width: 100%; aspect-ratio: 1; border-radius: 8px; background: var(--frame); }
+.cond .label { color: var(--ink); margin-bottom: 6px; }
+.cond dl { margin: 0; font-size: 14.5px; line-height: 1.45; }
+.cond dt { font: 600 11px/1.3 var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3); margin-top: 8px; }
+.cond dt:first-child { margin-top: 0; }
+.cond dd { margin: 2px 0 0; }
+@media (max-width: 900px) { .conds { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) {
+  .conds { grid-template-columns: minmax(0, 1fr); }
+  .cond { grid-template-columns: 92px minmax(0, 1fr); grid-template-rows: auto auto; }
+  .cond dl { grid-column: 1 / -1; }
+}
+
+/* ---------- figure 4.4: scoring one different-task episode ---------- */
+.score-in { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 14px; align-items: center; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 10px; margin-bottom: 12px; }
+.score-in img { width: 100%; aspect-ratio: 1; border-radius: 8px; background: var(--frame); }
+.score-in p { margin: 8px 0 0; font-size: 15px; line-height: 1.5; color: var(--ink-2); }
+.score-ends { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; counter-reset: end; }
+.score-ends > li { counter-increment: end; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 10px; display: flex; flex-direction: column; }
+.score-ends svg { width: 100%; height: auto; display: block; border-radius: 8px; }
+.score-ends .what { margin: 10px 0 8px; font-size: 15px; line-height: 1.45; flex: 1; }
+.score-ends .what::before { content: counter(end) ". "; font: 600 13px var(--mono); color: var(--ink-3); }
+.marks { list-style: none; margin: 0; padding: 0; font: 12.5px/1.4 var(--mono); }
+.marks li { display: grid; grid-template-columns: 18px 1fr; padding: 3px 0; }
+.marks li::before { font-weight: 700; }
+.marks .y { color: var(--ink); }
+.marks .y::before { content: "\2713"; }
+.marks .n { color: var(--ink-3); }
+.marks .n::before { content: "\2013"; }
+.marks .own { margin-top: 6px; padding-top: 7px; border-top: 1px dashed var(--tan); }
+@media (max-width: 900px) { .score-ends { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .score-in { grid-template-columns: 96px minmax(0, 1fr); } }
+.mini .tbl { fill: var(--box); }
+.mini .plate { fill: #fff; stroke: #C9A8A0; stroke-width: 2; }
+.mini .bowl { fill: #45433C; stroke: #8C866F; stroke-width: 2; }
+.mini .ram { fill: #fff; stroke: var(--ink-3); stroke-width: 1.5; }
+.mini .box { fill: #C08A52; stroke: #7A5530; stroke-width: 1.2; }
+.mini .was { fill: none; stroke: var(--ink-3); stroke-width: 1.2; stroke-dasharray: 3 3; }
+.mini .grip { fill: none; stroke: var(--ink); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.mini .grip.away { stroke: var(--ink-3); stroke-dasharray: 4 3; }
+
+/* ---------- figure 4.5: two rewordings ---------- */
+.para > div { display: flex; flex-direction: column; gap: 8px; }
+.para svg { width: 100%; height: auto; display: block; border-radius: 8px; background: var(--frame); }
+.para .ring-o { fill: none; stroke: var(--ink); stroke-width: 3.4; }
+.para .ring-i { fill: none; stroke: #fff; stroke-width: 1.6; }
+.para .tagbg { fill: rgba(255, 255, 255, .92); }
+.para .tag-t { font: 600 5.2px var(--mono); fill: var(--ink); }
+.para .label { margin: 2px 2px 0; color: var(--ink); }
+.para .why { margin: 0 2px; font-size: 14.5px; line-height: 1.45; color: var(--ink-2); }
+@media (min-width: 561px) { .para .say { min-height: 6em; } }   /* the two pictures start level */
+
+/* the side note that compares the two task files: a gap between its two text columns */
+.side-tbl.files td { padding-right: 10px; }
+
+/* ---------- margin note: tasks per suite, joined where they share a table ---------- */
+.layouts { width: 100%; border-collapse: collapse; margin: 4px 0 8px; }
+.layouts th { text-align: left; font: 600 11.5px/1.35 var(--mono); color: var(--ink); padding: 5px 8px 5px 0; white-space: nowrap; }
+.layouts td { padding: 5px 0; }
+.layouts tr + tr > * { border-top: 1px solid var(--line); }
+.layouts svg { width: 116px; height: 14px; display: block; }
+.layouts .t { fill: var(--ink-3); }
+.layouts .j { fill: var(--line); }

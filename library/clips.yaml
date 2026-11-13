@@ -173,3 +173,24 @@ chapters:
       - { t: 4319, title: "Legacy and impact" }
     note: "videohighlight.com's AI summary put move 37 at 50:58, which is inside game 3 by YouTube's chapters; don't use it. The exact second of move 37 inside the game 2 chapter is not known yet."
   - { id: l-GsfyVCBu0, title: "Match 2 - Google DeepMind Challenge Match: Lee Sedol vs AlphaGo", by: "Google DeepMind", note: "the live broadcast of game 2; hours long, move 37 not timed" }
+
+# Chapter 3 web page, 2026-11-13: no YouTube clips. LIBERO's makers have no video on YouTube that we found (Exa search,
+# 2026-11-13); the NeurIPS 2023 poster page (neurips.cc/virtual/2023/poster/73415) has a talk video, not timed. LIBERO's
+# own demonstration reel is on its site with no licence (link only, see images.yaml ch3_web_2026_11_13). The page's
+# moving footage is our cut of three dataset demonstrations (docs/assets/video/ch3-goal-three-demos.mp4).
+ch3_web_2026_11_13:
+  untimed:
+    - { where: "https://neurips.cc/virtual/2023/poster/73415", title: "LIBERO NeurIPS 2023 poster page (talk video, SlidesLive)", note: "a talk, not footage of the tasks; not timed, not used" }
+
+# Chapter 5 web page, 2026-11-13: no YouTube clips. None of the six chapter 5 papers has a makers' video on YouTube that
+# we found (Exa searches, 2026-11-13): LIBERO-CF, LIBERO-Plus and Haon et al. self-host MP4s on their project pages
+# (link only, see images.yaml ch5_web_2026_11_13). Found and not used:
+ch5_web_2026_11_13:
+  not_used:
+    - { id: 8zQvADmjpyM, title: "LIBERO-Plus: Robustness Tests for VLA Models", by: "AI Research Roundup (a third-party channel with a synthetic host reading a summary)", note: "not the makers, a talk summary; skip" }
+    - { id: 77flUBHATX4, title: "Bear Haon | Mechanistic Interpretability of Vision Language Action Models @ Vision Weekend US 2024", by: "Foresight Institute", duration: "2:56", note: "a short talk before the CoRL paper, about safety concepts in OpenVLA; a talk clip, not footage; not used" }
+
+ch4_web_2026_11_13:   # chapter 4 web page; no YouTube clip used
+  checked:
+    - { what: "LIBERO-CF (Fang et al. 2026) videos", result: "only on the project page (https://vla-cf.github.io/, self-hosted MP4s: a 'When_Vision_Overrides_Language_1080p' summary and pi05-vs-CAG real-robot pairs such as pick_up_the_fanta); no YouTube upload found (Exa search, 2026-11-13). Linked from a ch4 rail card, never re-hosted" }
+  our_clips: [docs/assets/video/ch4-same-start.mp4]   # see images.yaml ch4_web_2026_11_13

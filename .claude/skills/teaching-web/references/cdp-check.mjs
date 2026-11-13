@@ -1,6 +1,6 @@
-// Usage: start Chrome with --headless=new --remote-debugging-port=9333, serve docs/, then: node cdp-check.mjs <page url>
+// Usage: start Chrome with --headless=new --remote-debugging-port=9333 (or set CDP_PORT), serve docs/, then: node cdp-check.mjs <page url>
 const [,, url] = process.argv;
-const list = await (await fetch('http://127.0.0.1:9333/json/new?' + encodeURIComponent(url), { method: 'PUT' })).json();
+const list = await (await fetch('http://127.0.0.1:' + (process.env.CDP_PORT || 9333) + '/json/new?' + encodeURIComponent(url), { method: 'PUT' })).json();
 const ws = new WebSocket(list.webSocketDebuggerUrl);
 let id = 0; const pending = new Map();
 ws.onmessage = (m) => { const d = JSON.parse(m.data); if (d.id && pending.has(d.id)) { pending.get(d.id)(d); pending.delete(d.id); } };

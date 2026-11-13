@@ -1,10 +1,10 @@
-// Usage: node cdp-check-emphasis.mjs <page url> <width>   (Chrome with --headless=new --remote-debugging-port=9334)
+// Usage: node cdp-check-emphasis.mjs <page url> <width>   (Chrome with --headless=new --remote-debugging-port=9334, or set CDP_PORT)
 // Checks a chapter page: glossary terms, Chinese labels, the widgets it has (skipped when absent), every
 // multiple-choice option by click and by keyboard, margin notes (inside the viewport, no collision with wide
 // blocks), the emphasis budget, console errors and horizontal overflow. Written for chapter 2, 2026-11-12.
 const [,, url, width] = process.argv;
 const W = +width || 1440;
-const list = await (await fetch('http://127.0.0.1:9334/json/new?' + encodeURIComponent('about:blank'), { method: 'PUT' })).json();
+const list = await (await fetch('http://127.0.0.1:' + (process.env.CDP_PORT || 9334) + '/json/new?' + encodeURIComponent('about:blank'), { method: 'PUT' })).json();
 const ws = new WebSocket(list.webSocketDebuggerUrl);
 let id = 0; const pending = new Map(); const logs = [];
 ws.onmessage = (m) => { const d = JSON.parse(m.data); if (d.id && pending.has(d.id)) { pending.get(d.id)(d); pending.delete(d.id); } else if (d.method === 'Runtime.consoleAPICalled') logs.push(d.params.type + ': ' + d.params.args.map((a) => a.value).join(' ')); else if (d.method === 'Runtime.exceptionThrown') logs.push('EXCEPTION: ' + d.params.exceptionDetails.text + ' ' + (d.params.exceptionDetails.exception?.description || '')); };

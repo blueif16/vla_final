@@ -153,6 +153,13 @@ the right" as one option. The design below was built from that and from the evid
   map), `.scrolly` with `[data-widget=scrolly]` (a sticky figure that changes as steps scroll past), `[data-widget=modes]`
   (buttons that switch a figure between settings), `[data-widget=annotate]` (code whose settings light up the parts
   they control), `.timeline`, `.sharebar`, `.ruler`, `.clip-aside` (one clip inside the text) and `.frame.paper`.
+- Real footage and pictures (moved into `site.css` / `site.js` on 2026-11-13 so the VLA chapters can use them; RL 1
+  first used them): `.frame.clip > video[data-play=view|tap]` (site.js adds the Play button; the two modes are in
+  `teaching-interactives`, "Footage"), `.frame > .media[data-yt]` (one YouTube video as a figure), `.duo` (two pictures
+  side by side, a `.label` under each), `.cardgrid` (clip cards in a visible grid) and `.portrait`. `watercolor.css`
+  restyles them on watercolour pages.
+- A chapter's own widgets go in `docs/assets/js/chN.js` (and `chN.css` if needed), loaded after site.js, with a header
+  comment that says what each widget teaches, as `rl.js` does. Move one into site.js only when a second page uses it.
 - Added for emphasis (2026-11-12), same reference page:
   - `<strong class="key">` around a sentence to keep: semibold with a low tan band, so it never looks like a link or
     a term (both underlined) or a hovered term (gold).
@@ -198,7 +205,7 @@ each page about 15 to 20 minutes of reading, "sort of a new lesson and a new way
   meaning colours), `.tries` (RL 1's explorable, redesigned 2026-11-13 with `teaching-interactives`: an empty
   `svg.tries-plot` that `docs/assets/js/rl.js` draws, a `.tries-out` bar and a `.tries-say` line; its rule is exactly
   the chapter's, and the chapter's example must move "reach left" from 50% to 55%), `table.words` (a term in the first
-  column, one column per example), `.frame.clip` with `video[data-play=view|tap]` (our own footage; see
+  column, one column per example), `.frame.clip` with `video[data-play=view|tap]` (our own footage, now in site.css/site.js; see
   `teaching-interactives`) and `.runfig[data-widget=run]` (a line chart written into the page by a script between
   `<!-- run-chart:start -->` and `<!-- run-chart:end -->`, with its data in a JSON script tag for the pointer readout).
 - On phones, anything decorative that overhangs the column (the title wash) must stay inside the viewport; the check

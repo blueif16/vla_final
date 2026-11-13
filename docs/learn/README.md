@@ -9,9 +9,9 @@ A second series, on reinforcement learning, is [further down](#reinforcement-lea
 |---|---|---|---|
 | 1 | [What a VLA is](01-what-a-vla-is.md) ([web](https://blueif16.github.io/vla_final/learn/01-what-a-vla-is.html)) | say what goes into a vision-language-action model and what comes out | 8 min |
 | 2 | [π0, π0.5 and the checkpoint we run](02-pi0-and-pi05.md) ([web](https://blueif16.github.io/vla_final/learn/02-pi0-and-pi05.html)) | say exactly what `pi05_libero` sees at each step | 8 min |
-| 3 | [LIBERO, the benchmark](03-libero.md) | explain why a 98% score doesn't prove the robot reads | 8 min |
-| 4 | [What "understanding the instruction" means](04-the-grounding-question.md) | describe the four prompt tests and what each result means | 8 min |
-| 5 | [What other groups have already found](05-what-others-found.md) | say which parts of our plan are already published | 10 min |
+| 3 | [LIBERO, the benchmark](03-libero.md) ([web](https://blueif16.github.io/vla_final/learn/03-libero.html)) | explain why a 98% score doesn't prove the robot reads | 10 min |
+| 4 | [What "understanding the instruction" means](04-the-grounding-question.md) ([web](https://blueif16.github.io/vla_final/learn/04-the-grounding-question.html)) | describe the four prompt tests and what each result means | 10 min |
+| 5 | [What other groups have already found](05-what-others-found.md) ([web](https://blueif16.github.io/vla_final/learn/05-what-others-found.html)) | say which parts of our plan are already published | 10 min |
 | 6 | [Where we stand](06-where-we-stand.md) | name what's decided, what's open and the options we're weighing | 6 min |
 
 Terms are collected in the [glossary](glossary.md).

@@ -478,4 +478,39 @@
         : "Your first pick wasn't right. Open the other options to find the one that is.";
     }));
   });
+
+  /* =====================================================================================================
+     Added 2026-11-13 (moved from rl.js): video[data-play] inside a .frame, our own short clips. "view" plays muted
+     when at least half of it is on screen, pauses when it leaves, stops after two loops, and a tap pauses or replays
+     it. "tap" opens still on its poster with a Play button and plays once. Under prefers-reduced-motion every clip
+     behaves like "tap". Write the video tag with `controls` so it still plays with scripts off; this removes them.
+     Which of the two we use everywhere is still the user's call (teaching-interactives).
+     ===================================================================================================== */
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  /* ---------- real footage ---------- */
+  $$("video[data-play]").forEach((v) => {
+    const mode = reduceMotion ? "tap" : v.dataset.play;
+    const frame = v.closest(".frame");
+    v.muted = true; v.playsInline = true; v.loop = false; v.removeAttribute("autoplay"); v.removeAttribute("controls"); v.controls = false;
+    let loops = 0;
+    const btn = document.createElement("button");
+    btn.type = "button"; btn.className = "play"; btn.textContent = "Play";
+    btn.setAttribute("aria-label", "Play the video");
+    frame.appendChild(btn);
+    const showBtn = (label) => { btn.hidden = false; btn.textContent = label; btn.setAttribute("aria-label", `${label} the video`); };
+    const start = () => { btn.hidden = true; v.play().catch(() => showBtn("Play")); };
+    btn.addEventListener("click", () => { loops = 0; v.currentTime = 0; start(); });
+    v.addEventListener("click", () => { if (v.paused) start(); else { v.pause(); showBtn("Play"); } });
+    if (mode === "view") {
+      btn.hidden = true;
+      v.addEventListener("ended", () => { if (++loops < 2) { v.currentTime = 0; v.play(); } else showBtn("Again"); });
+      new IntersectionObserver((es) => es.forEach((e) => {
+        if (e.isIntersecting && loops < 2 && btn.hidden) v.play().catch(() => showBtn("Play"));
+        else if (!e.isIntersecting && !v.paused) v.pause();
+      }), { threshold: 0.5 }).observe(v);
+    } else {
+      v.addEventListener("ended", () => showBtn("Again"));
+    }
+  });
+
 })();
