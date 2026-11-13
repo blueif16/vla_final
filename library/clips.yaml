@@ -43,7 +43,7 @@ talks:
       - { start: 394, label: "6:34", title: "From language models to dexterous action", about: "RT-2 actions as text vs pi0 action expert; pi0 laundry recovering from mistakes" }
       - { start: 1312, label: "21:52", title: "Reasoning and teaching robots", about: "embodied chain of thought; verbal coaching in pi0.5" }
       - { start: 1937, label: "32:17", title: "Pooling data for generalization", about: "RT-X 30+ labs, 50% better; broad pretraining + curated post-training" }
-      - { start: 2391, label: "39:51", title: "Reinforcement learning for reliability and speed", about: "pi*0.6 value function, espresso 13 h, ~2x throughput" }
+      - { start: 2391, label: "39:51", title: "Reinforcement learning for reliability and speed", about: "pi*0.6 value function, espresso 13 h, ~2x throughput", used: ["RL 1 rail"] }
 
   - id: ujAURT7YG2g
     title: "Keynote: Robot Foundation Models - Sergey Levine (PyTorch Conference 2025)"
@@ -75,7 +75,7 @@ talks:
       - { start: 83, label: "1:23", title: "Cross-embodiment training", about: "RT-X 34 labs, 22 robot types, ~50% better; VLMs add language understanding" }
       - { start: 535, label: "8:55", title: "Building and adapting pi0", about: "data from 7 robot types, web, OXE; PaliGemma + action expert; ~10,000 h pretraining + curated post-training", used: ["ch1 rail learning"] }
       - { start: 1350, label: "22:30", title: "Adding sequential reasoning", about: "embodied chain of thought (+~50% on OpenVLA); high-level policy with pi0" }
-      - { start: 1871, label: "31:11", title: "Using reinforcement learning", about: "online RL for chip insertion, cable routing; 2-3x faster than imitation" }
+      - { start: 1871, label: "31:11", title: "Using reinforcement learning", about: "online RL for chip insertion, cable routing; 2-3x faster than imitation", used: ["RL 1 rail (1871-2431)"] }
       - { start: 2431, label: "40:31", title: "Open questions and future directions", about: "recipes like LLMs; adapting to new embodiments takes 1-100s of hours; chunks limit responsiveness" }
 
   - id: SgjSAHKFP60
@@ -144,3 +144,7 @@ untimed:
   - { id: ejk6-ffDXFw, title: "Pi0 - generalist VLA policy for robots (VLA Series Ep.2, Ilia)", note: "pi0 architecture walk-through and fine-tuning with LeRobot" }
   - { id: zMNumQ45pJ8, title: "Mobile ALOHA - Compilation of Autonomous Skills (Zipeng Fu, 1:39)", note: "short visual of a learned household robot" }
   - { id: ELUMFpJCUS0, title: "Livestream with Kevin Black on pi0's design (from Octo)", note: "a third-party note says 4:41:06 (t=16866); unverified" }
+
+# Short videos that are whole clips (start at 0), found for the RL series, 2026-11-13.
+whole:
+  - { id: tlOIHko8ySg, title: "CoastRunners 7", by: "Jack Clark (OpenAI)", about: "the boat circling a lagoon for targets instead of finishing the race; embedded in OpenAI's 'Faulty Reward Functions in the Wild' (2016-12-21)", length: "not checked", used: [] }

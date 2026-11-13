@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Learning from a Score · RL 1</title>
+<meta name="description" content="Chapter 1 of our series on reinforcement learning: five words and one loop, the rule that turns a score into better habits, and why a learner given only a grade can pass its teachers.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/site.css">
+<link rel="stylesheet" href="../assets/css/watercolor.css">
+</head>
+<body class="wc">
+<div class="progress" aria-hidden="true"></div>
+
+<!-- Watercolour filters shared by every figure on this page (see watercolor.css). -->
+<svg class="wc-defs" aria-hidden="true" focusable="false">
+  <filter id="wc-wash" x="-15%" y="-15%" width="130%" height="130%" color-interpolation-filters="sRGB">
+    <feTurbulence type="fractalNoise" baseFrequency="0.022" numOctaves="3" seed="3" result="n"/>
+    <feDisplacementMap in="SourceGraphic" in2="n" scale="12" xChannelSelector="R" yChannelSelector="G" result="d"/>
+    <feGaussianBlur in="d" stdDeviation="1" result="b"/>
+    <feTurbulence type="fractalNoise" baseFrequency="0.55" numOctaves="2" seed="8" result="g"/>
+    <feColorMatrix in="g" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1.1 0.25" result="ga"/>
+    <feComposite in="b" in2="ga" operator="arithmetic" k1="1" k2="0" k3="0" k4="0" result="gr"/>
+    <feMorphology in="b" operator="erode" radius="2.5" result="e"/>
+    <feComposite in="b" in2="e" operator="out" result="rim"/>
+    <feGaussianBlur in="rim" stdDeviation=".8" result="rimb"/>
+    <feMerge><feMergeNode in="gr"/><feMergeNode in="rimb"/></feMerge>
+  </filter>
+  <filter id="wc-line" filterUnits="userSpaceOnUse" x="-50" y="-50" width="1100" height="520">
+    <feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="2" seed="5" result="n"/>
+    <feDisplacementMap in="SourceGraphic" in2="n" scale="4" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+</svg>
+
+<header class="site-head">
+  <a class="brand" href="../index.html">Learning VLAs</a>
+  <nav class="nav" aria-label="Site">
+    <a href="../index.html" aria-current="page">Chapters</a>
+    <a href="https://github.com/blueif16/vla_final">GitHub</a>
+  </nav>
+</header>
+
+<nav class="toc" aria-label="On this page">
+  <div class="label">RL 1</div>
+  <a href="#case">The arm and the score</a>
+  <a href="#words">Five words and a loop</a>
+  <a href="#rule">Do more of what scored well</a>
+  <a href="#versus">A grade or an answer key</a>
+  <a href="#for-us">What this means for us</a>
+  <a href="#check">Check yourself</a>
+  <a href="#sources">Sources</a>
+</nav>
+
+<header class="doc-head">
+  <h1>Learning from a score</h1>
+  <p class="subtitle">Nobody shows the robot what to do. It only hears, after each try, how well that try went. This chapter is about how that alone can teach it.</p>
+  <div class="meta"><span>RL 1 of 7</span><span>15–20 min with the exercises</span><span>Needs nothing</span></div>
+  <div class="outcomes">
+    <div class="label">After this chapter you can</div>
+    <ul>
+      <li>explain reinforcement learning with five words and one loop</li>
+      <li>work out from a handful of scores which tries a learner should repeat more often</li>
+      <li>say why a learner that is only given a score can end up better than the people it learned from</li>
+    </ul>
+  </div>
+  <details class="contents">
+    <summary>Contents</summary>
+    <ol>
+      <li><a href="#case">The arm and the score</a></li>
+      <li><a href="#words">Five words and a loop</a></li>
+      <li><a href="#rule">Do more of what scored well</a></li>
+      <li><a href="#versus">A grade or an answer key</a></li>
+      <li><a href="#for-us">What this means for us</a></li>
+      <li><a href="#check">Check yourself</a></li>
+    </ol>
+  </details>
+</header>
+
+<main>
+<div class="prose">
+  <h2 id="case">The arm and the score</h2>
+  <p>Picture a robot arm at a table with a black bowl and a plate on it. It's the same table as in the first chapter of our <button class="term" data-term="vla">VLA</button> series, but this time no one steers the arm through the task, and no one records what a person would do. The <button class="term" data-term="simulator">simulator</button> checks one thing when each try ends: is the bowl on the plate? It answers 1 for yes and 0 for no.</p>
+</div>
+
+<figure class="fig" id="fig-1-1">
+  <div class="pan"><svg class="dg wide" viewBox="0 0 960 360" role="img" aria-labelledby="f11t f11d">
+    <title id="f11t">The setup</title>
+    <desc id="f11d">A robot arm reaches over a table that holds a black bowl and a white plate. On the right, a card says the simulator checks one thing when a try ends, whether the bowl is on the plate, and answers 1 or 0.</desc>
+    <!-- table -->
+    <path class="w-umber" filter="url(#wc-wash)" d="M110 238 L760 232 L840 330 L40 336 Z"/>
+    <!-- plate -->
+    <ellipse class="w-paper" filter="url(#wc-wash)" cx="560" cy="270" rx="110" ry="30"/>
+    <ellipse class="br-ink" filter="url(#wc-line)" cx="560" cy="270" rx="110" ry="30" style="stroke-width:1.6;opacity:.6"/>
+    <ellipse class="br-ink" filter="url(#wc-line)" cx="560" cy="270" rx="70" ry="18" style="stroke-width:1.2;opacity:.45"/>
+    <!-- bowl -->
+    <path class="w-ink" filter="url(#wc-wash)" d="M250 262 C 252 300, 350 304, 352 262 Z"/>
+    <ellipse class="w-ink" filter="url(#wc-wash)" cx="301" cy="262" rx="52" ry="11" style="fill-opacity:.95"/>
+    <!-- arm: base, two links, gripper -->
+    <path class="w-umber" filter="url(#wc-wash)" d="M96 336 L96 300 C 96 286, 160 286, 160 300 L160 336 Z" style="fill:#9C8661"/>
+    <path class="br-ink" filter="url(#wc-line)" d="M128 296 L170 120 L330 108" style="stroke-width:20;stroke:#BDB39F;opacity:.95"/>
+    <path class="br-ink" filter="url(#wc-line)" d="M128 296 L170 120 L330 108" style="stroke-width:2.2"/>
+    <path class="br-ink" filter="url(#wc-line)" d="M330 108 L322 190" style="stroke-width:14;stroke:#BDB39F"/>
+    <path class="br-ink" filter="url(#wc-line)" d="M330 108 L322 190" style="stroke-width:2.2"/>
+    <circle class="w-umber" filter="url(#wc-wash)" cx="170" cy="120" r="15" style="fill:#9C8661"/>
+    <circle class="w-umber" filter="url(#wc-wash)" cx="330" cy="108" r="13" style="fill:#9C8661"/>
+    <path class="br-ink" filter="url(#wc-line)" d="M306 190 L338 190 M310 190 L306 214 M334 190 L338 214" style="stroke-width:3"/>
+    <text class="lbl-i" x="196" y="78">no demonstrations, no one steering</text>
+    <!-- the check -->
+    <rect class="w-paper" filter="url(#wc-wash)" x="660" y="34" width="270" height="170" rx="16"/>
+    <text class="sub" x="684" y="66">WHEN A TRY ENDS, THE SIMULATOR ASKS</text>
+    <text class="lbl" x="684" y="100">Is the bowl on the plate?</text>
+    <circle class="w-score" filter="url(#wc-wash)" cx="706" cy="150" r="24"/>
+    <text class="lbl" x="706" y="158" text-anchor="middle" style="fill:#fff">1</text>
+    <text class="sub" x="740" y="155">yes</text>
+    <circle filter="url(#wc-wash)" cx="830" cy="150" r="24" style="fill:#F1EAD9;fill-opacity:.95"/>
+    <text class="lbl" x="830" y="158" text-anchor="middle">0</text>
+    <text class="sub" x="864" y="155">no</text>
+  </svg></div>
+  <figcaption><b>Figure 1.1 · The setup.</b> The arm gets no examples of what to do. All it ever receives is a 1 or a 0 when a try ends, shown here in burnt sienna, the colour this series uses for every score. Our drawing.</figcaption>
+</figure>
+
+<div class="prose">
+  <div class="predict">
+    <div class="label">Predict first</div>
+    <p>The arm only ever hears a 1 or a 0 after a whole try. What could it learn from that, and what can't it learn?</p>
+    <textarea aria-label="Your guess" placeholder="Write a guess in a few words. Nothing is saved."></textarea>
+    <details><summary>Compare with the chapter</summary>
+      <p>It can learn which of its own tries went better, and lean towards whatever those tries did. It can't learn which moment of a try mattered, or what it should have done instead. Keep the second half in mind; it's what chapter 2 is about.</p>
+    </details>
+  </div>
+
+  <p>Suppose the arm already reaches for the bowl now and then, and lands it on the plate in some of its tries but not most. <button class="term" data-term="reinforcement-learning">Reinforcement learning</button>, or RL, is the rule that makes the lucky tries a little more likely next time, and then again after the next batch of tries, until the bowl ends up on the plate most of the time.</p>
+  <p><strong class="key">Nobody ever tells the arm which move was right. It only ever learns how well a whole try went.</strong></p>
+
+  <div class="has-side">
+  <h2 id="words">Five words and a loop</h2>
+  <p>The field describes every problem with the same five words. The <button class="term" data-term="agent">agent</button> is the learner, here the network that moves the arm. The <button class="term" data-term="environment">environment</button> is the world the agent acts in: the simulated table, its objects and their physics. An <button class="term" data-term="action">action</button> is what the agent does at one moment, which for this arm is seven numbers that move the hand and the gripper. The <button class="term" data-term="reward">reward</button> is the score the environment hands back, 1 or 0 at the end of a try. And the <button class="term" data-term="policy">policy</button> is the agent's current habits, "in a situation like this, I tend to do that". For a robot, the policy is the VLA itself.</p>
+  <aside class="side" aria-label="Side note: the same five words for a chat model">
+    <div class="label">The same words for a chat model</div>
+    <p>The agent is the model. An action is the next word. One try is one whole answer, and the reward is a grade for that answer. Chapter 4 builds on this.</p>
+  </aside>
+  </div>
+  <p>These words fit together as a loop. The agent looks at the situation, which for the arm is a camera picture. It acts, the environment changes, and sometimes a reward comes back. One try from start to finish is an <button class="term" data-term="episode">episode</button>. After a batch of episodes the policy is adjusted towards whatever scored higher, and the loop starts again. Point at any part of figure 1.2 to pick it out.</p>
+</div>
+
+<figure class="fig" id="fig-1-2">
+  <div class="pan"><svg class="dg wide" data-hover viewBox="0 0 960 400" role="img" aria-labelledby="f12t f12d">
+    <title id="f12t">Five words and a loop</title>
+    <desc id="f12d">On the left, the agent, whose habits are the policy. On the right, the environment. An action goes from agent to environment along the top. Along the bottom, a camera picture and, when a try ends, a reward of 1 or 0 come back to the agent, which adjusts its habits after a batch of tries.</desc>
+    <defs>
+      <marker id="f12-world" viewBox="0 0 12 12" refX="7" refY="6" markerWidth="4" markerHeight="4" orient="auto"><path d="M0 0L12 6 0 12z" fill="#5E8A35"/></marker>
+      <marker id="f12-score" viewBox="0 0 12 12" refX="7" refY="6" markerWidth="4.4" markerHeight="4.4" orient="auto"><path d="M0 0L12 6 0 12z" fill="#9A4824"/></marker>
+      <marker id="f12-ink" viewBox="0 0 12 12" refX="7" refY="6" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L12 6 0 12z" fill="#3A332A"/></marker>
+      <marker id="f12-learner" viewBox="0 0 12 12" refX="7" refY="6" markerWidth="4" markerHeight="4" orient="auto"><path d="M0 0L12 6 0 12z" fill="#B8862A"/></marker>
+    </defs>
+
+    <g class="grp" data-g="agent" style="cursor:pointer">
+      <ellipse class="w-learner" filter="url(#wc-wash)" cx="210" cy="200" rx="150" ry="112"/>
+      <text class="lbl" x="210" y="178" text-anchor="middle">agent</text>
+      <text class="sub" x="210" y="204" text-anchor="middle">the network that moves the arm</text>
+      <text class="lbl-i" x="210" y="238" text-anchor="middle">its habits = the policy</text>
+    </g>
+    <g data-g="agent">
+      <path class="br-learner" filter="url(#wc-line)" d="M120 300 C 80 360, 200 386, 250 330" marker-end="url(#f12-learner)" style="stroke-dasharray:3 9;stroke-width:4"/>
+      <text class="sub" x="60" y="388">adjust the habits after a batch of tries</text>
+    </g>
+
+    <g class="grp" data-g="env" style="cursor:pointer">
+      <ellipse class="w-world" filter="url(#wc-wash)" cx="750" cy="200" rx="160" ry="112"/>
+      <text class="lbl" x="750" y="186" text-anchor="middle">environment</text>
+      <text class="sub" x="750" y="212" text-anchor="middle">the table, the bowl, the physics</text>
+    </g>
+
+    <g class="grp" data-g="action" style="cursor:pointer">
+      <path class="br-world" filter="url(#wc-line)" d="M300 116 C 420 66, 540 66, 650 112" marker-end="url(#f12-world)"/>
+      <text class="lbl" x="475" y="28" text-anchor="middle">action</text>
+      <text class="sub" x="475" y="50" text-anchor="middle">seven numbers: move the hand and gripper</text>
+    </g>
+
+    <g class="grp" data-g="look" style="cursor:pointer">
+      <path class="br-ink" filter="url(#wc-line)" d="M640 250 C 560 280, 420 280, 335 252" marker-end="url(#f12-ink)" style="stroke-width:3"/>
+      <text class="sub" x="488" y="250" text-anchor="middle">look: a camera picture, every step</text>
+    </g>
+
+    <g class="grp" data-g="reward" style="cursor:pointer">
+      <path class="br-score" filter="url(#wc-line)" d="M680 304 C 580 372, 400 372, 300 306" marker-end="url(#f12-score)"/>
+      <circle class="w-score" filter="url(#wc-wash)" cx="488" cy="352" r="20"/>
+      <text class="lbl" x="488" y="359" text-anchor="middle" style="fill:#fff;font-size:18px">1/0</text>
+      <text class="lbl" x="560" y="358">reward</text>
+      <text class="sub" x="560" y="380">only when a try ends</text>
+    </g>
+  </svg></div>
+  <figcaption><b>Figure 1.2 · Five words and a loop.</b> Ochre is the learner, sap green is the action and the world it acts on, and burnt sienna is the score. The picture comes back every step; the score comes back only once per try. Point at a part, or tap it, to pick it out.</figcaption>
+</figure>
+
+<div class="prose">
+  <div class="has-side">
+  <h2 id="rule">Do more of what scored well</h2>
+  <p>A policy doesn't pick one fixed action. It gives every possible action a chance of being picked, and learning changes those chances. Here is the smallest version, with numbers.</p>
+  <p>Say that at one point in the task the policy reaches to the left half the time and to the right half the time. The arm makes four tries.</p>
+  <aside class="side" aria-label="Side note: the same subtraction comes back">
+    <div class="label">The same subtraction comes back</div>
+    <ol class="side-pts">
+      <li>A coach that expects a result, in chapter 3.</li>
+      <li>The average of eight answers to one question, in chapter 4.</li>
+      <li>π*0.6's "Advantage: positive", in chapter 7.</li>
+    </ol>
+  </aside>
+  </div>
+
+  <div class="predict">
+    <div class="label">Predict first</div>
+    <p>The four tries score 1, 0, 0 and 1. Which tries should become more likely next time, which less, and by how much compared with each other?</p>
+    <textarea aria-label="Your guess" placeholder="Write a guess in a few words. Nothing is saved."></textarea>
+    <details><summary>Compare with the chapter</summary>
+      <p>The average is 0.5. Take each try's score minus the average: +0.5, −0.5, −0.5 and +0.5. The two tries that scored 1 get the actions they took made a bit more likely, and the two that scored 0 get theirs made a bit less likely, all by the same amount. If both successful tries reached left, "reach left" might now come up 55 times in 100 instead of 50.</p>
+    </details>
+  </div>
+
+  <p>In one line, the rule is this:</p>
+  <div class="formula">
+    <div class="eq">change in an action's <b class="p">chance</b> ∝ <b class="s">score of the try it was in</b> − <b class="s">the average score</b></div>
+    <div class="label">∝ means "goes up and down with"</div>
+  </div>
+  <p>People call the difference on the right the <button class="term" data-term="advantage">advantage</button>, because it measures how much better than usual a try went. Each change is kept small, so one lucky try can't rewrite the habits. Ronald Williams wrote this rule down in 1992, and his algorithm, <button class="term" data-term="reinforce">REINFORCE</button>, still sits under most of the methods in this series.</p>
+  <p>Try it in figure 1.3. It starts with the four tries above. Apply the push, then run new tries and push again, and watch the chance of reaching left.</p>
+</div>
+
+<figure class="fig" id="fig-1-3">
+  <div class="tries" data-widget="tries" data-lr="0.2">
+    <div class="seg" role="group" aria-label="How hard the task is">
+      <button data-mode="easy" aria-pressed="true">The bowl is within reach</button>
+      <button data-mode="hard" aria-pressed="false">The bowl is almost out of reach</button>
+    </div>
+    <div class="tries-body">
+      <div>
+        <div class="label">The arm's habit at this point</div>
+        <div class="chance" data-bar="left"><span>reach left</span><div class="bar"><i style="width:50%"></i></div><b data-val="left">50%</b></div>
+        <div class="chance" data-bar="right"><span>reach right</span><div class="bar"><i style="width:50%"></i></div><b data-val="right">50%</b></div>
+        <svg class="hist" viewBox="0 0 300 70" role="img" aria-label="The chance of reaching left after each round"></svg>
+      </div>
+      <div>
+        <div class="label">This batch of four tries</div>
+        <table class="tries-tbl">
+          <thead><tr><th>Try</th><th>Reached</th><th>Score</th><th>− average</th><th>Push</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>reach left</td><td><span class="sc s1">1</span></td><td class="up">+0.5</td><td class="up">more likely</td></tr>
+            <tr><td>2</td><td>reach right</td><td><span class="sc s0">0</span></td><td class="down">−0.5</td><td class="down">less likely</td></tr>
+            <tr><td>3</td><td>reach right</td><td><span class="sc s0">0</span></td><td class="down">−0.5</td><td class="down">less likely</td></tr>
+            <tr><td>4</td><td>reach left</td><td><span class="sc s1">1</span></td><td class="up">+0.5</td><td class="up">more likely</td></tr>
+          </tbody>
+        </table>
+        <p class="tries-sum">Average score of these four tries: 0.5</p>
+      </div>
+    </div>
+    <div class="ctrl">
+      <button class="btn" data-act="update">Apply the push</button>
+      <button class="btn" data-act="run">Run 4 new tries</button>
+      <button class="btn" data-act="auto">Run 10 rounds</button>
+      <button class="btn" data-act="reset">Start over</button>
+    </div>
+    <p class="tries-say" aria-live="polite">These are the four tries from the text. Apply the push to see the habit change.</p>
+  </div>
+  <figcaption><b>Figure 1.3 · Four tries and the push each one gives.</b> The rule is RL 1's, exactly: each try pushes its own reach up or down by its score minus the batch's average. The success chances are made up for teaching. Within reach, reaching left succeeds 70% of the time and reaching right 15%; almost out of reach, 3% and never. Switch to the second setting and run a few rounds.</figcaption>
+</figure>
+
+<div class="prose">
+  <p>Taking away the average matters more than it looks. In a game where every try earns some points, pushing up every action by its raw score would push up whatever the arm happened to do, good or bad. With the average taken off, only the tries that beat the usual result get pushed up.</p>
+  <p>The second setting of figure 1.3 shows the other side of the same rule. When the bowl is almost out of reach, most batches score 0, 0, 0 and 0. The average is 0, every push is 0, and nothing changes. A learner that never succeeds has nothing to learn from. That's the first problem in chapter 2.</p>
+</div>
+
+<section class="rail" aria-label="Go deeper: learning from a score">
+  <div class="rail-head">
+    <div><div class="label">Go deeper</div><p class="rail-title">Learning from a score, on real robots and on paper</p></div>
+    <div class="rail-nav"><button class="rail-prev" aria-label="Previous">←</button><button class="rail-next" aria-label="Next">→</button></div>
+  </div>
+  <div class="rail-track">
+    <article class="card">
+      <div class="media" data-yt="EYLdC3a0NHw" data-start="1871" data-end="2431" data-title="Sergey Levine on reinforcement learning for real robots"></div>
+      <div class="body">
+        <span class="tag">Clip · 9 min</span>
+        <h4>Real robots that practise</h4>
+        <p>Sergey Levine shows robots learning to insert chips and route cables with online RL, and compares them with robots that only copied demonstrations.</p>
+        <p class="src">Sergey Levine, U of T Robotics Institute Seminar, 2025-03-21 · <a href="https://www.youtube.com/watch?v=EYLdC3a0NHw&amp;t=1871s">YouTube at 31:11</a></p>
+      </div>
+    </article>
+    <article class="card">
+      <div class="media" data-yt="_b-FwaiETwM" data-start="2391" data-title="Sergey Levine on π*0.6"></div>
+      <div class="body">
+        <span class="tag">Clip · from 39:51</span>
+        <h4>The same idea in π*0.6</h4>
+        <p>Levine explains how π*0.6 judges its own tries with a learned estimate of how well things are going, and what that did for an espresso-making robot. Chapter 7 of this series is about it.</p>
+        <p class="src">Sergey Levine, AI Agent Frontier Seminar, 2026 · <a href="https://www.youtube.com/watch?v=_b-FwaiETwM&amp;t=2391s">YouTube at 39:51</a></p>
+      </div>
+    </article>
+    <article class="card text">
+      <div class="body">
+        <span class="tag">The textbook</span>
+        <h4>Sutton and Barto is free online</h4>
+        <p>Chapter 1 of <em>Reinforcement Learning: An Introduction</em> sets out the five words with tic-tac-toe. Chapter 13 derives this page's rule, including why taking away a baseline such as the average helps.</p>
+        <p class="src"><a href="http://incompleteideas.net/book/the-book-2nd.html">incompleteideas.net/book/the-book-2nd.html</a> · 2nd ed., 2018</p>
+      </div>
+    </article>
+    <article class="card text">
+      <div class="body">
+        <span class="tag">Where the rule comes from</span>
+        <p class="big">1992</p>
+        <p>Ronald Williams, "Simple statistical gradient-following algorithms for connectionist reinforcement learning", <em>Machine Learning</em> 8. Each update there is the reward minus a baseline, times the direction that makes the chosen action more likely.</p>
+        <p class="src"><a href="https://doi.org/10.1007/BF00992696">doi.org/10.1007/BF00992696</a></p>
+      </div>
+    </article>
+  </div>
+</section>
+
+<div class="prose">
+  <h2 id="versus">A grade or an answer key</h2>
+  <p>Most machine learning is <button class="term" data-term="supervised-learning">supervised</button>. Every training example comes with the right answer, and the model is corrected towards it. A VLA learns this way when it copies <button class="term" data-term="demonstration">demonstrations</button>, which is called <button class="term" data-term="behaviour-cloning">behaviour cloning</button>. It's like studying with the answer key open.</p>
+
+  <div class="predict">
+    <div class="label">Predict first</div>
+    <p>One learner copies an expert. Another is only told its grade. Which one could end up better than the expert, and why?</p>
+    <textarea aria-label="Your guess" placeholder="Write a guess in a few words. Nothing is saved."></textarea>
+    <details><summary>Compare with the chapter</summary>
+      <p>The one told its grade. Copying is corrected towards what the expert did, so at best it matches the expert. A learner pushed towards a higher score reinforces any move that raises the score, whether or not the expert ever made it. The price is that it needs far more tries.</p>
+    </details>
+  </div>
+</div>
+
+<figure class="fig" id="fig-1-4">
+  <div class="pan"><svg class="dg wide" viewBox="0 0 960 300" role="img" aria-labelledby="f14t f14d">
+    <title id="f14t">Copying examples and learning from a score</title>
+    <desc id="f14d">Two panels with the same layout. Left: a picture goes in, the learner acts, and its action is compared with the expert's action at every step; at best it matches the expert. Right: a picture goes in, the learner acts, and only a grade of 1 or 0 comes back when the try ends; it needs many more tries but can go past the expert.</desc>
+    <defs>
+      <marker id="f14-ink" viewBox="0 0 12 12" refX="7" refY="6" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L12 6 0 12z" fill="#3A332A"/></marker>
+    </defs>
+    <!-- left panel -->
+    <text class="lbl" x="30" y="40">Copying examples</text>
+    <text class="sub" x="30" y="62">supervised learning, behaviour cloning</text>
+    <rect class="w-paper" filter="url(#wc-wash)" x="30" y="90" width="110" height="70" rx="10"/>
+    <text class="sub" x="85" y="130" text-anchor="middle">picture</text>
+    <path class="br-ink" filter="url(#wc-line)" d="M148 125 L188 125" marker-end="url(#f14-ink)"/>
+    <ellipse class="w-learner" filter="url(#wc-wash)" cx="250" cy="125" rx="52" ry="38"/>
+    <text class="sub" x="250" y="130" text-anchor="middle">learner</text>
+    <path class="br-ink" filter="url(#wc-line)" d="M308 125 L344 125" marker-end="url(#f14-ink)"/>
+    <rect class="w-world" filter="url(#wc-wash)" x="352" y="100" width="96" height="50" rx="10"/>
+    <text class="sub" x="400" y="130" text-anchor="middle">its action</text>
+    <path class="br-ink" filter="url(#wc-line)" d="M400 154 L400 178" style="stroke-dasharray:3 5;stroke-width:2"/>
+    <text class="sub" x="410" y="171">≈ ?</text>
+    <rect class="w-world" filter="url(#wc-wash)" x="352" y="182" width="96" height="50" rx="10" style="fill-opacity:.85"/>
+    <text class="sub" x="400" y="212" text-anchor="middle">expert's</text>
+    <text class="lbl-i" x="300" y="258" text-anchor="middle">compared at every step</text>
+    <text class="sub" x="30" y="290">best case: as good as the expert</text>
+    <!-- divider -->
+    <path class="br-ink" filter="url(#wc-line)" d="M480 30 L480 290" style="stroke-dasharray:2 10;opacity:.5"/>
+    <!-- right panel -->
+    <text class="lbl" x="510" y="40">Learning from a score</text>
+    <text class="sub" x="510" y="62">reinforcement learning</text>
+    <rect class="w-paper" filter="url(#wc-wash)" x="510" y="90" width="110" height="70" rx="10"/>
+    <text class="sub" x="565" y="130" text-anchor="middle">picture</text>
+    <path class="br-ink" filter="url(#wc-line)" d="M628 125 L668 125" marker-end="url(#f14-ink)"/>
+    <ellipse class="w-learner" filter="url(#wc-wash)" cx="730" cy="125" rx="52" ry="38"/>
+    <text class="sub" x="730" y="130" text-anchor="middle">learner</text>
+    <path class="br-ink" filter="url(#wc-line)" d="M788 125 L824 125" marker-end="url(#f14-ink)"/>
+    <rect class="w-world" filter="url(#wc-wash)" x="832" y="100" width="96" height="50" rx="10"/>
+    <text class="sub" x="880" y="130" text-anchor="middle">its action</text>
+    <path class="br-score" filter="url(#wc-line)" d="M880 154 L880 176" style="stroke-width:3;stroke-dasharray:3 5"/>
+    <circle class="w-score" filter="url(#wc-wash)" cx="880" cy="207" r="24"/>
+    <text class="lbl" x="880" y="214" text-anchor="middle" style="fill:#fff;font-size:18px">1/0</text>
+    <text class="lbl-i" x="760" y="258" text-anchor="middle">one grade when the try ends</text>
+    <text class="sub" x="510" y="290">needs many more tries; can go past the expert</text>
+  </svg></div>
+  <figcaption><b>Figure 1.4 · Two ways to learn.</b> Same layout, one difference: on the left every action is compared with the expert's, and on the right the only feedback is one score per try.</figcaption>
+</figure>
+
+<div class="prose">
+  <p>RL is like doing practice problems where the teacher only tells you your grade. A grade says how well you did but not what you should have written, so the feedback is weaker and the learner needs many more tries. In return, nothing caps it at the level of its teacher. A learner that copies people can at best match them. <strong class="key">A learner pushed towards a higher score can find moves no person showed it.</strong> <button class="term" data-term="alphazero">AlphaZero</button> learned chess, shogi and Go only by playing against itself, starting from random play, and it beat a world-champion program in each of the three. Chapter 3 tells that story.</p>
+
+  <div class="note">
+    <div class="label">A common wrong belief</div>
+    <p>It's easy to think a reward works like a label that tells the model which move was right. It doesn't. In the bowl example the score comes once, after up to a few hundred steps, and it never says which of those steps helped. Sorting that out is one of the three things that make RL hard, and chapter 2 is about them.</p>
+  </div>
+
+  <h2 id="for-us">What this means for our project</h2>
+  <p><code>pi05_libero</code> learned only by imitation, from the 50 recorded demonstrations that come with each <button class="term" data-term="libero">LIBERO</button> task. But LIBERO already has the other half of an RL setup. The goal check that decides whether an episode counts as a success is exactly the 1-or-0 score in this chapter's example, so RL on LIBERO wouldn't need anyone to write a new grader. Chapter 7 shows groups that have done this. Whether we try it is open; <a href="https://github.com/blueif16/vla_final/blob/main/docs/learn/06-where-we-stand.md">chapter 6 of the VLA series</a> lists what's decided.</p>
+
+  <h2 id="check">Check yourself</h2>
+  <ol class="quiz">
+    <li><p>Name the agent, environment, action, reward and policy for a program that learns to play chess.</p>
+      <details><summary>Show answer</summary><p>The agent is the chess program. The environment is the board and the opponent. An action is one move. The reward is the result at the end, for example +1 for a win, 0 for a draw and −1 for a loss. The policy is the program's current habit of which move it tends to play in each position.</p></details></li>
+    <li><p>Four tries score 2, 4, 6 and 8 points. Which tries get their actions pushed up, and how do the pushes compare?</p>
+      <details><summary>Show answer</summary><p>The average is 5, so the pushes are −3, −1, +1 and +3. The tries that scored 6 and 8 get their actions pushed up, the one that scored 8 three times as hard as the one that scored 6. The tries that scored 2 and 4 get pushed down.</p></details></li>
+    <li><p>Why can a learner that is only given a score end up better than the people who made its training data, when a learner that copies them can't? Say it in your own words.</p>
+      <details><summary>Show answer</summary><p>Copying is corrected towards what the people did, so the best it can do is match them. RL is pushed towards a higher score, and any move that raises the score gets reinforced, whether or not a person ever made it.</p></details></li>
+  </ol>
+
+  <p class="quiz-intro">In questions 4 to 6, pick the answer you think is right. The option opens and says whether it's right and why, and you can open the others afterwards to see what's wrong with them.</p>
+  <ol class="quiz" style="counter-reset: q 3">
+    <li class="mcq"><p>In the bowl example, what does the reward tell the arm?</p>
+      <ol class="mcq-opts">
+        <li><details class="mcq-opt" name="mcq-4"><summary>Which of its moves was the right one at each step.</summary><p>No. That's the common wrong belief. The score comes once, when the try ends, and says nothing about which of the steps helped.</p></details></li>
+        <li><details class="mcq-opt right" name="mcq-4"><summary>How well the whole try went, as one number at the end.</summary><p>Right. A 1 if the bowl ended on the plate and a 0 if it didn't, once per try.</p></details></li>
+        <li><details class="mcq-opt" name="mcq-4"><summary>What a person would have done in the same spot.</summary><p>No. That's what a demonstration gives, in behaviour cloning. In this setup no one shows the arm anything.</p></details></li>
+      </ol></li>
+    <li class="mcq"><p>Four tries score 3, 3, 3 and 3 points. What does the rule do to the actions in them?</p>
+      <ol class="mcq-opts">
+        <li><details class="mcq-opt" name="mcq-5"><summary>It pushes them all up, since every try earned points.</summary><p>No. That would be pushing by the raw score. The rule pushes by the score minus the average, and here that's 0 for every try.</p></details></li>
+        <li><details class="mcq-opt" name="mcq-5"><summary>It pushes up the first try most, because it came first.</summary><p>No. The order of the tries in a batch doesn't matter to the rule. Only each try's score compared with the average does.</p></details></li>
+        <li><details class="mcq-opt right" name="mcq-5"><summary>Nothing. Every try's score minus the average is 0.</summary><p>Right. No try did better than usual, so there's nothing to push towards. It's the same reason the arm learns nothing when every try scores 0.</p></details></li>
+      </ol></li>
+    <li class="mcq"><p>A chat model is trained with RL, using the same five words. What is one action?</p>
+      <ol class="mcq-opts">
+        <li><details class="mcq-opt right" name="mcq-6"><summary>The next word it writes.</summary><p>Right. Each word, or piece of a word, it picks is one action. One whole answer is one try, an episode, made of many actions.</p></details></li>
+        <li><details class="mcq-opt" name="mcq-6"><summary>One whole answer.</summary><p>No. A whole answer is one try, an episode, and it's made of many actions, one per word.</p></details></li>
+        <li><details class="mcq-opt" name="mcq-6"><summary>The grade the answer gets.</summary><p>No. The grade is the reward. It comes once, when the answer is finished, just as the arm's 1 or 0 comes when a try ends.</p></details></li>
+      </ol></li>
+  </ol>
+
+  <h2 id="sources">Sources</h2>
+  <ul class="sources">
+    <li>Sutton and Barto (2018), <em>Reinforcement Learning: An Introduction</em>, 2nd ed., MIT Press: chapter 1 for the five words, chapter 13 for policy gradients and the baseline. <a href="http://incompleteideas.net/book/the-book-2nd.html">Free online</a>.</li>
+    <li>Williams (1992), "Simple statistical gradient-following algorithms for connectionist reinforcement learning", <em>Machine Learning</em> 8(3–4), 229–256. <a href="https://doi.org/10.1007/BF00992696">doi.org/10.1007/BF00992696</a>. Checked on Crossref, 2026-11-13.</li>
+    <li>Silver et al. (2017), "Mastering Chess and Shogi by Self-Play with a General Reinforcement Learning Algorithm". <a href="https://arxiv.org/abs/1712.01815">arXiv 1712.01815</a>: "Starting from random play … convincingly defeated a world-champion program in each case." Checked 2026-11-13.</li>
+    <li>LIBERO and its goal check: chapter 3 of the VLA series and its sources. The 50 demonstrations per task are from Liu et al. (2023), <a href="https://arxiv.org/abs/2306.03310">arXiv 2306.03310</a>.</li>
+    <li>Talks: Sergey Levine (<a href="https://www.youtube.com/watch?v=EYLdC3a0NHw">EYLdC3a0NHw</a>, <a href="https://www.youtube.com/watch?v=_b-FwaiETwM">_b-FwaiETwM</a>). Clip times come from RoboBoom's section summaries of each talk, recorded in <code>library/clips.yaml</code>.</li>
+    <li>The success chances in figure 1.3 are made up for teaching. Every other number on this page is in <code>library/rl.yaml</code>.</li>
+  </ul>
+</div>
+</main>
+
+<nav class="chapter-nav" aria-label="Chapters">
+  <a class="prev" href="../index.html#rl"><div class="label">Back · the series</div>← All chapters</a>
+  <a class="next" href="https://github.com/blueif16/vla_final/blob/main/docs/learn/rl-02-why-its-hard.md"><div class="label">Next · RL 2</div>Why it's hard →</a>
+</nav>
+
+<footer class="site-foot">
+  <span class="brand">Learning VLAs</span>
+  <nav class="nav"><a href="../index.html">Chapters</a><a href="https://github.com/blueif16/vla_final">GitHub</a></nav>
+</footer>
+
+<script src="../assets/js/glossary.js"></script>
+<script src="../assets/js/site.js"></script>
+<script src="../assets/js/rl.js"></script>
+</body>
+</html>

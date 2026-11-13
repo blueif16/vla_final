@@ -10,6 +10,7 @@ find here the moment it's useful, so no one has to find it twice.
 | `images.yaml` | Images we've downloaded (in `docs/assets/img/`), figures we may reuse but haven't downloaded, papers whose figures we may not copy, and images we still need. |
 | `environments.yaml` | Simulators, benchmarks and robots we've looked at for experiments: what each needs to run, which model we could run in it, and how close its tasks are to real life. |
 | `papers.yaml` | Papers and code, with licence and the facts and numbers we've read in them. Chapters copy numbers from here. |
+| `rl.yaml` | Sources for the reinforcement-learning series: each fact with its quote, link, date and caveat, plus claims we checked and could not support. |
 | `terms-zh.yaml` | The Chinese term shown next to each glossary concept, the other forms people use where usage splits, and where we checked them. |
 
 The glossary that every web chapter shares is `docs/assets/js/glossary.js`; add a term there once and every chapter

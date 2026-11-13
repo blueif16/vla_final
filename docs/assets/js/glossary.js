@@ -54,5 +54,12 @@ window.GLOSSARY = {
   "pytorch": { t: "PyTorch", d: "The most widely used Python library for deep learning, started at Meta. openpi added a PyTorch version of π0 and π0.5 in September 2025." },
   "gpu": { t: "GPU", d: "Graphics processing unit, the chip that runs neural networks quickly. How much memory it has decides which models fit on it." },
   "pi-star-06": { t: "π*0.6", d: "Physical Intelligence's model from November 2025. It keeps improving from the robot's own attempts and from people's corrections, using reinforcement learning. Its weights are not in openpi." },
+  "agent": { t: "agent", zh: "智能体", d: "In reinforcement learning, the learner: the thing that acts and gets scored. For a robot, the network that moves the arm.", more: "RL 1" },
+  "environment": { t: "environment", zh: "环境", d: "The world an agent acts in. It changes when the agent acts and hands back a score. For a robot in simulation, the simulated table, its objects and their physics.", more: "RL 1" },
+  "reward": { t: "reward", zh: "奖励", d: "The number an environment hands back to say how well the agent did. In RL 1's bowl example, 1 if the bowl ends on the plate and 0 if it doesn't.", more: "RL 1" },
+  "advantage": { t: "advantage", zh: "优势", d: "How much better than usual a try went: its score minus the average score. Actions from tries with a positive advantage are made more likely, the others less likely.", more: "RL 1" },
+  "supervised-learning": { t: "supervised learning", zh: "监督学习", d: "Learning from examples that each come with the right answer, by being corrected towards it. Copying demonstrations (behaviour cloning) is one kind." },
+  "alphazero": { t: "AlphaZero", d: "DeepMind's program from 2017 that learned chess, shogi and Go only by playing against itself, starting from random play, and beat a world-champion program in each." },
+  "reinforce": { t: "REINFORCE", d: "Ronald Williams's algorithm from 1992: make the actions from tries that beat a baseline, such as the average score, more likely. Policy-gradient methods, including the ones used on language models, build on it.", more: "RL 1, RL 3" },
   "pi07": { t: "π0.7", d: "Physical Intelligence's model from April 2026. Its paper's abstract says it can follow diverse language instructions in unseen environments. Its weights are not in openpi." }
 };

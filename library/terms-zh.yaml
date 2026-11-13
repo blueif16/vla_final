@@ -43,6 +43,30 @@ terms:
                        note: "知识隔离 in the 技术栈, cnblogs and CSDN write-ups; 知识绝缘 in Laurie's notes; 具身星图 keeps 'Knowledge Insulation (KI)'" }
   reinforcement-learning: { zh: 强化学习 }
 
+# added for the reinforcement-learning series (2026-11-13). Sources marked SB, ZZH, QXP, EasyRL, HRL, LW are listed
+# under sources below. Names (PPO, DPO, GRPO, RLHF, RLAIF, RLVR, REINFORCE, DQN, Recap, TRL) stay in Latin letters.
+rl:
+  agent:               { zh: 智能体, note: "SB, QXP, EasyRL, HRL; ZZH writes 机器" }
+  environment:         { zh: 环境 }
+  reward:              { zh: 奖励, alt: [收益, 奖赏], open: true, note: "奖励 in QXP, EasyRL, HRL; 收益 in SB (目标和收益); 奖赏 in ZZH (任务与奖赏)" }
+  return:              { zh: 回报, alt: [累积奖赏], note: "回报 in SB, QXP, EasyRL; 累积奖赏 in ZZH" }
+  value-function:      { zh: 价值函数, alt: [值函数], open: true, note: "价值函数 in SB, EasyRL; 值函数 in ZZH, QXP" }
+  q-value:             { zh: Q 函数, alt: [动作价值函数, 状态-动作值函数], note: "QXP: 状态-动作值函数, 也经常称为Q函数" }
+  exploration-exploitation: { zh: 探索与利用, alt: [试探与开发], note: "探索与利用 in ZZH, HRL, EasyRL; SB's translation uses 试探/开发 (from readers' notes, not the book page)" }
+  credit-assignment:   { zh: 信用分配, alt: [贡献度分配, 功劳分配], open: true, note: "QXP heads it 贡献度分配问题 and adds 也经常翻译为信用分配问题或功劳分配问题" }
+  reward-hacking:      { zh: 奖励黑客, alt: [奖励破解, 奖励作弊, "reward hacking (kept in English)"], open: true, note: "LW's translation uses 奖励黑客 and 奖励破解; often left in English" }
+  advantage:           { zh: 优势, alt: [优势函数], note: "优势函数 in EasyRL ch4; SB not checked" }
+  policy-gradient:     { zh: 策略梯度 }
+  actor-critic:        { zh: 演员-评论员, alt: [行动器-评判器, "Actor-Critic (kept in English)"], open: true, note: "演员-评论员 in QXP, EasyRL; 行动器-评判器 in SB 13.5; HRL keeps Actor-Critic" }
+  model-based-rl:      { zh: 基于模型的强化学习, alt: [有模型学习], note: "基于模型的 in SB, HRL; 有模型/免模型学习 in ZZH, EasyRL" }
+  bandit:              { zh: 多臂赌博机, alt: [多臂老虎机, K-摇臂赌博机], open: true, note: "多臂赌博机 in SB, EasyRL; 多臂老虎机 in HRL; K-摇臂赌博机 in ZZH" }
+  td-learning:         { zh: 时序差分学习 }
+  supervised-learning: { zh: 监督学习 }
+  self-play:           { zh: 自我对弈 }
+  reward-model:        { zh: 奖励模型 }
+  distillation:        { zh: 蒸馏, alt: [知识蒸馏], note: "教师模型 / 学生模型 for teacher and student" }
+  not_chosen_yet: [discount, offline RL, on-policy distillation, rubric reward, agentic RL, compounding errors, RL environment (as a product)]
+
 # Terms only in docs/learn/glossary.md (later chapters)
 md_only:
   counterfactual-instruction: { zh: 反事实指令 }
@@ -64,3 +88,11 @@ sources:
   - "Hugging Face 中文博客, PaliGemma 正式发布, https://huggingface.co/blog/zh/paligemma (SigLIP 图像编码器, 贴片)"
   - "VLA Gallery, π0.5 + KI, https://vla-gallery.is-a.dev/zh/m/pi0-5-ki/ (视觉编码器, 动作专家)"
   - "Embodied AI: Zero to One, LIBERO 与 Ch21 数据集全景, https://estelledc.github.io/embodied-ai-reading-station/ (示范数据采集, 每任务演示数, 遥操作, 基准)"
+  - "SB: 《强化学习（第2版）》, Sutton and Barto, 俞凯 等译, 电子工业出版社 2019-09, contents at https://book.douban.com/subject/34809689/ (checked 2026-11-13)"
+  - "ZZH: 周志华《机器学习》(2016), ch. 16 contents"
+  - "QXP: 邱锡鹏《神经网络与深度学习》, http://nndl.ai/nndl/legacy/nndl-v1/main.pdf"
+  - "EasyRL: 蘑菇书 (人民邮电 2022), https://github.com/datawhalechina/easy-rl"
+  - "HRL: 《动手学强化学习》, https://hrl.boyuai.com"
+  - "LW: Chinese translation of Lilian Weng, 'Reward Hacking in Reinforcement Learning' (2024)"
+  - "澎湃新闻 2017-10-19, https://www.thepaper.cn/newsDetail_forward_1830073 (基于自我对弈的强化学习)"
+  - "Hugging Face Chinese CV course, hugging-face.cn (知识蒸馏, 教师模型, 学生模型)"

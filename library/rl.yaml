@@ -1,0 +1,200 @@
+# Sources for the reinforcement-learning series (docs/learn/rl-*.md). All checked 2026-11-13 unless noted.
+# A number goes here only after we read it in the source; the chapters copy numbers from this file.
+# `quote` is copied from the source. `caveat` is what a reader of the quote could get wrong.
+
+classic:
+  - { key: thorndike, what: "law of effect", source: "Thorndike (1911), Animal Intelligence, p. 244 (puzzle boxes 1898)", url: https://archive.org/details/cu31924003032954,
+      quote: "Of several responses made to the same situation, those which are accompanied or closely followed by satisfaction to the animal will, other things being equal, be more firmly connected with the situation" }
+  - { key: bellman, what: "Dynamic Programming, Princeton University Press, 1957; the Bellman equation", source: "Sutton and Barto 2nd ed. sec. 1.7", url: http://incompleteideas.net/book/RLbook2020.pdf }
+  - { key: sutton-barto, what: "Reinforcement Learning: An Introduction, 1st ed. 1998, 2nd ed. 2018, free online", url: http://incompleteideas.net/book/the-book-2nd.html }
+  - { key: td, what: "Sutton (1988), Learning to predict by the methods of temporal differences, Machine Learning 3", url: https://link.springer.com/article/10.1007/BF00115009,
+      quote: "the new methods assign credit by means of the difference between temporally successive predictions" }
+  - { key: q-learning, what: "Watkins (1989) PhD thesis 'Learning from Delayed Rewards', Cambridge; Watkins and Dayan (1992), Machine Learning 8(3-4):279-292", url: https://link.springer.com/article/10.1007/BF00992698 }
+  - { key: reinforce, what: "Williams (1992), Simple statistical gradient-following algorithms for connectionist reinforcement learning, Machine Learning 8(3-4):229-256, May 1992 (Crossref)", url: https://doi.org/10.1007/BF00992696,
+      facts: ["REINFORCE; the reward minus a reinforcement baseline sets the size of each update"] }
+  - { key: td-gammon, what: "Tesauro (1994), Neural Computation 6(2); (1995), CACM 38(3)", url: https://direct.mit.edu/neco/article/6/2/215/5771/TD-Gammon-a-Self-Teaching-Backgammon-Program,
+      quote: "the latest version of TD-Gammon is now estimated to play at a strong master level that is extremely close to the world's best human players",
+      caveat: "master level used hand-crafted input features; from the raw board alone it reached 'a strong intermediate level'" }
+  - { key: dqn, url: [https://arxiv.org/abs/1312.5602, https://www.nature.com/articles/nature14236], published: "2013-12-19; Nature 2015-02-25",
+      quote: "achieve a level comparable to that of a professional human games tester across a set of 49 games, using the same algorithm, network architecture and hyperparameters" }
+  - { key: alphago, url: [https://www.nature.com/articles/nature16961, https://deepmind.google/research/alphago/], published: "Nature 2016-01-27; match March 2016",
+      quotes: ["AlphaGo's 4-1 victory in Seoul, South Korea, in March 2016", "AlphaGo's bold move 37 in Game 2 had a 1 in 10,000 chance of being played by a human.",
+               "supervised learning from human expert games, and reinforcement learning from games of self-play"] }
+  - { key: alphazero, url: [https://arxiv.org/abs/1712.01815, https://www.science.org/doi/10.1126/science.aar6404], published: "arXiv 2017-12-05; Science 2018-12-07",
+      quote: "Starting from random play, and given no domain knowledge except the game rules, AlphaZero achieved within 24 hours a superhuman level of play ... convincingly defeated a world-champion program in each case",
+      caveat: "'within 24 hours' is only in the 2017 preprint; the 2018 blog gives 4 h (chess), 2 h (shogi), 30 h (Go) to pass Stockfish, Elmo and AlphaGo Lee" }
+  - { key: muzero, url: [https://arxiv.org/abs/1911.08265, https://www.nature.com/articles/s41586-020-03051-4], published: "arXiv 2019-11-19; Nature 2020-12-23",
+      quote: "matched, without any knowledge of the game dynamics, the superhuman performance of the AlphaZero algorithm that was supplied with the rules of the game",
+      caveat: "its model predicts only policy, value and reward, not the full environment" }
+  - { key: openai-five, url: [https://openai.com/index/openai-five-defeats-dota-2-world-champions/, https://arxiv.org/abs/1912.06680], published: 2019-04-15,
+      quote: "having won two back-to-back games versus the world champion Dota 2 team, OG, at Finals this weekend", facts: ["trained with PPO at large scale (Berner et al. 2019)"] }
+  - { key: alphastar, url: https://www.nature.com/articles/s41586-019-1724-z, published: 2019-10-30,
+      quote: "AlphaStar was rated at Grandmaster level for all three StarCraft races and above 99.8% of officially ranked human players." }
+  - { key: turing-2024, url: https://www.acm.org/media-center/2025/march/turing-award-2024, published: 2025-03-05,
+      quote: "named Andrew G. Barto and Richard S. Sutton as the recipients of the 2024 ACM A.M. Turing Award for developing the conceptual and algorithmic foundations of reinforcement learning." }
+  - { key: ppo, url: https://arxiv.org/abs/1707.06347, published: 2017-07-20, facts: ["clipped surrogate objective; the paper's experiments use epsilon = 0.2"] }
+  - { key: christiano, url: https://arxiv.org/abs/1706.03741, published: 2017-06-12,
+      quote: "feedback on less than one percent of our agent's interactions with the environment", facts: ["'about an hour of human time' for some tasks"] }
+
+reward-hacking:
+  - { key: coastrunners, title: "Faulty Reward Functions in the Wild", authors: "Jack Clark, Dario Amodei", url: https://openai.com/index/faulty-reward-functions/, published: 2016-12-21,
+      quotes: ["finds an isolated lagoon where it can turn in a large circle and repeatedly knock over three targets",
+               "Despite repeatedly catching on fire, crashing into other boats, and going the wrong way on the track",
+               "Our agent achieves a score on average 20 percent higher than that achieved by human players."],
+      video: "https://www.youtube.com/watch?v=tlOIHko8ySg ('CoastRunners 7', embedded in the archived post; not yet timed in clips.yaml)" }
+  - { key: claude-37-card, url: https://www-cdn.anthropic.com/9ff93dfa8f445c932415d335c88852ef47f1201e/claude-3-7-sonnet-system-card.pdf, published: "Feb 2025", where: "sec. 6, p. 22",
+      quote: "occasionally resorts to special-casing in order to pass test cases in agentic coding environments like Claude Code. Most often this takes the form of directly returning expected test values rather than implementing general solutions, but also includes modifying the problematic tests themselves" }
+  - { key: openai-cot-monitoring, url: https://arxiv.org/abs/2503.11926, published: 2025-03-14,
+      quote: "exit(0), where the agent exploited a bug that allowed it to exit from the environment early without running all unit tests, and raise SkipTest" }
+  - { key: metr-2025, url: https://metr.org/blog/2025-06-05-recent-reward-hacking/, published: 2025-06-05, facts: ["frontier models 'modifying the tests or scoring code'"] }
+  - { key: spec-gaming, title: "Specification gaming: the flip side of AI ingenuity", authors: "Krakovna et al., DeepMind", published: 2020-04,
+      url: https://deepmind.google/discover/blog/specification-gaming-the-flip-side-of-ai-ingenuity/, note: "list of cases; URL not re-opened on 2026-11-13" }
+
+language-models:
+  - { key: instructgpt, url: https://arxiv.org/abs/2203.02155, published: 2022-03-04,
+      quote: "outputs from the 1.3B parameter InstructGPT model are preferred to outputs from the 175B GPT-3, despite having 100x fewer parameters.",
+      facts: ["Step 1 demonstrations + supervised policy; Step 2 comparison data + reward model; Step 3 PPO against the reward model (sec. 3.1)"] }
+  - { key: chatgpt, url: https://openai.com/index/chatgpt/, published: 2022-11-30,
+      quote: "We trained this model using Reinforcement Learning from Human Feedback (RLHF), using the same methods as InstructGPT, but with slight differences in the data collection setup." }
+  - { key: constitutional-ai, url: https://arxiv.org/abs/2212.08073, published: 2022-12-15,
+      quote: "The only human oversight is provided through a list of rules or principles, and so we refer to the method as 'Constitutional AI'.", caveat: "AI feedback was used for harmlessness; there is a supervised self-critique phase first" }
+  - { key: dpo, url: https://arxiv.org/abs/2305.18290, published: 2023-05-29,
+      quote: "eliminating the need for sampling from the LM during fine-tuning", caveat: "framed as a reparameterisation of the RLHF reward model; still uses a reference model" }
+  - { key: tulu3, url: https://arxiv.org/abs/2411.15124, published: 2024-11-22,
+      quote: "a novel method we call Reinforcement Learning with Verifiable Rewards (RLVR)" }
+  - { key: o1, url: https://openai.com/index/learning-to-reason-with-llms/, published: 2024-09-12,
+      quote: "the performance of o1 consistently improves with more reinforcement learning (train-time compute) and with more time spent thinking (test-time compute)" }
+  - { key: openai-rft, url: [https://openai.com/12-days/, https://developers.openai.com/api/docs/guides/rft-use-cases], published: "preview 2024-12-06 (day 2); GA for o4-mini 2025-05-08",
+      quotes: ["This fine-tuning technique is designed to improve the performance of our reasoning models on verifiable domain-specific tasks.",
+               "After reinforcement fine-tuning, Harvey saw a 20% increase in the F1 score: Baseline F1: 0.563 / Post-RFT F1 - 0.6765",
+               "Thomson Reuters aimed to create a reinforcement fine-tuned model excelling in legal AI skills.",
+               "OpenAI is winding down the fine-tuning platform ... Eligible existing customers can create training jobs until January 6, 2027"],
+      caveat: "the use-cases page returned 404 to a direct fetch on 2026-11-13; text read from a search engine's copy" }
+  - { key: deepseek-r1, url: https://arxiv.org/abs/2501.12948v1, published: "v1 2025-01-22 (v2 2026-01-04 rewrites the abstract)",
+      quotes: ["DeepSeek-R1-Zero, a model trained via large-scale reinforcement learning (RL) without supervised fine-tuning (SFT) as a preliminary step",
+               "we adopt a rule-based reward system that mainly consists of two types of rewards: Accuracy rewards ... Format rewards",
+               "Behaviors such as reflection—where the model revisits and reevaluates its previous steps—and the exploration of alternative approaches to problem-solving arise spontaneously."] }
+  - { key: grpo, url: https://arxiv.org/abs/2402.03300, published: 2024-02-05,
+      quotes: ["GRPO foregoes the critic model, instead estimating the baseline from group scores",
+               "these rewards are normalized by subtracting the group average and dividing by the group standard deviation",
+               "the value function employed in PPO is typically another model of comparable size as the policy model",
+               "For each question, we sample 64 outputs."],
+      facts: ["DeepSeek-R1 (v2 text): 16 outputs per question", "TRL GRPOConfig v1.17.1 (2026-10-30): num_generations default 8; loss_type default 'dapo'; 'grpo' loss 'Not recommended due to length bias'"] }
+  - { key: claude-37, url: https://www.anthropic.com/news/claude-3-7-sonnet, published: 2025-02-24, quote: "Claude Code is available as a limited research preview" }
+  - { key: deep-research, url: https://openai.com/index/introducing-deep-research/, published: 2025-02-02,
+      quote: "Deep research was trained using end-to-end reinforcement learning on hard browsing and reasoning tasks across a range of domains." }
+
+frontier:
+  - { key: dapo, url: https://arxiv.org/abs/2503.14476, published: 2025-03-18, facts: ["Clip-Higher (avoids entropy collapse), Dynamic Sampling, Token-Level Policy Gradient Loss, Overlong Reward Shaping"] }
+  - { key: gspo, url: https://arxiv.org/abs/2507.18071, published: 2025-07-24, quote: "performs sequence-level clipping ... notably stabilizes Mixture-of-Experts (MoE) RL training" }
+  - { key: cispo, url: https://arxiv.org/abs/2506.13585, published: 2025-06-16, quote: "CISPO clips importance sampling weights rather than token updates" }
+  - { key: dr-grpo, title: "Understanding R1-Zero-Like Training: A Critical Perspective", authors: "Liu et al.", url: https://arxiv.org/abs/2503.20783, published: 2025-03-26,
+      quote: "an optimization bias in Group Relative Policy Optimization (GRPO), which artificially increases response length" }
+  - { key: kimi-k2, url: https://arxiv.org/abs/2507.20534, published: 2025-07-28,
+      quotes: ["combines verifiable rewards (RLVR) with a self-critique rubric reward mechanism", "supports over 10,000 concurrent sandbox instances"] }
+  - { key: kimi-k3, url: https://arxiv.org/abs/2607.24653, published: 2026-07-27,
+      quote: "a total of 51,219,741 sandboxes across 1,505,678 images were created", facts: ["nine expert models (3 domains x 3 effort levels) merged by multi-teacher on-policy distillation", "Firecracker microVM sandboxes"] }
+  - { key: glm-5, url: [https://z.ai/blog/glm-5, https://arxiv.org/abs/2602.15763], published: "blog 2026-02-12; arXiv 2026-02-17",
+      quotes: ["we developed slime, a novel asynchronous RL infrastructure", "a hybrid reward system that integrates three complementary types of reward signals: rule-based reward functions, outcome reward models (ORMs), and generative reward models (GRMs)"] }
+  - { key: nemotron-3-ultra, url: https://arxiv.org/abs/2606.15007, published: 2026-06-12, facts: ["unified RLVR stage across terminal, office, software engineering, search and more", "MOPD from 'more than ten specialized teacher models'"] }
+  - { key: lfm25, url: https://www.liquid.ai/blog/lfm2-5-2-6b, published: "2026-08-04 (page)",
+      quotes: ["an outcome-based reward that combines an LLM-as-a-judge rubric, programmatic checks, and a hard safety gate", "Each rollout runs in a dedicated sandbox with its own runtime."] }
+  - { key: deepseek-v4, url: https://arxiv.org/abs/2606.19348, published: "2026 (the page shows 2026-04-26, which doesn't fit the 2606 id)",
+      quotes: ["the mixed Reinforcement Learning (RL) stage was entirely replaced by On-Policy Distillation (OPD)", "more than ten teacher models covering various domains are employed to distill a single student model."] }
+  - { key: mimo-v2-flash, url: https://arxiv.org/abs/2601.02780, published: 2026-01-06,
+      quote: "MOPD, wherein the student model learns from two complementary signals: dense, token-level rewards from specialized teachers trained across diverse domains, and a verifiable, outcome-based reward." }
+  - { key: opd, title: "On-Policy Distillation", authors: "Kevin Lu with others at Thinking Machines", url: https://thinkingmachines.ai/blog/on-policy-distillation/, published: 2025-10-27,
+      quote: "sample trajectories from the student model and use a high-performing teacher to grade each token of each trajectory",
+      facts: ["Qwen3-8B IF-eval 85% at start; 45% after midtraining on documents only; 79% with a 70/30 document/chat mix; 83% after on-policy distillation (internal QA 18 -> 43 / 36 / 41)"] }
+  - { key: interconnects-review, title: "Frontier post-training recipe review", authors: "Nathan Lambert", url: https://www.interconnects.ai/p/frontier-post-training-recipe-review, published: 2026-06-16,
+      facts: ["'MiMo Flash v2 introduced it -> DeepSeek V4 & Nemotron 3 Ultra scale it to >10 teachers'"] }
+  - { key: rar, title: "Rubrics as Rewards", authors: "Gunjal et al. (Scale AI)", url: https://arxiv.org/abs/2507.17746, published: 2025-07-23,
+      quote: "an on-policy reinforcement learning method that extends RLVR beyond verifiable domains by using rubric-based feedback" }
+  - { key: rubric-hacking, title: "Reward Hacking in Rubric-Based Reinforcement Learning", authors: "Mahmoud et al. (Scale AI)", url: https://arxiv.org/abs/2605.12474, published: 2026-05-12,
+      quotes: ["weak verifiers produce large proxy-reward gains that do not transfer to the reference verifiers; exploitation grows over training",
+               "stronger verification does not prevent reward hacking when the rubric leaves important failure modes unspecified"] }
+  - { key: deepswe, url: https://www.together.ai/blog/deepswe, published: "mid-2025", quote: "each RL iteration spawned 512 (BS=64, 8 passes) Docker containers in parallel" }
+
+industry:
+  - { key: cursor-tab, title: "Improving Cursor Tab with online RL", url: https://cursor.com/blog/tab-rl, published: 2025-09-12,
+      quotes: ["This model makes 21% fewer suggestions than the previous model while having a 28% higher accept rate for the suggestions it makes.",
+               "handling over 400 million requests per day",
+               "we could assign a reward of 0.75 for accepted suggestions, a reward of -0.25 for rejected suggestions, and a reward of 0 if no suggestion is shown",
+               "it takes us 1.5 to 2 hours to roll out a checkpoint and collect the data for the next step"],
+      caveat: "0.75 / -0.25 / 0 is the post's worked example for a 25% threshold, not stated as the production values" }
+  - { key: cursor-composer, url: https://cursor.com/blog/composer, published: 2025-10-29,
+      quote: "requires running hundreds of thousands of concurrent sandboxed coding environments in the cloud" }
+  - { key: cursor-realtime, title: "Improving Composer through real-time RL", url: https://cursor.com/blog/real-time-rl-for-composer, published: 2026-03-26,
+      quotes: ["collecting billions of tokens from user interactions with the current checkpoint", "we run it against our eval suites, including CursorBench, to make sure there are no significant regressions",
+               "This whole process takes about five hours", "Agent edit persists in codebase +2.28% / User sends dissatisfied follow-up -3.13% / Latency -10.3%",
+               "Originally, we discarded examples where the tool call was invalid", "We fixed this by correctly including broken tool calls as negative examples.",
+               "We caught this through monitoring and modified our reward function"] }
+  - { key: techcrunch-envs, title: "Silicon Valley bets big on 'environments' to train AI agents", authors: "Maxwell Zeff", url: https://techcrunch.com/2025/09/21/silicon-valley-bets-big-on-environments-to-train-ai-agents/,
+      published: "2025-09-21 (first published 2025-09-16)",
+      quotes: ["leading AI labs are now demanding more RL environments", "According to The Information, leaders at Anthropic have discussed spending more than $1 billion on RL environments over the next year."] }
+  - { key: yc-lightcone-2026, title: "The State of Startups in 2026 (Lightcone)", url: "https://www.youtube.com/watch?v=yslXlV2BP_Y", published: 2026-09-17, at: "about 23:26",
+      quote: "just in the last two years, YC has funded more than a dozen companies that are each making more than $10 million a year selling data or RL environments to the labs",
+      caveat: "read from two third-party transcripts; captions not available; speaker attributed differently (Jared Friedman / Garry Tan)" }
+  - { key: ambience, url: https://www.ambiencehealthcare.com/blog/ambience-healthcare-s-ai-platform-surpasses-clinician-performance-by-27-in-medical-coding-powered-by-new-openai-breakthrough, published: 2025-05-27,
+      quotes: ["achieved a 27% relative improvement over physician benchmarks—reducing coding errors by approximately one-quarter", "labeled by a consensus of four or more expert clinicians",
+               "benchmarked against 18 experienced, board-certified physicians on ICD-10 coding accuracy", "Ambience's 'coding-aware' scribe"],
+      facts: ["OpenAI RFT guide: o3-mini base 0.39, physician baseline 0.45, RFT-tuned o3-mini 0.57 (F1 per a Latent Space interview)"] }
+  - { key: ramp-tinker, url: https://labs.ramp.com/research/post-training-ensemble-tinker/, published: 2025-11-03,
+      quote: "The policy model we fine tuned in all four cases was Qwen-8B with LoRA rank 128.",
+      caveat: "general RLVR experiments on Webscale-RL, NOT a finance Q&A model; our first draft (2026-11-13 write-up) said finance Q&A and was wrong" }
+  - { key: hud, url: https://www.hud.ai/blog/announcing-16m-series-a, published: "2026-06 (Series A)", quote: "2,500+ — Environments created", caveat: "company's own figure; page needs JavaScript, read via a search engine's copy" }
+  - { key: tensorzero-rft, title: "Is OpenAI's Reinforcement Fine-Tuning (RFT) Worth It?", authors: "Andrew Jesson", url: https://www.tensorzero.com/blog/is-openai-reinforcement-fine-tuning-rft-worth-it/, published: 2025-09-25,
+      quotes: ["RFT costs 100-700x more than SFT on equivalent datasets.", "Agentic Coding: RFT improved performance where SFT failed.", "Customer Service: SFT outperformed RFT. RFT actually degraded performance."],
+      facts: ["data extraction 723x ($65.07 vs $0.09); terminal-bench 241x; tau-bench retail 112x"], caveat: "RFT on o4-mini vs SFT on GPT-4.1 mini; training sets of 10, 17 and 23 inferences" }
+  - { key: tinker, url: [https://thinkingmachines.ai/blog/announcing-tinker/, https://thinkingmachines.ai/news/one-year-of-tinker/], published: "2025-10-01; anniversary 2026-10-15",
+      facts: ["'We launched with 14 models from Qwen and Llama'; 'we have added over 20 models'"] }
+  - { key: together-post-training, url: https://www.together.ai/blog/together-post-training, published: 2026-10-19,
+      quote: "a new service for building custom models on our platform — both from environment rewards via RL and supervision data via SFT" }
+  - { key: env-hub, url: https://www.primeintellect.ai/blog/environments, published: 2025-08-27, quote: "an open, community-powered platform that gives environments a true home" }
+  - { key: lyft, title: "A Better Match for Drivers and Riders: Reinforcement Learning at Lyft", authors: "Azagirre et al.", url: [https://arxiv.org/abs/2310.13810, https://pubsonline.informs.org/doi/10.1287/inte.2023.0083],
+      published: "arXiv 2023-10-20; INFORMS J. Appl. Anal. 54(1):71-83, 2024",
+      quotes: ["a novel online reinforcement learning approach that estimates the future earnings of drivers in real time", "weeks of switchback experimentation in most Lyft markets",
+               "enabled our drivers to serve millions of additional riders each year, leading to more than $30 million per year in incremental revenue. Lyft rolled out the algorithm globally in 2021."],
+      caveat: "the body says 'millions of additional rides ... over $30 million in annualized incremental revenue for Lyft, based on our internal estimation models'; the INFORMS contents page says 'driver revenue'" }
+  - { key: youtube-reinforce, url: https://arxiv.org/abs/1812.02353, published: "2018-12-06; WSDM 2019",
+      quotes: ["a production top-K recommender system at Youtube, built with a policy-gradient-based algorithm, i.e. REINFORCE", "ViewTime increased by ... 0.85% in the test traffic"] }
+  - { key: chip-placement, url: [https://www.nature.com/articles/s41586-021-03544-w, https://deepmind.google/discover/blog/how-alphachip-transformed-computer-chip-design/], published: "Nature 2021-06-09; AlphaChip name 2024-09-26",
+      quote: "Here we present a deep reinforcement learning approach to chip floorplanning.", caveat: "Nature Editor's Note 2023-09-20 questioned the claims; removed 2024-09-26 with an addendum" }
+  - { key: deepmind-cooling, url: https://deepmind.google/discover/blog/deepmind-ai-reduces-google-data-centre-cooling-bill-by-40/, published: 2016-07-20,
+      quote: "a 40 percent reduction in the amount of energy used for cooling", caveat: "neither the 2016 nor the 2018 post says reinforcement learning; we don't use it as an RL example" }
+
+robots:
+  - { key: pistar06, url: [https://arxiv.org/abs/2511.14759, https://www.pi.website/blog/pistar06], published: "arXiv v1 2025-11-18, v2 2025-11-19; blog 2025-11-17",
+      quotes: ["On some of the hardest tasks, RECAP more than doubles task throughput and roughly halves the task failure rate.",
+               "we were able to run it to make espresso drinks for 13 hours straight, fold novel laundry items in a new home for over two hours without interruptions, and assemble boxes that are used for real packaging in a factory",
+               "Policies trained with imitation learning are known to suffer from compounding errors [7] and, at best, can only be as performant as the demonstration data.",
+               "inputting 'Advantage: positive' when I_t = True, and 'Advantage: negative' otherwise",
+               "we found it useful to force I_t = True (i.e., positive) for actions provided as human corrections",
+               "the value function to predict the (negative of the) number of remaining steps until success for successful episodes, and a large negative value for failed episodes",
+               "Throughput measures the number of successful task executions per hour",
+               "this significantly outperforms a more traditional policy gradient based extraction scheme"],
+      facts: ["pre-training threshold set so ~30% of demonstration data has positive advantage; indicator dropped 30% of the time in training (sec. V)",
+              "blog: espresso 'from 5:30am to 11:30pm'; '50 different novel laundry items'; '59 boxes'"] }
+  - { key: pi-rl, title: "piRL: Online RL Fine-tuning for Flow-based Vision-Language-Action Models", authors: "Chen et al.", url: https://arxiv.org/abs/2510.25889, published: "v1 2025-10-29 (v3 2026-01-29 drops the numbers from the abstract)",
+      quotes: ["On LIBERO, piRL boosts few-shot SFT models pi0 and pi0.5 from 57.6% to 97.6% and from 77.1% to 98.3%, respectively.",
+               "For the pi0.5 model, given its stronger pretrained checkpoint, we only leveraged 40 trajectories for few-shot SFT",
+               "LIBERO environment, which provides a binary reward of 1 for successful task completion and 0 otherwise"],
+      facts: ["pi0.5 one-trajectory SFT on LIBERO-Long 43.9% -> 94.0%, above the 92.4% of the all-trajectories SFT model", "built on RLinf; PPO beat GRPO in their comparison"] }
+  - { key: simplevla-rl, url: https://arxiv.org/abs/2509.09674, published: 2025-09-11,
+      facts: ["GRPO on veRL, applied to OpenVLA-OFT", "one trajectory per task: LIBERO average 48.9 -> 96.9; full SFT data 91.0 -> 99.1",
+              "reward: 'trajectory-level rewards of either 0 or 1 based solely on task completion'"], caveat: "intro and table disagree on LIBERO-Long (17.1 vs 17.3 -> 91.7)" }
+  - { key: vla-rl, url: https://arxiv.org/abs/2505.18719, published: 2025-05-24, facts: ["online PPO on OpenVLA-7B with a VLM process reward model; LIBERO average 81.0 vs 76.5 SFT"] }
+  - { key: rlinf-vla, url: https://arxiv.org/abs/2510.06710, published: 2025-10-08, facts: ["'98.11% success on 130 LIBERO tasks'"] }
+
+tools:
+  - { key: trl, url: https://github.com/huggingface/trl, desc: "Train transformer language models with reinforcement learning." }
+  - { key: verl, url: https://github.com/volcengine/verl, desc: "verl/HybridFlow: A Flexible and Efficient RL Post-Training Framework" }
+  - { key: art, url: https://github.com/OpenPipe/ART, desc: "Agent Reinforcement Trainer: train multi-step agents for real-world tasks using GRPO." }
+  - { key: verifiers, url: https://github.com/PrimeIntellect-ai/verifiers, desc: "Our library for RL environments + evals" }
+  - { key: rlinf, url: https://github.com/RLinf/RLinf, desc: "RLinf: Reinforcement Learning Infrastructure for Embodied and Agentic AI (the code behind piRL)" }
+
+# Claims in the 2026-11-13 write-up we could not support, kept so nobody re-adds them:
+unsupported:
+  - { claim: "A review of public 2026 lab reports found RL in every one of them", finding: "no such review found; Pan (arXiv 2610.28027) chose only reports with RL in the title or abstract" }
+  - { claim: "Ramp: finance Q&A on Qwen-8B via Tinker", finding: "Ramp's Tinker work was general RLVR (see ramp-tinker)" }
+  - { claim: "DeepMind's controller cut cooling energy up to 40% (as an RL example)", finding: "the DeepMind posts never say RL (see deepmind-cooling)" }

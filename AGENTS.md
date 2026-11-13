@@ -4,7 +4,9 @@ This is the CS 6180 final project of Jingyi Fu and Shiran Wang, about vision-lan
 2026-11-11 the team chose a direction: small experiments on what π0.5 actually goes by (the words, its cameras, the
 layout it remembers), first in LIBERO's kitchen scenes and then on laundry folding in simulation. `topic.md` has the
 question, the stages, the experiments and the steps. No code has been written yet. The chapters in `docs/learn/` (also
-a website, https://blueif16.github.io/vla_final/) teach the background.
+a website, https://blueif16.github.io/vla_final/) teach the background. `docs/learn/` also holds a second, separate series on
+reinforcement learning (`rl-*.md`, its own table in `docs/learn/README.md`); it is background, not a project decision,
+and its sources are in `library/rl.yaml`.
 
 ## If someone asks you to teach them this
 
