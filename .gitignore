@@ -4,6 +4,8 @@ __pycache__/
 checkpoints/
 wandb/
 *.mp4
+# ...except the short clips the web pages show (made by scripts in tools/, a few dozen KB each)
+!docs/assets/video/*.mp4
 .DS_Store
 
 # stage 1 run outputs: videos stay local; episodes.jsonl files are small and kept
