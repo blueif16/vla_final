@@ -49,7 +49,7 @@ the two series.
 
 | # | Chapter | What you'll be able to do | Time |
 |---|---|---|---|
-| RL 1 | [Learning from a score](rl-01-learning-from-a-score.md) | explain RL with five words and one loop, and say which tries a learner should repeat | 8 min |
+| RL 1 | [Learning from a score](rl-01-learning-from-a-score.md) | explain RL with five words and one loop, and say which tries a learner should repeat | 10 min |
 | RL 2 | [Why it's hard: exploring, giving credit, and cheating](rl-02-why-its-hard.md) | predict the three ways an RL setup goes wrong | 8 min |
 | RL 3 | [The classic methods, and the games that made them famous](rl-03-classic-methods.md) | tell a score sheet from a habit, a coach and an imagination, and name where each was used | 10 min |
 | RL 4 | [Where the grade comes from: RL in language models](rl-04-rl-in-language-models.md) | say how a chat model is trained with RL and who or what grades it in each method | 10 min |

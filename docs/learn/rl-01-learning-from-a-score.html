@@ -45,17 +45,17 @@
 <nav class="toc" aria-label="On this page">
   <div class="label">RL 1</div>
   <a href="#case">The arm and the score</a>
+  <a href="#cartpole">A pole on a cart</a>
   <a href="#words">Five words and a loop</a>
   <a href="#rule">Do more of what scored well</a>
   <a href="#versus">A grade or an answer key</a>
-  <a href="#for-us">What this means for us</a>
   <a href="#check">Check yourself</a>
   <a href="#sources">Sources</a>
 </nav>
 
 <header class="doc-head">
   <h1>Learning from a score</h1>
-  <p class="subtitle">Nobody shows the robot what to do. It only hears, after each try, how well that try went. This chapter is about how that alone can teach it.</p>
+  <p class="subtitle">Nobody shows the learner what to do. It only hears, after each try, how well that try went. This chapter is about how that alone can teach it.</p>
   <div class="meta"><span>RL 1 of 7</span><span>15–20 min with the exercises</span><span>Needs nothing</span></div>
   <div class="outcomes">
     <div class="label">After this chapter you can</div>
@@ -69,10 +69,10 @@
     <summary>Contents</summary>
     <ol>
       <li><a href="#case">The arm and the score</a></li>
+      <li><a href="#cartpole">A pole on a cart</a></li>
       <li><a href="#words">Five words and a loop</a></li>
       <li><a href="#rule">Do more of what scored well</a></li>
       <li><a href="#versus">A grade or an answer key</a></li>
-      <li><a href="#for-us">What this means for us</a></li>
       <li><a href="#check">Check yourself</a></li>
     </ol>
   </details>
@@ -81,7 +81,7 @@
 <main>
 <div class="prose">
   <h2 id="case">The arm and the score</h2>
-  <p>Picture a robot arm at a table with a black bowl and a plate on it. It's the same table as in the first chapter of our <button class="term" data-term="vla">VLA</button> series, but this time no one steers the arm through the task, and no one records what a person would do. The <button class="term" data-term="simulator">simulator</button> checks one thing when each try ends: is the bowl on the plate? It answers 1 for yes and 0 for no.</p>
+  <p>Picture a robot arm at a table with a black bowl and a plate on it. No one steers the arm through the task, and no one shows it what a person would do. The <button class="term" data-term="simulator">simulator</button> checks one thing when each try ends: is the bowl on the plate? It answers 1 for yes and 0 for no.</p>
 </div>
 
 <figure class="fig" id="fig-1-1">
@@ -134,18 +134,44 @@
   <p>Suppose the arm already reaches for the bowl now and then, and lands it on the plate in some of its tries but not most. <button class="term" data-term="reinforcement-learning">Reinforcement learning</button>, or RL, is the rule that makes the lucky tries a little more likely next time, and then again after the next batch of tries, until the bowl ends up on the plate most of the time.</p>
   <p><strong class="key">Nobody ever tells the arm which move was right. It only ever learns how well a whole try went.</strong></p>
 
+  <h2 id="cartpole">A second example: a pole on a cart</h2>
+  <p>The second example is much smaller. It's called CartPole, and it comes from a 1983 paper by Andrew Barto, Richard Sutton and Charles Anderson. A pole stands on a cart, fixed at the bottom by a hinge, and the cart runs along a short track. At every step the learner moves the cart left or right. When the pole leans to the right, moving the cart right brings it back under the pole, and moving it left lets the pole fall further.</p>
+  <p>The score is 1 point for every step the pole stays up. A try ends when the pole leans more than 12 degrees, when the cart runs off the end of the track, or after 500 steps. So a try's score is how many steps it lasted, and 500 is the most it can get. The simulation runs 50 steps a second, which makes 500 steps ten seconds of balancing.</p>
+  <p>We ran CartPole in Gymnasium, a free library of test problems for RL, with a learner that starts out moving left or right at random, half the time each. Figure 1.2 shows its first four tries.</p>
+</div>
+
+<figure class="fig narrow" id="fig-1-2">
+  <div class="frame clip">
+    <video data-play="view" src="../assets/video/rl01-cartpole-round1.mp4" poster="../assets/video/rl01-cartpole-round1.jpg" muted playsinline preload="metadata" aria-label="Four short tries of CartPole, one after another. In each, the pole tips over within a second and the score in the corner stops counting."></video>
+  </div>
+  <figcaption><b>Figure 1.2 · The first four tries.</b> Our learner's first four tries, one after another, slowed to half speed. The number at the top right is the score so far, one point per step. They scored 31, 66, 22 and 47. The clip plays twice when you scroll to it; tap it to pause or play again. Our own run, rendered with <a href="https://gymnasium.farama.org/environments/classic_control/cart_pole/">Gymnasium</a> (MIT licence).</figcaption>
+</figure>
+
+<div class="prose">
+  <p>All four tries are over in less than a second and a half. Nobody tells this learner which move was right either. All it gets after each try is the score.</p>
+
   <div class="has-side">
   <h2 id="words">Five words and a loop</h2>
-  <p>The field describes every problem with the same five words. The <button class="term" data-term="agent">agent</button> is the learner, here the network that moves the arm. The <button class="term" data-term="environment">environment</button> is the world the agent acts in: the simulated table, its objects and their physics. An <button class="term" data-term="action">action</button> is what the agent does at one moment, which for this arm is seven numbers that move the hand and the gripper. The <button class="term" data-term="reward">reward</button> is the score the environment hands back, 1 or 0 at the end of a try. And the <button class="term" data-term="policy">policy</button> is the agent's current habits, "in a situation like this, I tend to do that". For a robot, the policy is the VLA itself.</p>
+  <p>The field describes every problem with the same five words. The <button class="term" data-term="agent">agent</button> is the learner. The <button class="term" data-term="environment">environment</button> is the world the agent acts in. An <button class="term" data-term="action">action</button> is what the agent does at one moment, and the <button class="term" data-term="reward">reward</button> is the score the environment hands back. The <button class="term" data-term="policy">policy</button> is the agent's current habits: "in a situation like this, I tend to do that". Here are the five words for both examples.</p>
   <aside class="side" aria-label="Side note: the same five words for a chat model">
     <div class="label">The same words for a chat model</div>
     <p>The agent is the model. An action is the next word. One try is one whole answer, and the reward is a grade for that answer. Chapter 4 builds on this.</p>
   </aside>
   </div>
-  <p>These words fit together as a loop. The agent looks at the situation, which for the arm is a camera picture. It acts, the environment changes, and sometimes a reward comes back. One try from start to finish is an <button class="term" data-term="episode">episode</button>. After a batch of episodes the policy is adjusted towards whatever scored higher, and the loop starts again. Point at any part of figure 1.2 to pick it out.</p>
+  <table class="words">
+    <thead><tr><th>Word</th><th>The arm</th><th>CartPole</th></tr></thead>
+    <tbody>
+      <tr><th>agent</th><td>the network that moves the arm</td><td>the program that picks left or right</td></tr>
+      <tr><th>environment</th><td>the simulated table, its objects and their physics</td><td>the cart, the pole, the track and their physics</td></tr>
+      <tr><th>action</th><td>one small move of the hand or the gripper</td><td>moving the cart left or right</td></tr>
+      <tr><th>reward</th><td>1 if the bowl is on the plate when the try ends, otherwise 0</td><td>1 point for every step the pole stays up</td></tr>
+      <tr><th>policy</th><td>how likely it is to make each move, in each situation</td><td>how likely it is to move left, for each position of the cart and the pole</td></tr>
+    </tbody>
+  </table>
+  <p>These words fit together as a loop. The agent looks at the situation. For the arm that's a camera picture, and for CartPole it's four numbers: where the cart is, how fast it's going, how far the pole leans and how fast it's tipping. The agent acts, the environment changes, and a reward comes back. In CartPole it comes at every step, and for the arm only when a try ends. One try from start to finish is an <button class="term" data-term="episode">episode</button>. After a batch of episodes the policy is adjusted towards whatever scored higher, and the loop starts again. Point at any part of figure 1.3 to pick it out.</p>
 </div>
 
-<figure class="fig" id="fig-1-2">
+<figure class="fig" id="fig-1-3">
   <div class="pan"><svg class="dg wide" data-hover viewBox="0 0 960 400" role="img" aria-labelledby="f12t f12d">
     <title id="f12t">Five words and a loop</title>
     <desc id="f12d">On the left, the agent, whose habits are the policy. On the right, the environment. An action goes from agent to environment along the top. Along the bottom, a camera picture and, when a try ends, a reward of 1 or 0 come back to the agent, which adjusts its habits after a batch of tries.</desc>
@@ -192,7 +218,7 @@
       <text class="sub" x="560" y="380">only when a try ends</text>
     </g>
   </svg></div>
-  <figcaption><b>Figure 1.2 · Five words and a loop.</b> Ochre is the learner, sap green is the action and the world it acts on, and burnt sienna is the score. The picture comes back every step; the score comes back only once per try. Point at a part, or tap it, to pick it out.</figcaption>
+  <figcaption><b>Figure 1.3 · Five words and a loop.</b> Ochre is the learner, sap green is the action and the world it acts on, and burnt sienna is the score. The picture comes back every step; the score comes back only once per try. Point at a part, or tap it, to pick it out.</figcaption>
 </figure>
 
 <div class="prose">
@@ -205,7 +231,7 @@
     <ol class="side-pts">
       <li>A coach that expects a result, in chapter 3.</li>
       <li>The average of eight answers to one question, in chapter 4.</li>
-      <li>π*0.6's "Advantage: positive", in chapter 7.</li>
+      <li>A robot that judges its own tries, in chapter 7.</li>
     </ol>
   </aside>
   </div>
@@ -225,74 +251,87 @@
     <div class="label">∝ means "goes up and down with"</div>
   </div>
   <p>People call the difference on the right the <button class="term" data-term="advantage">advantage</button>, because it measures how much better than usual a try went. Each change is kept small, so one lucky try can't rewrite the habits. Ronald Williams wrote this rule down in 1992, and his algorithm, <button class="term" data-term="reinforce">REINFORCE</button>, still sits under most of the methods in this series.</p>
-  <p>Try it in figure 1.3. It starts with the four tries above. Apply the push, then run new tries and push again, and watch the chance of reaching left.</p>
+  <p>Figure 1.4 starts with those four tries. Tap any score to flip it, and the arrows and the chance of reaching left change straight away.</p>
 </div>
 
-<figure class="fig" id="fig-1-3">
+<figure class="fig" id="fig-1-4">
   <div class="tries" data-widget="tries" data-lr="0.2">
-    <div class="seg" role="group" aria-label="How hard the task is">
-      <button data-mode="easy" aria-pressed="true">The bowl is within reach</button>
-      <button data-mode="hard" aria-pressed="false">The bowl is almost out of reach</button>
-    </div>
-    <div class="tries-body">
-      <div>
-        <div class="label">The arm's habit at this point</div>
-        <div class="chance" data-bar="left"><span>reach left</span><div class="bar"><i style="width:50%"></i></div><b data-val="left">50%</b></div>
-        <div class="chance" data-bar="right"><span>reach right</span><div class="bar"><i style="width:50%"></i></div><b data-val="right">50%</b></div>
-        <svg class="hist" viewBox="0 0 300 70" role="img" aria-label="The chance of reaching left after each round"></svg>
-      </div>
-      <div>
-        <div class="label">This batch of four tries</div>
-        <table class="tries-tbl">
-          <thead><tr><th>Try</th><th>Reached</th><th>Score</th><th>− average</th><th>Push</th></tr></thead>
-          <tbody>
-            <tr><td>1</td><td>reach left</td><td><span class="sc s1">1</span></td><td class="up">+0.5</td><td class="up">more likely</td></tr>
-            <tr><td>2</td><td>reach right</td><td><span class="sc s0">0</span></td><td class="down">−0.5</td><td class="down">less likely</td></tr>
-            <tr><td>3</td><td>reach right</td><td><span class="sc s0">0</span></td><td class="down">−0.5</td><td class="down">less likely</td></tr>
-            <tr><td>4</td><td>reach left</td><td><span class="sc s1">1</span></td><td class="up">+0.5</td><td class="up">more likely</td></tr>
-          </tbody>
-        </table>
-        <p class="tries-sum">Average score of these four tries: 0.5</p>
-      </div>
-    </div>
-    <div class="ctrl">
-      <button class="btn" data-act="update">Apply the push</button>
-      <button class="btn" data-act="run">Run 4 new tries</button>
-      <button class="btn" data-act="auto">Run 10 rounds</button>
-      <button class="btn" data-act="reset">Start over</button>
-    </div>
-    <p class="tries-say" aria-live="polite">These are the four tries from the text. Apply the push to see the habit change.</p>
+    <p class="tries-task">Tap a score to flip it between 0 and 1.</p>
+    <svg class="tries-plot" viewBox="0 0 470 236" role="group" aria-label="Four tries, each with its score, the average score and an arrow from the average to the score"></svg>
+    <div class="tries-out"><span>Chance of reaching left next time</span><div class="bar" aria-hidden="true"><i style="width:55%"></i><s></s></div><b>50% → 55%</b></div>
+    <p class="tries-say" aria-live="polite"></p>
   </div>
-  <figcaption><b>Figure 1.3 · Four tries and the push each one gives.</b> The rule is RL 1's, exactly: each try pushes its own reach up or down by its score minus the batch's average. The success chances are made up for teaching. Within reach, reaching left succeeds 70% of the time and reaching right 15%; almost out of reach, 3% and never. Switch to the second setting and run a few rounds.</figcaption>
+  <figcaption><b>Figure 1.4 · Four tries and the push each one gives.</b> Each arrow runs from the average score to a try's own score, and its length is the try's score minus the average. An arrow pointing up makes what that try did more likely next time, and one pointing down makes it less likely. The bar shows what one push does to the chance of reaching left, which started at 50% (the dotted mark). It opens on the four tries from the text. The rule is the one above. How big a step it takes is our choice, made so that the text's example comes out at 55%.</figcaption>
 </figure>
 
 <div class="prose">
-  <p>Taking away the average matters more than it looks. In a game where every try earns some points, pushing up every action by its raw score would push up whatever the arm happened to do, good or bad. With the average taken off, only the tries that beat the usual result get pushed up.</p>
-  <p>The second setting of figure 1.3 shows the other side of the same rule. When the bowl is almost out of reach, most batches score 0, 0, 0 and 0. The average is 0, every push is 0, and nothing changes. A learner that never succeeds has nothing to learn from. That's the first problem in chapter 2.</p>
+  <p>Taking away the average matters more than it looks. In CartPole every try earns some points, so pushing up every move by its raw score would push up whatever the learner happened to do, good or bad. With the average taken off, only the tries that beat the usual result get pushed up.</p>
+  <div class="predict">
+    <div class="label">Predict, then try it</div>
+    <p>Say the bowl is almost out of reach, and all four tries score 0. What happens to the chance of reaching left? Write a guess, then set the four scores in figure 1.4 to 0.</p>
+    <textarea aria-label="Your guess" placeholder="Write a guess in a few words. Nothing is saved."></textarea>
+  </div>
+  <p>The average is 0, so every try's score minus the average is 0, and the chance stays at 50%. A learner that never succeeds has nothing to learn from. That's the first problem in chapter 2. Four scores of 1 leave it at 50% as well, because when every try does equally well there's nothing to tell them apart.</p>
+  <p>Can a rule this small learn anything real? We gave it to the CartPole learner from figure 1.2. In each round it makes 16 tries and works out their average score. Then every move in every try is made a little more or a little less likely, by that try's score minus the average, the same rule as in figure 1.4. Figure 1.5 shows 300 rounds of it.</p>
+</div>
+
+<figure class="fig narrow" id="fig-1-5">
+  <div class="runfig" data-widget="run">
+<!-- run-chart:start -->
+<svg viewBox="0 0 640 272" role="img" aria-labelledby="f15t f15d">
+<title id="f15t">Average score per round, 300 rounds</title>
+<desc id="f15d">The average score of each round of 16 tries. The run we filmed starts at 22.9 in round 1 and ends at 497.5 in round 300. Two more runs of the same rule end at 500 and 456.7. The most a try can score is 500.</desc>
+<line class="grid" x1="52" x2="616" y1="236.0" y2="236.0"/>
+<text x="44" y="240.0" text-anchor="end">0</text>
+<line class="grid" x1="52" x2="616" y1="193.2" y2="193.2"/>
+<text x="44" y="197.2" text-anchor="end">100</text>
+<line class="grid" x1="52" x2="616" y1="150.4" y2="150.4"/>
+<text x="44" y="154.4" text-anchor="end">200</text>
+<line class="grid" x1="52" x2="616" y1="107.6" y2="107.6"/>
+<text x="44" y="111.6" text-anchor="end">300</text>
+<line class="grid" x1="52" x2="616" y1="64.8" y2="64.8"/>
+<text x="44" y="68.8" text-anchor="end">400</text>
+<line class="grid" x1="52" x2="616" y1="22.0" y2="22.0"/>
+<text x="44" y="26.0" text-anchor="end">500</text>
+<text x="52.0" y="256" text-anchor="middle">round 1</text>
+<text x="238.7" y="256" text-anchor="middle">100</text>
+<text x="427.4" y="256" text-anchor="middle">200</text>
+<text x="616.0" y="256" text-anchor="middle">300</text>
+<polyline class="other" points="52.0,226.0 53.9,226.3 55.8,225.6 57.7,226.6 59.5,225.0 61.4,227.4 63.3,227.8 65.2,223.9 67.1,224.0 69.0,221.9 70.9,225.1 72.7,226.2 74.6,225.7 76.5,222.4 78.4,226.0 80.3,227.3 82.2,222.7 84.1,225.0 86.0,223.4 87.8,223.2 89.7,225.9 91.6,223.5 93.5,225.3 95.4,226.5 97.3,222.0 99.2,225.4 101.0,224.9 102.9,224.3 104.8,225.8 106.7,224.4 108.6,224.0 110.5,223.4 112.4,221.8 114.2,224.8 116.1,215.2 118.0,223.3 119.9,224.1 121.8,219.4 123.7,223.1 125.6,220.8 127.5,222.8 129.3,219.5 131.2,218.1 133.1,222.6 135.0,221.3 136.9,216.2 138.8,218.9 140.7,220.2 142.5,216.7 144.4,217.9 146.3,216.4 148.2,218.5 150.1,218.3 152.0,216.8 153.9,216.3 155.7,219.7 157.6,217.6 159.5,218.2 161.4,220.4 163.3,218.8 165.2,216.6 167.1,213.9 168.9,216.1 170.8,218.5 172.7,218.9 174.6,217.7 176.5,218.4 178.4,216.1 180.3,218.2 182.2,218.4 184.0,216.3 185.9,219.0 187.8,213.6 189.7,218.1 191.6,212.5 193.5,210.4 195.4,206.2 197.2,215.3 199.1,213.2 201.0,212.8 202.9,210.6 204.8,216.3 206.7,211.5 208.6,213.5 210.4,211.9 212.3,204.7 214.2,214.9 216.1,208.1 218.0,200.7 219.9,207.0 221.8,211.1 223.7,204.1 225.5,210.4 227.4,214.0 229.3,216.3 231.2,203.0 233.1,207.2 235.0,211.3 236.9,212.2 238.7,211.3 240.6,204.4 242.5,203.0 244.4,200.3 246.3,209.8 248.2,212.8 250.1,200.5 251.9,196.6 253.8,197.8 255.7,206.6 257.6,198.8 259.5,191.0 261.4,193.6 263.3,187.1 265.2,191.4 267.0,200.0 268.9,201.2 270.8,173.3 272.7,194.5 274.6,184.0 276.5,183.4 278.4,195.2 280.2,175.8 282.1,173.0 284.0,178.4 285.9,191.3 287.8,185.9 289.7,174.7 291.6,166.7 293.4,175.9 295.3,164.1 297.2,173.0 299.1,176.3 301.0,170.1 302.9,170.5 304.8,166.6 306.6,149.0 308.5,175.8 310.4,161.5 312.3,171.5 314.2,171.8 316.1,169.6 318.0,166.8 319.9,159.9 321.7,148.7 323.6,135.0 325.5,160.0 327.4,139.1 329.3,144.7 331.2,146.3 333.1,135.2 334.9,130.2 336.8,158.8 338.7,134.9 340.6,129.9 342.5,163.0 344.4,133.0 346.3,149.9 348.1,161.9 350.0,133.2 351.9,145.3 353.8,119.0 355.7,135.4 357.6,101.2 359.5,78.0 361.4,153.8 363.2,95.2 365.1,123.3 367.0,114.4 368.9,100.9 370.8,132.5 372.7,97.7 374.6,100.9 376.4,67.0 378.3,86.3 380.2,113.0 382.1,124.3 384.0,151.6 385.9,138.5 387.8,91.0 389.6,154.8 391.5,157.1 393.4,121.3 395.3,94.5 397.2,68.0 399.1,80.3 401.0,64.6 402.8,72.8 404.7,68.6 406.6,55.3 408.5,110.4 410.4,64.9 412.3,93.7 414.2,112.0 416.1,102.0 417.9,68.9 419.8,75.5 421.7,154.7 423.6,74.4 425.5,63.4 427.4,69.2 429.3,57.9 431.1,40.0 433.0,67.1 434.9,45.5 436.8,69.8 438.7,59.7 440.6,58.1 442.5,162.8 444.3,158.9 446.2,139.7 448.1,113.1 450.0,74.6 451.9,90.7 453.8,46.9 455.7,32.3 457.6,39.0 459.4,52.1 461.3,66.7 463.2,56.2 465.1,53.9 467.0,59.3 468.9,47.3 470.8,26.3 472.6,31.4 474.5,57.9 476.4,48.9 478.3,30.7 480.2,46.9 482.1,45.7 484.0,82.0 485.8,84.5 487.7,50.5 489.6,55.8 491.5,101.1 493.4,24.5 495.3,37.9 497.2,35.5 499.1,51.1 500.9,28.4 502.8,52.7 504.7,64.0 506.6,25.4 508.5,24.4 510.4,29.3 512.3,41.1 514.1,52.6 516.0,22.9 517.9,25.0 519.8,31.8 521.7,41.4 523.6,49.0 525.5,27.4 527.3,31.7 529.2,38.5 531.1,47.3 533.0,31.4 534.9,63.1 536.8,33.9 538.7,45.5 540.5,43.7 542.4,23.8 544.3,29.2 546.2,22.0 548.1,29.9 550.0,36.0 551.9,40.1 553.8,68.4 555.6,51.8 557.5,37.5 559.4,36.2 561.3,67.8 563.2,34.1 565.1,45.6 567.0,69.2 568.8,37.2 570.7,22.0 572.6,23.8 574.5,22.0 576.4,22.3 578.3,22.0 580.2,26.6 582.0,25.0 583.9,22.0 585.8,22.0 587.7,24.2 589.6,46.7 591.5,22.0 593.4,28.0 595.3,29.1 597.1,29.2 599.0,22.0 600.9,22.0 602.8,22.7 604.7,29.8 606.6,22.0 608.5,23.2 610.3,28.1 612.2,36.9 614.1,22.0 616.0,22.0"/>
+<polyline class="other" points="52.0,225.6 53.9,229.0 55.8,225.4 57.7,224.3 59.5,227.5 61.4,228.0 63.3,224.4 65.2,227.5 67.1,225.7 69.0,226.0 70.9,225.6 72.7,225.0 74.6,225.3 76.5,226.7 78.4,223.8 80.3,225.2 82.2,225.8 84.1,224.5 86.0,225.6 87.8,223.7 89.7,223.3 91.6,225.2 93.5,225.3 95.4,225.2 97.3,224.9 99.2,222.7 101.0,223.1 102.9,221.7 104.8,223.1 106.7,225.1 108.6,219.9 110.5,226.1 112.4,223.5 114.2,223.2 116.1,224.8 118.0,224.0 119.9,220.5 121.8,223.2 123.7,224.7 125.6,219.4 127.5,219.8 129.3,220.5 131.2,223.2 133.1,222.6 135.0,221.6 136.9,224.4 138.8,220.1 140.7,224.0 142.5,221.0 144.4,222.2 146.3,224.3 148.2,222.3 150.1,214.3 152.0,222.0 153.9,217.8 155.7,217.9 157.6,216.7 159.5,216.6 161.4,215.8 163.3,218.3 165.2,221.9 167.1,220.2 168.9,217.5 170.8,215.6 172.7,217.0 174.6,218.8 176.5,220.1 178.4,214.2 180.3,215.1 182.2,218.7 184.0,213.1 185.9,222.3 187.8,216.2 189.7,221.9 191.6,217.5 193.5,219.0 195.4,214.7 197.2,219.6 199.1,220.6 201.0,217.3 202.9,214.8 204.8,214.8 206.7,216.8 208.6,213.2 210.4,218.3 212.3,215.0 214.2,217.9 216.1,216.4 218.0,214.2 219.9,211.2 221.8,212.4 223.7,211.9 225.5,210.9 227.4,209.3 229.3,213.6 231.2,220.7 233.1,216.6 235.0,213.1 236.9,211.0 238.7,213.8 240.6,214.2 242.5,210.2 244.4,213.7 246.3,204.9 248.2,207.5 250.1,215.4 251.9,213.2 253.8,211.0 255.7,208.8 257.6,214.0 259.5,213.8 261.4,212.5 263.3,208.1 265.2,211.5 267.0,212.7 268.9,206.9 270.8,204.8 272.7,210.5 274.6,211.1 276.5,209.5 278.4,194.7 280.2,208.4 282.1,206.2 284.0,200.6 285.9,200.0 287.8,204.4 289.7,203.1 291.6,209.9 293.4,203.8 295.3,192.9 297.2,203.2 299.1,199.0 301.0,197.1 302.9,203.5 304.8,197.4 306.6,193.0 308.5,185.6 310.4,202.2 312.3,203.9 314.2,194.0 316.1,182.0 318.0,196.9 319.9,193.1 321.7,193.8 323.6,181.2 325.5,193.8 327.4,185.5 329.3,189.5 331.2,183.4 333.1,176.6 334.9,182.0 336.8,177.7 338.7,186.0 340.6,188.5 342.5,167.0 344.4,169.7 346.3,180.0 348.1,161.6 350.0,169.9 351.9,150.7 353.8,172.7 355.7,165.7 357.6,182.8 359.5,151.6 361.4,175.2 363.2,156.1 365.1,177.0 367.0,158.7 368.9,165.1 370.8,157.8 372.7,164.1 374.6,156.9 376.4,181.1 378.3,162.6 380.2,164.9 382.1,150.7 384.0,151.3 385.9,151.2 387.8,126.3 389.6,160.7 391.5,129.1 393.4,151.9 395.3,154.8 397.2,135.8 399.1,142.4 401.0,128.4 402.8,120.1 404.7,146.9 406.6,122.7 408.5,127.0 410.4,117.4 412.3,142.9 414.2,90.4 416.1,77.3 417.9,122.8 419.8,128.4 421.7,138.9 423.6,110.4 425.5,152.8 427.4,98.4 429.3,120.3 431.1,95.0 433.0,101.9 434.9,121.3 436.8,172.0 438.7,146.2 440.6,110.8 442.5,117.6 444.3,104.8 446.2,127.0 448.1,166.9 450.0,147.7 451.9,124.9 453.8,134.3 455.7,125.6 457.6,130.5 459.4,129.0 461.3,84.1 463.2,83.3 465.1,91.8 467.0,98.8 468.9,95.3 470.8,117.0 472.6,92.2 474.5,62.4 476.4,66.5 478.3,89.5 480.2,81.9 482.1,118.9 484.0,75.2 485.8,110.3 487.7,94.8 489.6,137.5 491.5,108.5 493.4,79.5 495.3,99.6 497.2,66.3 499.1,110.5 500.9,110.5 502.8,88.4 504.7,84.0 506.6,98.4 508.5,71.0 510.4,39.9 512.3,35.4 514.1,74.0 516.0,91.0 517.9,39.6 519.8,45.9 521.7,35.4 523.6,29.7 525.5,34.1 527.3,56.3 529.2,40.9 531.1,38.3 533.0,54.0 534.9,60.7 536.8,65.7 538.7,58.0 540.5,46.9 542.4,56.1 544.3,59.1 546.2,64.6 548.1,49.6 550.0,78.8 551.9,51.8 553.8,37.6 555.6,47.3 557.5,71.1 559.4,37.4 561.3,43.4 563.2,28.3 565.1,25.6 567.0,24.8 568.8,33.6 570.7,29.6 572.6,27.6 574.5,38.8 576.4,55.7 578.3,31.4 580.2,42.6 582.0,27.9 583.9,26.7 585.8,36.9 587.7,30.3 589.6,25.6 591.5,31.5 593.4,35.4 595.3,36.5 597.1,38.2 599.0,40.7 600.9,25.5 602.8,24.7 604.7,30.2 606.6,43.2 608.5,45.2 610.3,58.9 612.2,65.7 614.1,37.9 616.0,40.5"/>
+<polyline class="main" points="52.0,226.2 53.9,226.4 55.8,228.1 57.7,227.4 59.5,225.1 61.4,228.3 63.3,227.2 65.2,226.8 67.1,225.2 69.0,225.5 70.9,225.6 72.7,227.7 74.6,226.1 76.5,225.4 78.4,227.5 80.3,223.5 82.2,225.8 84.1,224.8 86.0,226.2 87.8,222.6 89.7,226.1 91.6,226.4 93.5,225.1 95.4,224.4 97.3,220.8 99.2,223.5 101.0,220.8 102.9,224.1 104.8,221.8 106.7,220.3 108.6,224.4 110.5,223.8 112.4,221.6 114.2,219.6 116.1,223.8 118.0,224.3 119.9,224.5 121.8,225.3 123.7,220.1 125.6,223.8 127.5,218.5 129.3,222.3 131.2,223.1 133.1,218.3 135.0,222.4 136.9,219.4 138.8,217.5 140.7,222.0 142.5,223.2 144.4,221.2 146.3,220.6 148.2,220.1 150.1,211.9 152.0,223.0 153.9,220.5 155.7,220.6 157.6,220.6 159.5,215.7 161.4,214.7 163.3,221.1 165.2,217.1 167.1,219.2 168.9,219.4 170.8,217.6 172.7,217.9 174.6,217.7 176.5,216.7 178.4,214.7 180.3,212.6 182.2,216.6 184.0,212.1 185.9,215.8 187.8,213.8 189.7,216.3 191.6,214.7 193.5,220.8 195.4,216.5 197.2,214.6 199.1,216.1 201.0,216.2 202.9,217.0 204.8,212.6 206.7,214.9 208.6,216.1 210.4,214.6 212.3,217.6 214.2,217.2 216.1,209.4 218.0,215.8 219.9,209.3 221.8,213.4 223.7,215.2 225.5,212.9 227.4,211.7 229.3,212.0 231.2,210.6 233.1,211.1 235.0,210.1 236.9,216.3 238.7,215.0 240.6,211.5 242.5,206.4 244.4,207.1 246.3,209.6 248.2,206.4 250.1,210.5 251.9,205.9 253.8,211.1 255.7,209.4 257.6,212.4 259.5,211.8 261.4,199.6 263.3,202.6 265.2,205.4 267.0,199.5 268.9,203.5 270.8,203.9 272.7,195.6 274.6,203.5 276.5,194.9 278.4,189.3 280.2,194.2 282.1,189.6 284.0,189.3 285.9,192.9 287.8,172.9 289.7,198.2 291.6,189.4 293.4,194.3 295.3,195.2 297.2,192.7 299.1,180.7 301.0,185.6 302.9,183.7 304.8,175.3 306.6,178.0 308.5,174.4 310.4,187.1 312.3,198.4 314.2,176.0 316.1,163.2 318.0,183.7 319.9,155.6 321.7,167.3 323.6,164.9 325.5,154.9 327.4,170.4 329.3,175.0 331.2,141.2 333.1,152.2 334.9,155.4 336.8,138.2 338.7,147.1 340.6,166.4 342.5,164.1 344.4,162.3 346.3,147.7 348.1,181.9 350.0,173.7 351.9,147.5 353.8,152.2 355.7,150.9 357.6,147.7 359.5,133.2 361.4,150.0 363.2,141.3 365.1,151.3 367.0,133.2 368.9,159.3 370.8,150.3 372.7,149.6 374.6,150.8 376.4,137.7 378.3,112.5 380.2,167.6 382.1,126.9 384.0,171.2 385.9,151.9 387.8,134.8 389.6,121.0 391.5,130.1 393.4,139.7 395.3,116.4 397.2,97.2 399.1,153.1 401.0,130.5 402.8,93.3 404.7,173.1 406.6,136.4 408.5,93.3 410.4,146.5 412.3,131.8 414.2,103.5 416.1,152.6 417.9,114.1 419.8,157.5 421.7,123.0 423.6,103.8 425.5,92.4 427.4,86.5 429.3,103.0 431.1,133.6 433.0,89.8 434.9,79.8 436.8,80.7 438.7,82.7 440.6,84.4 442.5,99.9 444.3,64.5 446.2,93.8 448.1,90.0 450.0,70.3 451.9,38.6 453.8,75.2 455.7,93.8 457.6,83.9 459.4,66.2 461.3,101.7 463.2,82.3 465.1,42.5 467.0,56.8 468.9,108.1 470.8,72.1 472.6,79.7 474.5,33.8 476.4,65.1 478.3,81.1 480.2,56.2 482.1,122.1 484.0,83.2 485.8,40.2 487.7,29.4 489.6,39.3 491.5,71.7 493.4,33.3 495.3,42.8 497.2,29.8 499.1,32.4 500.9,31.9 502.8,41.6 504.7,52.2 506.6,23.4 508.5,33.1 510.4,41.1 512.3,39.3 514.1,29.0 516.0,29.6 517.9,32.7 519.8,32.0 521.7,36.0 523.6,47.8 525.5,45.4 527.3,47.2 529.2,52.9 531.1,41.3 533.0,25.3 534.9,29.1 536.8,23.7 538.7,25.1 540.5,35.1 542.4,27.2 544.3,29.4 546.2,40.7 548.1,27.2 550.0,33.7 551.9,41.5 553.8,39.2 555.6,24.8 557.5,22.2 559.4,25.3 561.3,26.2 563.2,26.8 565.1,48.7 567.0,45.3 568.8,30.3 570.7,34.2 572.6,49.9 574.5,44.8 576.4,32.6 578.3,26.2 580.2,37.4 582.0,24.6 583.9,28.2 585.8,32.3 587.7,23.5 589.6,22.7 591.5,27.3 593.4,26.8 595.3,25.0 597.1,22.0 599.0,27.9 600.9,30.2 602.8,42.5 604.7,34.5 606.6,40.3 608.5,29.6 610.3,24.3 612.2,28.4 614.1,22.0 616.0,23.1"/>
+<text class="lab-main" x="58.0" y="216.2">22.9</text>
+<text class="lab-main" x="616" y="14" text-anchor="end">round 300: 497.5</text>
+<g class="lgd"><line class="main" x1="68" x2="94" y1="46" y2="46"/><text x="102" y="50">the run we filmed</text>
+<line class="other" x1="68" x2="94" y1="72" y2="72"/><text x="102" y="76">the same rule, two more runs</text></g>
+<text class="ttl" x="52" y="14">average score of the round's 16 tries</text>
+</svg>
+<script type="application/json">{"frame": {"x0": 52, "x1": 616, "y0": 236, "y1": 22, "max": 500}, "main": [22.9, 22.4, 18.5, 20, 25.4, 17.9, 20.5, 21.4, 25.3, 24.6, 24.4, 19.3, 23.2, 24.7, 19.9, 29.1, 23.9, 26.2, 22.9, 31.2, 23.2, 22.4, 25.4, 27.2, 35.4, 29.2, 35.4, 27.9, 33.2, 36.6, 27.2, 28.6, 33.6, 38.4, 28.5, 27.4, 26.9, 25.1, 37.1, 28.6, 40.8, 31.9, 30.2, 41.4, 31.8, 38.8, 43.2, 32.6, 29.8, 34.6, 35.9, 37.1, 56.2, 30.4, 36.1, 35.9, 36, 47.4, 49.7, 34.9, 44.1, 39.2, 38.8, 43, 42.3, 42.8, 45, 49.8, 54.7, 45.4, 55.9, 47.2, 51.9, 46, 49.8, 35.6, 45.6, 49.9, 46.6, 46.2, 44.5, 54.6, 49.2, 46.5, 50, 43.1, 43.9, 62.2, 47.2, 62.4, 52.9, 48.6, 54, 56.8, 56.1, 59.4, 58.1, 60.4, 46, 49.1, 57.3, 69.2, 67.5, 61.6, 69.2, 59.5, 70.4, 58.2, 62.2, 55.1, 56.6, 85, 78.1, 71.6, 85.3, 75.9, 75, 94.3, 75.9, 96.1, 109.1, 97.6, 108.3, 109, 100.7, 147.4, 88.4, 108.9, 97.4, 95.4, 101.2, 129.2, 117.8, 122.2, 141.9, 135.5, 144, 114.3, 87.8, 140.1, 170.1, 122.1, 187.9, 160.6, 166.2, 189.6, 153.3, 142.6, 221.6, 195.8, 188.4, 228.4, 207.7, 162.7, 168.1, 172.2, 206.2, 126.4, 145.6, 206.8, 195.9, 198.8, 206.2, 240.2, 201, 221.2, 197.8, 240.1, 179.1, 200.2, 201.8, 199.1, 229.7, 288.6, 159.7, 254.9, 151.4, 196.4, 236.4, 268.7, 247.5, 225.1, 279.4, 324.2, 193.6, 246.5, 333.3, 146.9, 232.8, 333.4, 209.1, 243.4, 309.6, 194.8, 284.7, 183.4, 264, 308.9, 335.6, 349.4, 310.8, 239.2, 341.6, 365, 362.9, 358.1, 354.1, 318.1, 400.6, 332.2, 341.1, 387.1, 461.2, 375.6, 332.3, 355.4, 396.8, 313.7, 359.1, 452.1, 418.8, 298.8, 383, 365.2, 472.4, 399.4, 361.8, 420.1, 266.1, 357, 457.4, 482.8, 459.6, 383.9, 473.6, 451.5, 481.8, 475.8, 476.9, 454.1, 429.5, 496.8, 474.1, 455.3, 459.6, 483.6, 482.2, 474.9, 476.7, 467.2, 439.8, 445.3, 441.1, 427.8, 455, 492.2, 483.3, 496.1, 492.7, 469.5, 487.9, 482.7, 456.4, 487.8, 472.6, 454.5, 459.7, 493.5, 499.6, 492.4, 490.2, 488.9, 437.6, 445.5, 480.5, 471.6, 434.9, 446.7, 475.2, 490.2, 464.1, 493.9, 485.6, 476, 496.4, 498.3, 487.6, 488.7, 493.1, 500, 486.3, 480.8, 452.1, 470.8, 457.2, 482.2, 494.7, 485, 500, 497.5]}</script>
+<!-- run-chart:end -->
+    <div class="frame clip">
+      <video data-play="tap" src="../assets/video/rl01-cartpole-round300.mp4" poster="../assets/video/rl01-cartpole-round300.jpg" muted playsinline preload="metadata" aria-label="The first try of round 300: the cart moves back and forth under the pole, which stays up while the score counts to 500."></video>
+    </div>
+  </div>
+  <figcaption><b>Figure 1.5 · 300 rounds of the same rule.</b> Top, the average score of each round's 16 tries. The dark line is the run we filmed, and the two pale lines are the same rule run again from other random starts. Point at the chart to read off a round. Below, the first try of round 300 at real speed. It lasted the full 500 steps. Our own run (<a href="https://github.com/blueif16/vla_final/blob/main/tools/cartpole/train_and_film.py">the script</a>, <a href="../assets/data/rl01-cartpole.json">every score</a>), rendered with Gymnasium (MIT licence).</figcaption>
+</figure>
+
+<div class="prose">
+  <p>In the first round the 16 tries lasted 22.9 steps on average. By round 300 the average was 497.5, close to the most a try can score. We ran the whole thing twice more from different random starts, and those runs ended at 500 and 456.7. Nobody told the learner to move the cart towards the side the pole leans. By round 300 it does: the further the pole leans or tips to one side, the more likely it is to move the cart that way. All it ever saw was scores.</p>
 </div>
 
 <section class="rail" aria-label="Go deeper: learning from a score">
   <div class="rail-head">
-    <div><div class="label">Go deeper</div><p class="rail-title">Learning from a score, on real robots and on paper</p></div>
+    <div><div class="label">Go deeper</div><p class="rail-title">Where the rule comes from, and the code we ran</p></div>
     <div class="rail-nav"><button class="rail-prev" aria-label="Previous">←</button><button class="rail-next" aria-label="Next">→</button></div>
   </div>
   <div class="rail-track">
     <article class="card">
-      <div class="media" data-yt="EYLdC3a0NHw" data-start="1871" data-end="2431" data-title="Sergey Levine on reinforcement learning for real robots"></div>
+      <div class="media pic"><img src="../assets/video/rl01-cartpole-round300.jpg" alt="A frame from CartPole: a black cart on a track with a tan pole standing almost upright, and a score counter." loading="lazy"></div>
       <div class="body">
-        <span class="tag">Clip · 9 min</span>
-        <h4>Real robots that practise</h4>
-        <p>Sergey Levine shows robots learning to insert chips and route cables with online RL, and compares them with robots that only copied demonstrations.</p>
-        <p class="src">Sergey Levine, U of T Robotics Institute Seminar, 2025-03-21 · <a href="https://www.youtube.com/watch?v=EYLdC3a0NHw&amp;t=1871s">YouTube at 31:11</a></p>
-      </div>
-    </article>
-    <article class="card">
-      <div class="media" data-yt="_b-FwaiETwM" data-start="2391" data-title="Sergey Levine on π*0.6"></div>
-      <div class="body">
-        <span class="tag">Clip · from 39:51</span>
-        <h4>The same idea in π*0.6</h4>
-        <p>Levine explains how π*0.6 judges its own tries with a learned estimate of how well things are going, and what that did for an espresso-making robot. Chapter 7 of this series is about it.</p>
-        <p class="src">Sergey Levine, AI Agent Frontier Seminar, 2026 · <a href="https://www.youtube.com/watch?v=_b-FwaiETwM&amp;t=2391s">YouTube at 39:51</a></p>
+        <span class="tag">Our code</span>
+        <h4>The run in figure 1.5, in about 110 lines</h4>
+        <p>The script trains the CartPole learner with this chapter's rule, saves every round's scores and films the tries. Change the step size or the number of tries a round and run it again.</p>
+        <p class="src"><a href="https://github.com/blueif16/vla_final/blob/main/tools/cartpole/train_and_film.py">tools/cartpole/train_and_film.py</a> · Python, Gymnasium</p>
       </div>
     </article>
     <article class="card text">
@@ -316,7 +355,7 @@
 
 <div class="prose">
   <h2 id="versus">A grade or an answer key</h2>
-  <p>Most machine learning is <button class="term" data-term="supervised-learning">supervised</button>. Every training example comes with the right answer, and the model is corrected towards it. A VLA learns this way when it copies <button class="term" data-term="demonstration">demonstrations</button>, which is called <button class="term" data-term="behaviour-cloning">behaviour cloning</button>. It's like studying with the answer key open.</p>
+  <p>Most machine learning is <button class="term" data-term="supervised-learning">supervised</button>. Every training example comes with the right answer, and the model is corrected towards it. A learner that copies demonstrations, recordings of an expert doing the task, learns this way, and that's called <button class="term" data-term="behaviour-cloning">behaviour cloning</button>. It's like studying with the answer key open.</p>
 
   <div class="predict">
     <div class="label">Predict first</div>
@@ -328,7 +367,7 @@
   </div>
 </div>
 
-<figure class="fig" id="fig-1-4">
+<figure class="fig" id="fig-1-6">
   <div class="pan"><svg class="dg wide" viewBox="0 0 960 300" role="img" aria-labelledby="f14t f14d">
     <title id="f14t">Copying examples and learning from a score</title>
     <desc id="f14d">Two panels with the same layout. Left: a picture goes in, the learner acts, and its action is compared with the expert's action at every step; at best it matches the expert. Right: a picture goes in, the learner acts, and only a grade of 1 or 0 comes back when the try ends; it needs many more tries but can go past the expert.</desc>
@@ -371,7 +410,7 @@
     <text class="lbl-i" x="760" y="258" text-anchor="middle">one grade when the try ends</text>
     <text class="sub" x="510" y="290">needs many more tries; can go past the expert</text>
   </svg></div>
-  <figcaption><b>Figure 1.4 · Two ways to learn.</b> Same layout, one difference: on the left every action is compared with the expert's, and on the right the only feedback is one score per try.</figcaption>
+  <figcaption><b>Figure 1.6 · Two ways to learn.</b> Same layout, one difference: on the left every action is compared with the expert's, and on the right the only feedback is one score per try.</figcaption>
 </figure>
 
 <div class="prose">
@@ -382,15 +421,13 @@
     <p>It's easy to think a reward works like a label that tells the model which move was right. It doesn't. In the bowl example the score comes once, after up to a few hundred steps, and it never says which of those steps helped. Sorting that out is one of the three things that make RL hard, and chapter 2 is about them.</p>
   </div>
 
-  <h2 id="for-us">What this means for our project</h2>
-  <p><code>pi05_libero</code> learned only by imitation, from the 50 recorded demonstrations that come with each <button class="term" data-term="libero">LIBERO</button> task. But LIBERO already has the other half of an RL setup. The goal check that decides whether an episode counts as a success is exactly the 1-or-0 score in this chapter's example, so RL on LIBERO wouldn't need anyone to write a new grader. Chapter 7 shows groups that have done this. Whether we try it is open; <a href="https://github.com/blueif16/vla_final/blob/main/docs/learn/06-where-we-stand.md">chapter 6 of the VLA series</a> lists what's decided.</p>
 
   <h2 id="check">Check yourself</h2>
   <ol class="quiz">
     <li><p>Name the agent, environment, action, reward and policy for a program that learns to play chess.</p>
       <details><summary>Show answer</summary><p>The agent is the chess program. The environment is the board and the opponent. An action is one move. The reward is the result at the end, for example +1 for a win, 0 for a draw and −1 for a loss. The policy is the program's current habit of which move it tends to play in each position.</p></details></li>
-    <li><p>Four tries score 2, 4, 6 and 8 points. Which tries get their actions pushed up, and how do the pushes compare?</p>
-      <details><summary>Show answer</summary><p>The average is 5, so the pushes are −3, −1, +1 and +3. The tries that scored 6 and 8 get their actions pushed up, the one that scored 8 three times as hard as the one that scored 6. The tries that scored 2 and 4 get pushed down.</p></details></li>
+    <li><p>Four CartPole tries keep the pole up for 20, 40, 60 and 80 steps. Which tries get their moves pushed up, and how do the pushes compare?</p>
+      <details><summary>Show answer</summary><p>The average is 50 steps, so the pushes are −30, −10, +10 and +30. The tries that lasted 60 and 80 steps get their moves pushed up, the 80-step try three times as hard as the 60-step one. The tries that lasted 20 and 40 steps get theirs pushed down.</p></details></li>
     <li><p>Why can a learner that is only given a score end up better than the people who made its training data, when a learner that copies them can't? Say it in your own words.</p>
       <details><summary>Show answer</summary><p>Copying is corrected towards what the people did, so the best it can do is match them. RL is pushed towards a higher score, and any move that raises the score gets reinforced, whether or not a person ever made it.</p></details></li>
   </ol>
@@ -422,9 +459,10 @@
     <li>Sutton and Barto (2018), <em>Reinforcement Learning: An Introduction</em>, 2nd ed., MIT Press: chapter 1 for the five words, chapter 13 for policy gradients and the baseline. <a href="http://incompleteideas.net/book/the-book-2nd.html">Free online</a>.</li>
     <li>Williams (1992), "Simple statistical gradient-following algorithms for connectionist reinforcement learning", <em>Machine Learning</em> 8(3–4), 229–256. <a href="https://doi.org/10.1007/BF00992696">doi.org/10.1007/BF00992696</a>. Checked on Crossref, 2026-11-13.</li>
     <li>Silver et al. (2017), "Mastering Chess and Shogi by Self-Play with a General Reinforcement Learning Algorithm". <a href="https://arxiv.org/abs/1712.01815">arXiv 1712.01815</a>: "Starting from random play … convincingly defeated a world-champion program in each case." Checked 2026-11-13.</li>
-    <li>LIBERO and its goal check: chapter 3 of the VLA series and its sources. The 50 demonstrations per task are from Liu et al. (2023), <a href="https://arxiv.org/abs/2306.03310">arXiv 2306.03310</a>.</li>
-    <li>Talks: Sergey Levine (<a href="https://www.youtube.com/watch?v=EYLdC3a0NHw">EYLdC3a0NHw</a>, <a href="https://www.youtube.com/watch?v=_b-FwaiETwM">_b-FwaiETwM</a>). Clip times come from RoboBoom's section summaries of each talk, recorded in <code>library/clips.yaml</code>.</li>
-    <li>The success chances in figure 1.3 are made up for teaching. Every other number on this page is in <code>library/rl.yaml</code>.</li>
+    <li>Barto, Sutton and Anderson (1983), "Neuronlike adaptive elements that can solve difficult learning control problems", <em>IEEE Transactions on Systems, Man, and Cybernetics</em> SMC-13(5), 834–846. <a href="https://doi.org/10.1109/TSMC.1983.6313077">doi.org/10.1109/TSMC.1983.6313077</a>. Where CartPole comes from.</li>
+    <li>Gymnasium, <a href="https://gymnasium.farama.org/environments/classic_control/cart_pole/">CartPole-v1</a>: two actions, 1 point for every step including the last, and a try ends past 12 degrees, at the end of the track or after 500 steps. Checked 2026-11-13. The 50 steps a second are from <code>tau = 0.02</code> in its <code>cartpole.py</code> (Gymnasium 1.0.0). MIT licence.</li>
+    <li>Our CartPole run: <a href="https://github.com/blueif16/vla_final/blob/main/tools/cartpole/train_and_film.py"><code>tools/cartpole/train_and_film.py</code></a> (step size 0.001, 16 tries a round, 300 rounds, random seeds 0, 1 and 2; seed 0 is filmed). Every score is in <a href="../assets/data/rl01-cartpole.json"><code>rl01-cartpole.json</code></a>, and figure 1.5's chart is drawn from it by <code>tools/cartpole/make_chart.py</code>.</li>
+    <li>The step size in figure 1.4 (0.2) is our choice. Every other number on this page is in <code>library/rl.yaml</code> or in our run's data file.</li>
   </ul>
 </div>
 </main>

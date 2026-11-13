@@ -193,6 +193,24 @@ tools:
   - { key: verifiers, url: https://github.com/PrimeIntellect-ai/verifiers, desc: "Our library for RL environments + evals" }
   - { key: rlinf, url: https://github.com/RLinf/RLinf, desc: "RLinf: Reinforcement Learning Infrastructure for Embodied and Agentic AI (the code behind piRL)" }
 
+# Test problems we run ourselves (RL 1's second example), checked 2026-11-13.
+environments:
+  - { key: cartpole-origin, what: "Barto, Sutton and Anderson (1983), Neuronlike adaptive elements that can solve difficult learning control problems, IEEE Transactions on Systems, Man, and Cybernetics SMC-13(5):834-846",
+      url: https://doi.org/10.1109/TSMC.1983.6313077, note: "one listing gives pages 835-846; most give 834-846. Gymnasium's docs cite it as the source of CartPole" }
+  - { key: cartpole-v1, url: https://gymnasium.farama.org/environments/classic_control/cart_pole/, licence: "MIT (Gymnasium repo LICENSE: Copyright (c) 2016 OpenAI, (c) 2022 Farama Foundation)",
+      quotes: ["0: pushes the cart left", "1: pushes the cart right", "a reward of `+1` is given for every step taken, including the termination step",
+               "Pole Angle is greater than ±12°", "Cart Position is greater than ±2.4 (center of the cart reaches the edge of the display)", "Episode length is greater than 500 (200 for v0)",
+               "All observations are assigned a uniformly random value in `(-0.05, 0.05)`"],
+      facts: ["observation: cart position, cart velocity, pole angle, pole angular velocity", "tau = 0.02 s between updates and render_fps 50 in gymnasium/envs/classic_control/cartpole.py (Gymnasium 1.0.0), so 50 steps a second",
+              "a positive pole angle is a lean to the right; a push right (force +10) reduces it (step() in the same file)"] }
+  - { key: our-cartpole-run, what: "RL 1's rule (each move pushed by its try's score minus the round's average; REINFORCE with the batch average as baseline) on CartPole-v1, linear policy over the four numbers plus a bias, starting 50/50",
+      code: tools/cartpole/train_and_film.py, data: docs/assets/data/rl01-cartpole.json, chart: tools/cartpole/make_chart.py, made: 2026-11-13,
+      settings: "step size 0.001, 16 tries a round, 300 rounds, seeds 0, 1, 2 (seed 0 filmed); gymnasium[classic-control]==1.0.0, numpy",
+      facts: ["average score per round, seed 0: round 1 22.9, 50 34.6, 100 49.1, 150 195.8, 200 349.4, 250 467.2, 300 497.5",
+              "seed 1 ends at 500.0, seed 2 at 456.7 (round 300)", "seed 0, round 1, first four tries: 31, 66, 22, 47 steps", "seed 0, round 300, first four tries: 500 each",
+              "seed 0 weights used in round 300 (cart position, cart speed, pole angle, pole spin, bias): 0.039, -1.869, -5.839, -7.27, 0.067; chance of left = sigmoid(w . x), so leaning or tipping right lowers the chance of moving left"],
+      caveat: "a step size of 0.003 reached 500 by about round 120 and 0.01 sooner (seed 0 sweep, same day); 0.001 was kept because its climb is gradual, like the chapter's 'a little more likely each round'" }
+
 # Claims in the 2026-11-13 write-up we could not support, kept so nobody re-adds them:
 unsupported:
   - { claim: "A review of public 2026 lab reports found RL in every one of them", finding: "no such review found; Pan (arXiv 2610.28027) chose only reports with RL in the title or abstract" }

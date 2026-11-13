@@ -57,7 +57,7 @@ POOL = """<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 200' preserve
 
 css = f"""/* Watercolour theme for the reinforcement-learning series (first used on RL 1, 2026-11-13; not yet judged by the user).
    Layered on site.css: <body class="wc">. Every component of site.css still works; this file only repaints it and
-   adds a few text-first components (.predict, .formula, .tries). The painted textures are inline SVG data URIs
+   adds a few text-first components (.predict, .formula, .tries, .words, .frame.clip, .runfig). The painted textures are inline SVG data URIs
    built by a script, so the theme needs no image files.
    Colour meanings in the RL series (one colour, one meaning, on every page):
      ochre  = the learner: the agent and its policy
@@ -141,30 +141,74 @@ body.wc {{ background-color: var(--bg); background-image: {uri(GRAIN)}; font-siz
 .formula .eq .p {{ background: var(--gold-soft); }}
 .formula .label {{ margin-top: 8px; }}
 
-/* ---------- RL 1's explorable: four tries, their scores and the push each one gives (.tries) ---------- */
-.tries {{ background: rgba(255, 253, 247, .86); border: 1px solid var(--line); border-radius: 8px 16px 10px 18px; padding: 18px 18px 14px; }}
-.tries .seg button[aria-pressed="true"] {{ background: var(--box); }}
-.tries-body {{ display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: 22px; align-items: start; margin-top: 6px; }}
-.chance {{ display: grid; grid-template-columns: 92px 1fr 46px; gap: 10px; align-items: center; margin: 8px 0; font: 13px var(--mono); }}
-.chance .bar {{ height: 18px; border-radius: 9px; background: var(--box); overflow: hidden; border: 1px solid var(--line); }}
-.chance .bar i {{ display: block; height: 100%; background: var(--gold); border-right: 2px solid var(--gold-edge); transition: width .45s ease; }}
-.chance b {{ font-weight: 600; text-align: right; }}
-.tries .hist {{ width: 100%; height: auto; display: block; margin-top: 10px; }}
-.tries .hist text {{ font: 10.5px var(--mono); fill: var(--ink-3); }}
-.tries-tbl {{ width: 100%; border-collapse: collapse; font: 13.5px/1.4 var(--mono); }}
-.tries-tbl th {{ text-align: left; font-weight: 600; font-size: 11.5px; letter-spacing: .04em; text-transform: uppercase; color: var(--ink-3); padding: 0 6px 6px 0; }}
-.tries-tbl td {{ padding: 7px 6px 7px 0; border-top: 1px solid var(--line); }}
-.tries-tbl .sc {{ display: inline-block; min-width: 1.6em; text-align: center; border-radius: 5px; padding: 0 4px; }}
-.tries-tbl .sc.s1 {{ background: var(--sienna); color: #fff; }}
-.tries-tbl .sc.s0 {{ background: var(--box); color: var(--ink-2); }}
-.tries-tbl .up {{ color: var(--sienna-dark); font-weight: 600; }}
-.tries-tbl .down {{ color: var(--ink-2); }}
-.tries-tbl .zero {{ color: var(--ink-3); }}
-.tries-sum {{ margin: 10px 0 0; font: 13px/1.5 var(--mono); color: var(--ink-2); }}
-.tries-say {{ margin: 12px 0 0; min-height: 1.6em; font-size: 16.5px; line-height: 1.55; }}
-.tries .ctrl {{ margin-top: 14px; }}
-@media (max-width: 760px) {{ .tries-body {{ grid-template-columns: 1fr; }} }}
-@media (prefers-reduced-motion: reduce) {{ .chance .bar i {{ transition: none; }} }}
+/* ---------- RL 1's explorable (.tries), redesigned 2026-11-13 with the teaching-interactives skill ----------
+   It teaches one sentence: each try pushes what it did up or down by its score minus the average. The only control is
+   the score dot on each try (tap or Enter flips it 0/1); the arrows from the average line and the chance below update
+   at once. The default state is the chapter's example, so the point shows before any tap. */
+.tries {{ background: rgba(255, 253, 247, .86); border: 1px solid var(--line); border-radius: 8px 16px 10px 18px; padding: 16px 18px 16px; }}
+.tries-task {{ margin: 0 0 4px; font: 13px/1.5 var(--mono); color: var(--ink-2); }}
+.tries svg.tries-plot {{ display: block; width: 100%; max-width: 560px; height: auto; margin: 0 auto; overflow: visible; }}
+.tries-plot text {{ font-family: var(--mono); fill: var(--ink-2); }}
+.tries-plot .hd {{ font-size: 11.5px; letter-spacing: .05em; text-transform: uppercase; fill: var(--ink-3); }}
+.tries-plot .act {{ font-size: 13px; fill: var(--green-dark); }}
+.tries-plot .tick {{ font-size: 12px; fill: var(--ink-3); }}
+.tries-plot .track {{ stroke: var(--line); stroke-width: 2; }}
+.tries-plot .avg {{ stroke: var(--sienna-dark); stroke-width: 1.6; stroke-dasharray: 6 5; }}
+.tries-plot .avg-t {{ font-size: 12.5px; fill: var(--sienna-dark); }}
+.tries-plot .arrow {{ stroke: var(--sienna-dark); stroke-width: 3.2; fill: none; }}
+.tries-plot .adv {{ font-size: 15px; font-weight: 600; }}
+.tries-plot .adv.up {{ fill: var(--sienna-dark); }}
+.tries-plot .adv.down {{ fill: var(--ink-2); }}
+.tries-plot .adv.zero {{ fill: var(--ink-3); }}
+.tries-plot .eff {{ font-size: 12px; fill: var(--ink-3); }}
+.tries-plot .dot {{ cursor: pointer; outline: none; }}
+.tries-plot .dot circle {{ stroke: var(--sienna-dark); stroke-width: 2; transition: cy .18s ease; }}
+.tries-plot .dot.s1 circle {{ fill: var(--sienna); }}
+.tries-plot .dot.s0 circle {{ fill: #FFFDF7; }}
+.tries-plot .dot text {{ font: 600 15px var(--mono); text-anchor: middle; pointer-events: none; }}
+.tries-plot .dot.s1 text {{ fill: #fff; }}
+.tries-plot .dot.s0 text {{ fill: var(--ink); }}
+.tries-plot .dot .ring {{ fill: none; stroke: var(--umber); stroke-width: 1.5; stroke-dasharray: 3 3; opacity: 0; }}
+.tries-plot .dot:hover .ring, .tries-plot .dot:focus-visible .ring {{ opacity: 1; }}
+.tries-plot .dot:focus-visible circle:not(.ring) {{ stroke-width: 3; }}
+.tries-out {{ display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 12px; align-items: center; max-width: 560px; margin: 12px auto 0; font: 13px var(--mono); }}
+.tries-out .bar {{ position: relative; height: 18px; border-radius: 9px; background: var(--box); border: 1px solid var(--line); overflow: hidden; }}
+.tries-out .bar i {{ display: block; height: 100%; background: var(--gold); border-right: 2px solid var(--gold-edge); transition: width .25s ease; }}
+.tries-out .bar s {{ position: absolute; top: -1px; bottom: -1px; left: 50%; border-left: 2px dotted var(--ink-2); }}
+.tries-out b {{ font-weight: 600; white-space: nowrap; }}
+.tries-say {{ max-width: 560px; margin: 10px auto 0; min-height: 3.1em; font-size: 16.5px; line-height: 1.55; }}
+@media (max-width: 520px) {{ .tries-out {{ grid-template-columns: 1fr auto; }} .tries-out > span {{ grid-column: 1 / -1; }} }}
+.tries-plot.compact .hd {{ font-size: 13px; }}
+.tries-plot.compact .act {{ font-size: 15px; }}
+.tries-plot.compact .tick {{ font-size: 13px; }}
+.tries-plot.compact .adv {{ font-size: 17px; }}
+.tries-plot.compact .avg-t {{ font-size: 14px; }}
+.tries-plot.compact .dot text {{ font-size: 17px; }}
+@media (prefers-reduced-motion: reduce) {{ .tries-out .bar i, .tries-plot .dot circle {{ transition: none; }} }}
+
+/* ---------- the five words for two examples (table.words) ---------- */
+.words {{ width: 100%; border-collapse: collapse; margin: 6px 0 24px; font-size: 16.5px; line-height: 1.45; }}
+.words th, .words td {{ text-align: left; vertical-align: top; padding: 9px 10px 9px 0; border-top: 1px solid var(--line); }}
+.words thead th {{ border-top: 0; font: 600 11.5px var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3); }}
+.words tbody th {{ font: 600 14px var(--mono); color: var(--ink); white-space: nowrap; }}
+@media (max-width: 560px) {{ .words {{ font-size: 15px; }} .words tbody th {{ font-size: 12.5px; }} }}
+
+/* ---------- real footage (.frame.clip) and a chart beside it (.runfig) ---------- */
+.frame.clip {{ position: relative; padding: 6px; }}
+.frame.clip video {{ display: block; width: 100%; height: auto; border-radius: 8px; background: #fff; cursor: pointer; }}
+.frame.clip .play {{ position: absolute; right: 18px; bottom: 18px; width: 64px; height: 64px; border-radius: 50%; border: 0; background: rgba(43, 38, 32, .78); color: #fff; font: 600 13px var(--mono); cursor: pointer; }}
+.frame.clip .play[hidden] {{ display: none; }}
+.frame.clip .play:focus-visible {{ outline: 3px solid var(--gold); outline-offset: 2px; }}
+.runfig {{ display: grid; gap: 14px; }}
+.runfig svg {{ display: block; width: 100%; height: auto; }}
+.runfig svg text {{ font-family: var(--mono); fill: var(--ink-2); font-size: 12px; }}
+.runfig .grid {{ stroke: var(--line); stroke-width: 1; }}
+.runfig .main {{ stroke: var(--sienna-dark); stroke-width: 2; fill: none; stroke-linejoin: round; }}
+.runfig .other {{ stroke: var(--tan); stroke-width: 1.25; fill: none; opacity: .75; stroke-linejoin: round; }}
+.runfig .lab-main {{ fill: var(--sienna-dark); font-weight: 600; }}
+.runfig .hover-dot {{ fill: var(--sienna-dark); stroke: #FFFDF7; stroke-width: 2; }}
+.runfig .hover-line {{ stroke: var(--ink-3); stroke-width: 1; stroke-dasharray: 3 3; }}
+@media (max-width: 560px) {{ .runfig svg text {{ font-size: 21px; }} .runfig svg .ttl, .runfig svg .lgd {{ display: none; }} }}
 
 /* ---------- painted figures ----------
    Shapes take filter="url(#wc-wash)" (ragged edge, granulation, darker rim) or url(#wc-line) (a wobbly brush line).

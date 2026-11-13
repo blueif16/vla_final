@@ -94,6 +94,17 @@ downloaded:
     converted: 1748x872 PNG render -> 1600x798 JPG q3
     used: [ch2 figure 2.2]
 
+our_footage:   # made by us; ours to reuse, with Gymnasium (MIT) credited as the renderer
+  - files: docs/assets/video/rl01-cartpole-round1.{mp4,jpg}
+    made_by: tools/cartpole/train_and_film.py (2026-11-13)
+    shows: "the first four tries of round 1 (seed 0), one after another, at half speed, with a score counter; they score
+      31, 66, 22 and 47 and each ends with 'pole fell: try over'; 600x240, 25 fps, 11.6 s; poster is the first frame"
+    used: [RL 1 figure 1.2 (plays when scrolled into view, twice)]
+  - files: docs/assets/video/rl01-cartpole-round300.{mp4,jpg}
+    made_by: tools/cartpole/train_and_film.py (2026-11-13)
+    shows: the first try of round 300 (seed 0) at real speed, lasting the full 500 steps; 600x240, 25 fps, 11.2 s
+    used: [RL 1 figure 1.5 (tap to play), RL 1 rail card "Our code" (poster)]
+
 available_cc_by:   # not downloaded yet; base URL + file
   - paper: LIBERO (arXiv 2306.03310, CC BY 4.0)
     base: https://arxiv.org/html/2306.03310v2/

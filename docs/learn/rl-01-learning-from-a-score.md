@@ -3,12 +3,12 @@
 After this chapter you can explain reinforcement learning with five words and one loop, work out from a handful of
 scores which tries a learner should repeat more often, and say why a learner that is only given a score can end up
 better than the people it learned from.
-Needs: nothing. Chapter 1 of the VLA series helps with the robot example. Reading time: 8 min.
-Web version, with predict-first questions, an explorable and talk clips (15–20 min):
+Needs: nothing. Reading time: 10 min.
+Web version, with predict-first questions, an explorable and video of a learner we trained (15–20 min):
 https://blueif16.github.io/vla_final/learn/rl-01-learning-from-a-score.html
 
-Go back to the robot arm from the first VLA chapter, standing at a table with a black bowl and a plate. This time no
-one steers the arm through the task, and no one records what a person would do. The simulator checks one thing when
+Picture a robot arm at a table with a black bowl and a plate on it. No one steers the arm through the task, and no
+one shows it what a person would do. The simulator checks one thing when
 each try ends: is the bowl on the plate? It answers 1 for yes and 0 for no. Suppose the arm already reaches for the
 bowl now and then, and lands it on the plate in some of its tries but not most. Reinforcement learning (RL) is the rule
 that makes the lucky tries a little more likely next time, and then again after the next batch of tries, until the
@@ -16,20 +16,41 @@ bowl ends up on the plate most of the time.
 
 Nobody ever tells the arm which move was right. It only ever learns how well a whole try went.
 
+## A second example: a pole on a cart
+
+The second example is much smaller. It's called CartPole, and it comes from a 1983 paper by Andrew Barto, Richard
+Sutton and Charles Anderson. A pole stands on a cart, fixed at the bottom by a hinge, and the cart runs along a short
+track. At every step the learner moves the cart left or right. When the pole leans to the right, moving the cart right
+brings it back under the pole, and moving it left lets the pole fall further.
+
+The score is 1 point for every step the pole stays up. A try ends when the pole leans more than 12 degrees, when the
+cart runs off the end of the track, or after 500 steps. So a try's score is how many steps it lasted, and 500 is the
+most it can get. The simulation runs 50 steps a second, which makes 500 steps ten seconds of balancing.
+
+We ran CartPole in Gymnasium, a free library of test problems for RL, with a learner that starts out moving left or
+right at random, half the time each. Its first four tries scored 31, 66, 22 and 47, so all four were over in less than
+a second and a half (the web version shows them). Nobody tells this learner which move was right either. All it gets
+after each try is the score.
+
 ## Five words and a loop
 
-The field describes every problem with the same five words.
+The field describes every problem with the same five words: the agent is the learner, the environment is the world
+it acts in, an action is what the agent does at one moment, the reward is the score the environment hands back, and
+the policy is the agent's current habits ("in a situation like this, I tend to do that"). Here they are for both
+examples.
 
-| Word | What it means | In the bowl example |
+| Word | The arm | CartPole |
 |---|---|---|
-| agent | the learner | the network that moves the arm |
-| environment | the world the agent acts in | the simulated table, its objects and their physics |
-| action | what the agent does at one moment | seven numbers that move the hand and the gripper (VLA chapter 1) |
-| reward | the score the environment hands back | 1 if the bowl is on the plate when the try ends, otherwise 0 |
-| policy | the agent's current habits: "in a situation like this, I tend to do that" | the VLA itself |
+| agent | the network that moves the arm | the program that picks left or right |
+| environment | the simulated table, its objects and their physics | the cart, the pole, the track and their physics |
+| action | one small move of the hand or the gripper | moving the cart left or right |
+| reward | 1 if the bowl is on the plate when the try ends, otherwise 0 | 1 point for every step the pole stays up |
+| policy | how likely it is to make each move, in each situation | how likely it is to move left, for each position of the cart and the pole |
 
-These words fit together as a loop. The agent looks at the situation, which for the arm is a camera picture. It acts,
-the environment changes, and sometimes a reward comes back. One try from start to finish is an episode. After a batch
+These words fit together as a loop. The agent looks at the situation. For the arm that's a camera picture, and for
+CartPole it's four numbers: where the cart is, how fast it's going, how far the pole leans and how fast it's tipping.
+The agent acts, the environment changes, and a reward comes back. In CartPole it comes at every step, and for the arm
+only when a try ends. One try from start to finish is an episode. After a batch
 of episodes the policy is adjusted towards whatever scored higher, and the loop starts again. A game-playing agent
 might go round this loop millions of times.
 
@@ -61,15 +82,29 @@ People call the difference in the brackets the advantage, because it measures ho
 Each change is kept small, so one lucky try can't rewrite the habits. Ronald Williams wrote down this rule in 1992,
 and his algorithm, REINFORCE, still sits under most of the methods in this series.
 
-Taking away the average matters more than it looks. In a game where every try earns some points, pushing up every
-action by its raw score would make every habit stronger at once. With the average taken off, only the tries that beat
-the usual result get pushed up.
+Taking away the average matters more than it looks. In CartPole every try earns some points, so pushing up every
+move by its raw score would push up whatever the learner happened to do, good or bad. With the average taken off,
+only the tries that beat the usual result get pushed up.
+
+If all four tries score 0, as they might when the bowl is almost out of reach, the average is 0, every try's score
+minus the average is 0, and nothing changes. A learner that never succeeds has nothing to learn from. That's the first
+problem in chapter 2. Four scores of 1 change nothing either, because when every try does equally well there's
+nothing to tell them apart.
+
+Can a rule this small learn anything real? We gave it to the CartPole learner. In each round it makes 16 tries and
+works out their average score. Then every move in every try is made a little more or a little less likely, by that
+try's score minus the average. In the first round the 16 tries lasted 22.9 steps on average. By round 300 the average
+was 497.5, close to the most a try can score. We ran the whole thing twice more from different random starts, and
+those runs ended at 500 and 456.7. Nobody told the learner to move the cart towards the side the pole leans. By round
+300 it does: the further the pole leans or tips to one side, the more likely it is to move the cart that way. All it
+ever saw was scores. The script is `tools/cartpole/train_and_film.py`, and every score is in
+`docs/assets/data/rl01-cartpole.json`.
 
 ## Learning from a score versus learning from examples
 
 Most machine learning is supervised. Every training example comes with the right answer, and the model is corrected
-towards it. A VLA learns this way when it copies demonstrations (behaviour cloning, VLA chapter 1). It's like studying
-with the answer key open.
+towards it. A learner that copies demonstrations, recordings of an expert doing the task, learns this way, and that's
+called behaviour cloning. It's like studying with the answer key open.
 
 RL is like doing practice problems where the teacher only tells you your grade. A grade says how well you did but not
 what you should have written, so the feedback is weaker and the learner needs many more tries. In return, nothing
@@ -81,18 +116,11 @@ A common belief is that a reward works like a label, telling the model which mov
 example the score comes once, after up to a few hundred steps, and it never says which of those steps helped. Sorting
 that out is one of the three things that make RL hard, and chapter 2 is about them.
 
-## What this means for our project
-
-`pi05_libero` learned only by imitation, from the 50 recorded demonstrations that come with each LIBERO task (VLA
-chapter 3). But LIBERO already has the other half of an RL setup. The goal check that decides whether an episode
-counts as a success is exactly the 1-or-0 score in this chapter's example, so RL on LIBERO wouldn't need anyone to
-write a new grader. Chapter 7 shows groups that have done this, and whether we try it is open (VLA chapter 6 lists
-what's decided).
-
 ## Check yourself
 
 1. Name the agent, environment, action, reward and policy for a model that learns to play chess.
-2. Four tries score 2, 4, 6 and 8 points. Which tries get their actions pushed up, and how do the pushes compare?
+2. Four CartPole tries keep the pole up for 20, 40, 60 and 80 steps. Which tries get their moves pushed up, and how do
+   the pushes compare?
 3. Why can a learner that is only given a score end up better than the people who made its training data, when a
    learner that copies them can't? Say it in your own words.
 4. In the bowl example, what does the reward tell the arm? (a) Which of its moves was the right one at each step.
@@ -107,8 +135,9 @@ what's decided).
 1. The agent is the chess program. The environment is the board and the opponent. An action is one move. The reward
    is the result at the end (for example +1 for a win, 0 for a draw, −1 for a loss). The policy is the program's
    current habit of which move it tends to play in each position.
-2. The average is 5, so the pushes are −3, −1, +1 and +3. The tries that scored 6 and 8 get their actions pushed up,
-   the one that scored 8 three times as hard as the one that scored 6. The tries that scored 2 and 4 get pushed down.
+2. The average is 50 steps, so the pushes are −30, −10, +10 and +30. The tries that lasted 60 and 80 steps get their
+   moves pushed up, the 80-step try three times as hard as the 60-step one. The tries that lasted 20 and 40 steps get
+   theirs pushed down.
 3. Copying is corrected towards what the people did, so the best it can do is match them. RL is pushed towards a
    higher score, and any move that raises the score gets reinforced, whether or not a person ever made it.
 4. (b). Not (a): that's the wrong belief this chapter names; the score never says which step helped. Not (c): that's
@@ -130,4 +159,11 @@ what's decided).
   reward).
 - Silver et al. (2017), "Mastering Chess and Shogi by Self-Play with a General Reinforcement Learning Algorithm",
   https://arxiv.org/abs/1712.01815 (AlphaZero).
-- LIBERO and its success check: VLA chapter 3 and its sources.
+- Barto, Sutton and Anderson (1983), "Neuronlike adaptive elements that can solve difficult learning control problems",
+  *IEEE Transactions on Systems, Man, and Cybernetics* SMC-13(5), 834–846, https://doi.org/10.1109/TSMC.1983.6313077
+  (where CartPole comes from).
+- Gymnasium, CartPole-v1, https://gymnasium.farama.org/environments/classic_control/cart_pole/ (two actions, 1 point
+  per step including the last, ends past 12 degrees, at the track's end or after 500 steps; checked 2026-11-13). 50
+  steps a second from `tau = 0.02` in `cartpole.py`, Gymnasium 1.0.0. MIT licence.
+- Our CartPole run: `tools/cartpole/train_and_film.py` (step size 0.001, 16 tries a round, 300 rounds, seeds 0–2),
+  scores in `docs/assets/data/rl01-cartpole.json`.

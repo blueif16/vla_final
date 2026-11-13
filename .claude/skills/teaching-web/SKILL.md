@@ -29,7 +29,9 @@ The words on the page are written with `de-ai-writing` loaded, and the chapter's
 3. **One figure per idea, chosen by the relationship** (Clark and Lyons's functions of graphics):
    - parts of a system and how data moves → a flow diagram (boxes and arrows) in Pi's style;
    - a contrast → two panels side by side with the same layout (small multiples, Tufte);
-   - a change over time or a process the reader should feel → an explorable they drive: a slider, a Step/Play button;
+   - a change the reader should feel → an explorable they drive, designed with the `teaching-interactives` skill
+     (one sentence, the default state already shows it, one control on the object, nothing behind a click);
+   - a real thing moving → a short clip of our own footage (`teaching-interactives`, "Footage");
    - a real thing (a robot, a scene) → a photo or video frame in a dark media frame;
    - numbers → a chart made with the `dataviz` skill.
    No decorative pictures. Put the figure right after the paragraph that points at it and label parts on the figure
@@ -191,10 +193,14 @@ each page about 15 to 20 minutes of reading, "sort of a new lesson and a new way
   whole figure: with the default bounding-box units a perfectly straight horizontal or vertical line has a zero-height
   box and draws nothing (found on RL 1, figure 1.4). Labels stay crisp, never filtered.
 - Text-first components: `.predict` (a question, a textarea that saves nothing, and a `details` to compare; the reader
-  commits to a guess before the page explains, the teaching skill's "ask them to predict"), `.formula` (one rule
-  written out, `b.p` and `b.s` mark its parts in the meaning colours), `.tries` (RL 1's explorable, driven by
-  `docs/assets/js/rl.js`; its rule is exactly the chapter's, and the chapter's example push must move "reach left"
-  from 50% to 55%).
+  commits to a guess before the page explains, the teaching skill's "ask them to predict"; leave out the `details`
+  when the next paragraph gives the answer), `.formula` (one rule written out, `b.p` and `b.s` mark its parts in the
+  meaning colours), `.tries` (RL 1's explorable, redesigned 2026-11-13 with `teaching-interactives`: an empty
+  `svg.tries-plot` that `docs/assets/js/rl.js` draws, a `.tries-out` bar and a `.tries-say` line; its rule is exactly
+  the chapter's, and the chapter's example must move "reach left" from 50% to 55%), `table.words` (a term in the first
+  column, one column per example), `.frame.clip` with `video[data-play=view|tap]` (our own footage; see
+  `teaching-interactives`) and `.runfig[data-widget=run]` (a line chart written into the page by a script between
+  `<!-- run-chart:start -->` and `<!-- run-chart:end -->`, with its data in a JSON script tag for the pointer readout).
 - On phones, anything decorative that overhangs the column (the title wash) must stay inside the viewport; the check
   script's overflow line catches it.
 
