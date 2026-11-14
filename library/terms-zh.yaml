@@ -139,3 +139,68 @@ ch4_web_2026_11_13:
 # Lead's merge, 2026-11-13: chapters 4 and 5 both defined counterfactual-instruction (same zh 反事实指令) and
 # grounding-rate. glossary.js keeps chapter 4's wording for both, and grounding-rate gets no zh: chapter 4 found no
 # Chinese usage of the metric's name, and 接地率 (chapter 5's open pick) is built from 接地 rather than seen in use.
+
+# ---- chapter 3 web page, round 2 (2026-11-14): sections A, B and C (merged by the lead) ----
+
+# section A
+# Section A, round 2 (2026-11-14): Chinese terms for new or changed glossary entries. Each line says which library
+# file it belongs in (library/terms-zh.yaml). Concepts and everyday objects get a zh field; names (LIBERO, robosuite,
+# MuJoCo, Franka Emika, SpaceMouse, OpenVLA) don't.
+ch3_v2_A_2026_11_14:   # -> library/terms-zh.yaml
+  - term: episode
+    zh: 回合
+    alternatives: [一轮, 片段 (rare), "episode, left in English"]
+    seen: "LeRobot's Chinese LIBERO docs, 'eval.n_episodes' explained as 每个任务 10 个回合 (dctx-team.github.io/lerobot-zh/zh/libero/, read 2026-11-14); already the glossary's choice since 2026-11-11"
+  - term: lifelong learning
+    zh: 终身学习
+    alternatives: [持续学习 (continual learning, a near neighbour), 终身机器人学习 (lifelong robot learning)]
+    seen: "LeRobot's Chinese LIBERO page ('研究终身机器人学习的基准'), hugging-face.cn/docs/lerobot/libero ('决策的终身学习 (LLDM)'), and a Chinese translation of LIBERO's README (docs.robotnewbie.com, '终身学习算法'), all read 2026-11-14"
+  - term: task suite
+    zh: 任务套件
+    note: "unchanged; the same Chinese pages call the five suites 任务套件 (read 2026-11-14)"
+  - term: ramekin
+    zh: 烤碗
+    alternatives: [烤盅, 舒芙蕾碗, 布丁杯, 焗杯 (Hong Kong)]
+    seen: "shop listings for small round ceramic baking dishes: '陶瓷烤碗舒芙蕾模具' (taobao), '舒芙蕾碗 … 布丁杯 烤盅 … 烤碗' (momoshop.com.tw), '陶瓷舒芙蕾焗杯 … ramekins' (molalacook.com/zh-hk), read 2026-11-14"
+  - term: moka pot
+    zh: 摩卡壶
+    alternatives: []
+    seen: "the everyday word; not looked up this round"
+  - term: desk caddy
+    zh: 桌面收纳盒
+    alternatives: [收纳盒, 笔筒 (a pen holder only)]
+    seen: "our choice of everyday word; not looked up this round, so mark it open"
+
+# section B
+# Chinese names for the new glossary terms of chapter 3, section B (2026-11-14). Same format as library/terms-zh.yaml;
+# the lead merges these into it. Checked 2026-11-14 against Chinese write-ups of openpi's LIBERO evaluation.
+#   - GitCode blog, "openpi LIBERO 基准评测实战指南" (2026-09-13), https://blog.gitcode.com/ffcba0e57687300acd2b956404d502d7.html
+#     (its table of main.py's arguments: 随机种子 for --seed, 回合 for episodes, 步数 for steps, 策略服务端 for the server)
+#   - hzm8341/pi0.6, README_zh.md (a Chinese translation of openpi's README), https://github.com/hzm8341/pi0.6/blob/master/README_zh.md
+#     ("启动策略服务器并运行推理")
+#   - robotics.hellobike.com tutorial "openpi：在 LIBERO 上准备 π0 / π0-FAST 微调基座并评估" (2026-10-22) keeps
+#     "server" and "simulation" in English inside Chinese text
+
+ch3_v2_B_2026_11_14:
+  step:          { zh: 时间步, alt: [步, 仿真步, 控制步], open: true,
+                   note: "时间步 is the usual word for an RL or simulator time step; Chinese openpi notes mostly say 步 or 步数 ('max_steps' = 最大步数). 仿真步 is clearer for a simulator step but less common" }
+  random-seed:   { zh: 随机种子, alt: [种子], note: "the GitCode guide translates main.py's --seed as 随机种子（保证可复现）" }
+  policy-server: { zh: 策略服务器, alt: [策略服务端, 推理服务, 推理服务器], open: true,
+                   note: "策略服务器 in the Chinese translation of openpi's README; 策略服务端 and 推理服务 in the GitCode guide" }
+
+# section C
+# Chinese names for the two glossary terms section C adds (C-glossary.js), checked 2026-11-14 with an Exa search for
+# Chinese write-ups of the LIBERO paper. Both are open: Chinese notes on this paper mostly keep the English words.
+# Sources seen:
+#   guidongnan.github.io/notes/papers/2306.03310 (视频生成 × 具身智能 notes on LIBERO): “把 "Task 5" 这样的字符串喂进 BERT
+#     得到的 Task-ID 嵌入”, “句向量在这里退化成了 bag-of-words”
+#   estelledc.github.io/embodied-ai-reading-station/papers/libero (Embodied AI: Zero to One): “语义 rich 语言 embedding ≈
+#     Task-ID”, “语义 rich 描述 ≈ "Task 5" ID”
+# 语言嵌入 follows the 嵌入 (embedding) that Chinese ML writing uses (词嵌入, 文本嵌入); we didn't find 语言嵌入 itself in
+# those two notes, which write 语言 embedding and Task-ID 嵌入.
+
+ch3_v2_C_2026_11_14:
+  language-embedding: { zh: 语言嵌入, alt: [文本嵌入, 句向量, "语言 embedding (mixed, as in the estelledc notes)"], open: true,
+                        note: "嵌入 is the standard word for embedding (词嵌入). The two LIBERO notes write 'Task-ID 嵌入' and '语言 embedding'" }
+  task-id:            { zh: 任务 ID, alt: [Task-ID, 任务编号, 任务标识], open: true,
+                        note: "both notes keep 'Task-ID' in Latin letters; 任务 ID is the plain Chinese for it. The glossary shows 任务 ID" }

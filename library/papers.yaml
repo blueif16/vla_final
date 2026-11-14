@@ -249,3 +249,219 @@ ch4_web_2026_11_13:   # facts read for the chapter 4 web page, 2026-11-13
     facts:
       - "libero/libero/envs/env_wrapper.py ControlEnv: control_freq=20 by default; openpi's examples/libero/main.py builds OffScreenRenderEnv with only bddl_file_name, camera_heights and camera_widths, so a step is 1/20 s of simulated time (checked 2026-11-13)"
       - "LIBERO-Spatial benchmark task 1 = 'pick up the black bowl next to the ramekin and place it on the plate' (docs/assets/img/ch3/tasks.json); task 0's file starts bowl_2 in next_to_ramekin_region, so on task 0's table that sentence names the other bowl"
+
+# ---- chapter 3 web page, round 2 (2026-11-14): sections A, B and C (merged by the lead) ----
+
+ch3_v2_A_2026_11_14_papers:
+  code_and_data:   # -> library/papers.yaml (code facts), each read 2026-11-14
+    - key: libero-collect-demo
+      file: ~/openpi/third_party/libero/scripts/collect_demonstration.py
+      facts:
+        - "default --device spacemouse (also keyboard); --num-demonstration default 50; env built with control_freq=20"
+        - "a recording ends by itself once the goal holds: task_completion_hold_count is set to 10 on the first success step, counts down on each further success step and resets if success is lost; the loop breaks at the top after a step when the count reaches 0, so a recording ends 11 steps after the first success step when the goal keeps holding. The code comment: 'state machine to check for having a success for 10 consecutive timesteps'"
+        - "pressing the SpaceMouse's reset button returns action None; the try is then not saved (saving=False)"
+        - "env.reset() lays out a new arrangement: bddl_base_domain._reset_internal samples every object's place from the task file's regions (placement_initializer.sample())"
+    - key: libero-create-dataset
+      file: ~/openpi/third_party/libero/scripts/create_dataset.py
+      facts:
+        - "LIBERO's own HDF5 replays each recording with 128x128 cameras (robot0_eye_in_hand, agentview), control_freq=20, and stores macros.IMAGE_CONVENTION as an attribute"
+        - "it skips recording observations for the first 5 steps (cap_index = 5, 'the force sensor is not stable in the beginning'); not used on the page"
+    - key: openvla-regenerate
+      url: https://github.com/openvla/openvla/blob/main/experiments/robot/libero/regenerate_libero_dataset.py
+      facts:
+        - "docstring: save images at 256x256 'instead of 128x128'; 'filter out transitions with no-op (zero) actions'; 'filter out unsuccessful demonstrations'; 'In the LIBERO HDF5 data -> RLDS data conversion (not shown here), we rotate the images by 180 degrees because we observe that the environments return images that are upside down on our platform'"
+        - "replays each original demo from its first state after 10 steps of the dummy action; a no-op is an action whose first six numbers have norm < 1e-4 and whose gripper number equals the previous action's"
+        - "keeps a demo only if done is True after its last kept action; one image is saved per executed step"
+    - key: openvla-rlds-builder
+      url: https://github.com/moojink/rlds_dataset_builder (LIBERO_Spatial/LIBERO_Spatial_dataset_builder.py, LIBERO_Goal/...; MIT; fork of kpertsch/rlds_dataset_builder; linked from OpenVLA's README as 'the code we used to convert these datasets to the RLDS format')
+      facts:
+        - "'image': images[i][::-1,::-1], 'wrist_image': wrist_images[i][::-1,::-1]: both cameras turned 180 degrees"
+        - "language_instruction is built from the HDF5 file name with the SCENE prefix dropped; reward 1.0 only at the last step"
+    - key: openvla-libero-utils
+      url: https://github.com/openvla/openvla/blob/main/experiments/robot/libero/libero_utils.py
+      facts: ["get_libero_image: img[::-1, ::-1] with the comment 'IMPORTANT: rotate 180 degrees to match train preprocessing' (openpi's main.py repeats the same comment)"]
+    - key: openvla-readme-libero
+      url: https://github.com/openvla/openvla (README, LIBERO section)
+      facts: ["'We fine-tuned OpenVLA via LoRA (r=32) on four LIBERO task suites independently'", "modified datasets: openvla/modified_libero_rlds on Hugging Face, made with regenerate_libero_dataset.py and moojink/rlds_dataset_builder"]
+    - key: robosuite-image-convention
+      file: ~/openpi/examples/libero/.venv/lib/python3.8/site-packages/robosuite (1.4.1)
+      facts:
+        - "macros.py:28 IMAGE_CONVENTION = 'opengl' (options opengl, opencv); comment: rendered images 'are based on the OpenGL coordinate frame convention, whereas many downstream applications assume an OpenCV coordinate frame convention'"
+        - "utils/mjcf_utils.py IMAGE_CONVENTION_MAPPING = {opengl: 1, opencv: -1}; environments/robot_env.py camera_rgb returns img[::convention], so with 'opengl' the rows are left in the renderer's order, bottom row first (our reading: the picture comes out upside down)"
+        - "LIBERO's own libero/libero/utils/video_utils.py flips frames with [::-1] before writing videos (consistent with that reading)"
+        - "camera_rgb renders with self.sim.render; the wrist camera eye_in_hand is defined in models/assets/robots/panda/robot.xml; LIBERO places the table camera 'agentview' in envs/problems/libero_tabletop_manipulation.py"
+    - key: robosuite-panda-spacemouse
+      facts:
+        - "models/robots/manipulators/panda_robot.py: 'Panda is a sensitive single-arm robot designed by Franka.'; LIBERO's ControlEnv defaults to robots=['Panda'], controller OSC_POSE"
+        - "devices/spacemouse.py controls: 'Move mouse laterally' moves the arm in the x-y plane, 'Move mouse vertically' moves it up and down, 'Twist mouse about an axis' rotates it, 'Left button (hold)' closes the gripper, 'Right button' resets the simulation"
+        - "environments/base.py step(): one action, then int(control_timestep / model_timestep) MuJoCo steps; control_timestep = 1 / control_freq (section B owns this)"
+    - key: libero-dataset-steps
+      url: https://huggingface.co/datasets/physical-intelligence/libero/resolve/main/meta/episodes.jsonl (+ meta/info.json)
+      facts:
+        - "info.json: fps 10, total_episodes 1693, total_frames 273465"
+        - "episodes per suite (our count, sentences matched to docs/assets/img/ch3/tasks.json): Spatial 432, Object 454, Goal 428, LIBERO-10 379 = 1693"
+        - "longest episode per suite: Spatial 193, Object 254, Goal 270, LIBERO-10 505, exactly openpi main.py's 'longest training demo' comments; so one dataset frame is one simulator step (no-op steps removed)"
+        - "episodes per task range from 29 ('put both moka pots on the stove') to 50 ('turn on the stove'; 'pick up the chocolate pudding and place it in the basket')"
+    - key: libero-taskfiles-ch3-v2
+      dir: ~/openpi/third_party/libero/libero/libero/bddl_files/
+      facts:
+        - "task files per folder: libero_spatial 10, libero_object 10, libero_goal 10, libero_10 10, libero_90 90 = 130"
+        - "Spatial: across the ten files only the two akita_black_bowl objects change region; plate (0.05 0.19 0.07 0.21), cookies, ramekin, wooden_cabinet and flat_stove sit in the same regions in all ten"
+        - "Object: basket in bin_region (-0.01 0.25 0.01 0.27) in all ten; the target item in one of two regions; seven objects per task (the basket and six groceries)"
+        - "Goal objects: wooden_cabinet, wine_rack, wine_bottle, plate, flat_stove, cream_cheese, akita_black_bowl"
+        - "LIBERO-10: nine distinct scene names (LIVING_ROOM_SCENE2 twice); goals: eight are two predicates, 'put both moka pots on the stove' is three (two On plus Turnon; its stove starts turned on), the book task is one; nine of ten sentences name two things to do"
+        - "LIBERO-10 'put the white mug on the plate and put the chocolate pudding to the right of the plate': goal (On chocolate_pudding_1 living_room_table_plate_right_region), region y 0.05..0.15 beside the plate (y -0.025..0.025); in episode 1's last frame the pudding is left of the plate in the model's picture"
+        - "LIBERO-90: 20 scenes (10 KITCHEN, 6 LIVING_ROOM, 4 STUDY); tasks per scene KITCHEN 1-10: 5,7,4,6,5,2,3,2,6,6; LIVING_ROOM 1-6: 4,5,5,5,4,4; STUDY 1-4: 4,4,5,4; within every scene the regions, fixtures, objects and (:init) blocks are identical, so all tasks of a scene start from the same arrangement"
+    - key: libero-paper-ch3-v2
+      url: https://arxiv.org/html/2306.03310v2
+      facts:
+        - "Figure 1 caption: 'LIBERO-Spatial, LIBERO-Object, and LIBERO-Goal have 10 tasks each and require transferring knowledge about spatial relationships, objects, and task goals; LIBERO-100 has 100 tasks and requires the transfer of entangled knowledge'"
+        - "Section 4.2: 'we split LIBERO-100 into 90 short-horizon tasks (LIBERO-90) and 10 long-horizon tasks (LIBERO-Long)'"
+        - "Section 4.3: demonstrations 'collected by human experts through teleoperation with 3Dconnexion Spacemouse'"
+        - "the HTML text names neither the Franka/Panda arm nor MuJoCo; those come from the code"
+    - key: mirror-check-real-frames
+      facts:
+        - "the paper's Figures 8 and 10 show the cabinet at the LEFT of the table; our renders and the dataset frames show it at the RIGHT (compared 2026-11-14)"
+        - "hflip of docs/assets/img/libero-ep379/table-000.jpg matches the layout of the paper's Figure 10 (cabinet and wine rack left, stove right)"
+
+ch3_v2_B_2026_11_14_papers:
+  papers_yaml:
+    - key: libero-code-ch3-b
+      url: https://github.com/Lifelong-Robot-Learning/LIBERO (openpi's pinned copy at third_party/libero, commit f78abd6, 2023-12-24)
+      facts:
+        - "benchmark/__init__.py, grab_language_from_filename (lines ~43-52): the task's sentence is the .bddl file name with underscores turned into spaces; the file's own (:language ...) line is not used. Spatial task 0's (:language) reads 'Pick the akita black bowl between the plate and the ramekin and place it on the plate' (checked 2026-11-14)"
+        - "envs/utils.py, rectangle2xyrange (lines 283-289): a region's :ranges (a b c d) are read as x from a to c and y from b to d (our reading)"
+        - "Spatial task 0's regions: plate (0.05 0.19 0.07 0.21), between_plate_ramekin (-0.06 0.19 -0.04 0.21), ramekin (-0.21 0.19 -0.19 0.21), next_to_ramekin (-0.19 0.31 -0.17 0.33), box (0.06 0.02 0.08 0.04), cabinet (0.02 -0.28 0.04 -0.26) with yaw_rotation (2.6613777765410678 2.7242096296128633), stove (-0.42 -0.15 -0.4 -0.13); 16 regions listed, 7 used by (:init)"
+        - "all ten libero_spatial .bddl files have an identical (:regions) block (md5 of the block, 2026-11-14) and the same goal line (And (On akita_black_bowl_1 plate_1)); they differ in where the two bowls start"
+        - "problems/libero_tabletop_manipulation.py, lines 15-25: table_full_size (1.0, 1.2, 0.05), table_offset (0, 0, 0.90), used as workspace_offset; robosuite's TableArena puts the table top at table_offset (arenas/table_arena.py, lines 41-47)"
+        - "envs/bddl_base_domain.py, _add_placement_initializer (lines ~562-630): fixtures (cabinet, stove) are placed with ensure_object_boundary_in_range=False inside their region; movable objects with TableRegionSampler, ensure_object_boundary_in_range=True (shrinks or inverts the range by the object's radius)"
+        - "envs/bddl_base_domain.py, _reset_internal (lines 731-777): at every reset LIBERO draws new placements; movable objects go into their free joint's qpos, fixtures are written into the MODEL (sim.model.body_pos / body_quat), so a stored state (qpos/qvel) does not hold the cabinet's or the stove's place"
+        - "envs/bddl_base_domain.py, step (lines 800-809): 'done = self._check_success()' after every step; problems/libero_tabletop_manipulation.py, _check_success (lines 135-143): every goal predicate is evaluated and ANDed"
+        - "envs/predicates/base_predicates.py, On (lines 62-64): On(a, b) returns b.check_ontop(a); envs/object_states/base_object_states.py, check_ontop (lines 78-94): true when the lower object's body position z <= the upper's, the two are in contact (robosuite check_contact on their contact geoms), and their body positions are < 0.03 m apart in x-y"
+        - "assets/stable_scanned_objects/{plate,akita_black_bowl}/*.xml: the collision boxes are arranged symmetrically around each body's origin (x and y from about -0.047 to +0.047 m), so the 'position' in check_ontop is each object's centre seen from above (our reading, 2026-11-14)"
+        - "assets/articulated_objects/wooden_cabinet.xml has three slide joints (top_level, middle_level, bottom_level); flat_stove.xml one hinge (button). These are the 4 joint values after the five free joints in a stored state"
+        - "no script in the repository writes the .init or .pruned_init files (grep for torch.save and the file names, 2026-11-14); how the stored states were made is not in the code"
+        - "env_wrapper.py, set_init_state / regenerate_obs_from_state (lines 136-145): set_state_from_flattened, forward, check_success, update observables"
+    - key: libero-init-files-spatial-t0
+      url: third_party/libero/libero/libero/init_files/libero_spatial/pick_up_the_black_bowl_between_the_plate_and_the_ramekin_and_place_it_on_the_plate.pruned_init
+      facts:
+        - "torch.load gives a numpy array of 50 x 92 float64 (the .init file next to it has 100 x 92, and all 50 pruned rows are among those 100, not the first 50); Object's .init files have 50 rows; Goal has no .init files (checked 2026-11-14)"
+        - "layout by our reading: [0] clock (0 in all 50); [1:8] arm joints; [8:10] fingers (0.0208, -0.0208); [10:45] five free joints of 7 (x y z + quaternion) in (:objects) order: bowl 1, bowl 2, cookies, ramekin, plate (matched to their regions); [45:49] cabinet drawers and stove knob, all 0; [49:92] 43 joint speeds, all 0"
+        - "spread across the 50 (max minus min): bowl 1 x 2.90 cm, y 2.93; bowl 2 2.71, 2.89; cookies 2.99, 2.59; ramekin 2.92, 2.79; plate 2.88, 2.81. All five objects at z 0.97 in every state; each object's quaternion identical in all 50"
+        - "arm joint spread across the 50 (radians): 0.0791, 0.0805, 0.0699, 0.1009, 0.0871, 0.0705, 0.0997 (largest 0.1009 rad = 5.8 degrees, our conversion)"
+        - "made by tools/ch3/stored_state_numbers.py (light: torch.load and a text parse, no simulator)"
+    - key: robosuite-1-4-1-timing
+      url: ~/openpi/examples/libero/.venv/lib/python3.8/site-packages/robosuite (version 1.4.1)
+      facts:
+        - "environments/base.py: control_freq is 'how many control signals to receive in every simulated second' (docstring, lines 74-76); initialize_time (lines 171-184): model_timestep = macros.SIMULATION_TIMESTEP, control_timestep = 1/control_freq; step (lines 364-399) runs int(control_timestep / model_timestep) MuJoCo steps per action"
+        - "macros.py line 11: SIMULATION_TIMESTEP = 0.002; LIBERO passes control_freq=20 (bddl_base_domain.py line 63), so one step = 0.05 s = 25 MuJoCo updates (our arithmetic); no LIBERO or robosuite scene XML sets its own <option timestep> (grep, 2026-11-14)"
+        - "LIBERO's own demonstration scripts also use control_freq=20 (scripts/collect_demonstration.py line 290, scripts/create_dataset.py line 96)"
+    - key: openpi-libero-ch3-b
+      url: https://github.com/Physical-Intelligence/openpi (local checkout, commit 215abfb, 2026-08-24)
+      facts:
+        - "examples/libero/main.py: np.random.seed(args.seed) line 50; seed 7 line 45; env.seed(seed) line 195 with the comment 'IMPORTANT: seed seems to affect object positions even when using fixed initial state'; loop 'while t < max_steps + args.num_steps_wait' line 104, so the 10 waiting steps don't use up the limit; an exception ends the episode (lines 160-162) and it counts as a failure (done stays False)"
+        - "examples/libero/main.py line 191: task_description = task.language (the sentence from the file name)"
+        - "src/openpi/policies/policy.py: JAX policies keep self._rng, set to rng or jax.random.key(0) at construction (line 65); every infer() splits it (line 75); policy_config.create_trained_policy passes no rng, so a freshly started server always starts from key 0 (our reading; not tested)"
+        - "examples/libero/README.md, Results: 'π0.5 @ 30k (finetuned) | 98.8 | 98.2 | 98.0 | 92.4 | 96.85' with no episode count, run count or seed (read 2026-11-14)"
+        - "openpi_client WebsocketClientPolicy: the evaluation script and the policy server are separate programs talking over a websocket (main.py line 73)"
+    - key: libero-dataset-lengths
+      url: https://huggingface.co/datasets/physical-intelligence/libero/resolve/main/meta/episodes.jsonl (+ meta/tasks.jsonl)
+      facts:
+        - "longest demonstration per suite (task_index 0-9 LIBERO-10, 10-19 Goal, 20-29 Object, 30-39 Spatial): Spatial 193 (episode 1633, 'pick up the black bowl on the wooden cabinet ...'), Object 254 (866, orange juice), Goal 270 (387, 'open the top drawer and put the bowl inside'), LIBERO-10 505 (306, 'put both moka pots on the stove'); these match openpi's main.py comments exactly (counted 2026-11-14)"
+        - "episodes per suite: Spatial 432, Object 454, Goal 428, LIBERO-10 379 (total 1,693); median lengths 123, 146, 105, 259; shortest 75, 114, 75, 150"
+        - "Spatial task 0 ('pick up the black bowl between the plate and the ramekin and place it on the plate'): 45 demonstrations, 75 to 168 steps, median 93"
+        - "meta/info.json fps 10, while LIBERO's demonstrations were recorded at control_freq=20 (see robosuite-1-4-1-timing), so one dataset frame is one 1/20 s step (our reading)"
+    - key: libero-paper-appendix-d
+      url: https://arxiv.org/html/2306.03310v2
+      facts:
+        - "Appendix D: 'We evaluate the agent's average success rate over 20 test rollout trajectories of a maximum length of 600 every 5 epochs' (their own lifelong-learning policies, read 2026-11-14)"
+        - "Appendix C.2 calls the task file a 'PDDL-based Scene Description File'; the paper never says BDDL (search of the HTML, 2026-11-14)"
+    - key: bddl-package
+      url: https://github.com/StanfordVL/bddl (installed as bddl 1.0.1 in openpi's LIBERO venv)
+      facts:
+        - "README: 'The Behavior Domain Definition Language (BDDL) is a domain-specific language designed for the Benchmark for Everyday Household Activities in Virtual, Interactive, and ecOlogical enviRonments (BEHAVIOR). BDDL is a predicate logic-based language inspired by, but distinct from, the Planning Domain Definition Language' (read 2026-11-14)"
+        - "LIBERO's envs/bddl_utils.py line 1: 'from bddl.parsing import *'; bddl/parsing.py says it is 'lightly adapted from https://github.com/pucrs-automated-planning/pddl-parser'"
+    - key: our-runs-ch3-b
+      url: stage1/runs/recorded-call-spatial0/calls.json and stage1/runs/exp1-shared-table/episodes.jsonl
+      facts:
+        - "recorded run: 104 actions ran (steps 0-103 counted from 0; 'steps': 104 = the goal held after the 104th); 21 calls at steps 0, 5, ..., 100; only 4 of the last call's 5 actions ran"
+        - "gripper command (7th number) in the actions that ran: open from step 0, close from step 37, open from 58, close from 69 to the last; the last six actions (steps 98-103) have gripper 0.992-1.004 and dz -0.936 to -0.96, so the goal held while the model was still telling the gripper to close and the hand to move down (our reading, 2026-11-14)"
+        - "call 7 (step 35) to call 8 (step 40): dz -0.876, -0.758, -0.575, -0.292, -0.11; the gripper flips to close at the third of those actions (step 37)"
+        - "exp1 timing (60 episodes, 2026-11-11): successful episodes 11.7 s on average (27, from 10.1 to 18.4 s), full 220-step episodes 24.3 s (results file), 0.189 s per model call on average; all 60 have error None"
+    - key: our-arithmetic-ch3-b
+      facts:
+        - "104 steps x 0.05 s = 5.2 simulated s; 220 steps = 11 s; 21 calls = ceil(104 / 5)"
+        - "95% margin at p = 0.5: 1.96 x sqrt(0.25 / 50) = 13.86 points; 1.96 x sqrt(0.25 / 500) = 4.38 points (same as topic.md)"
+        - "8,000 x 11.7 s = 93,600 s = 26 h"
+        - "3.6 degrees = 2.7242096296128633 - 2.6613777765410678 rad, in degrees"
+
+ch3_v2_C_2026_11_14_papers:
+  papers_yaml:
+    - key: libero-dataset-counts-ch3
+      url: https://huggingface.co/datasets/physical-intelligence/libero/resolve/main/meta/episodes.jsonl (and meta/tasks.jsonl, meta/info.json)
+      facts:
+        - "info.json: total_episodes 1693, total_frames 273465, total_tasks 40, fps 10 (fetched 2026-11-14)"
+        - "demonstrations per suite (our count of episodes.jsonl): Spatial 432, Object 454, Goal 428, LIBERO-10 379; sum 1,693"
+        - "per task, min 29 (task 6 'put both moka pots on the stove') to max 50 ('turn on the stove', 'pick up the chocolate pudding and place it in the basket')"
+        - "per task, Spatial: next to the cookie box 46, in the top drawer 42, on the ramekin 39, on the stove 35, between the plate and the ramekin 45, on the cookie box 43, next to the plate 47, next to the ramekin 45, from table center 46, on the wooden cabinet 44"
+        - "per task, Goal: bowl on the plate 49, wine bottle on the rack 36, open top drawer and bowl inside 36, cream cheese in the bowl 40, wine bottle on top of the cabinet 47, push the plate 33, turn on the stove 50, bowl on the stove 48, bowl on top of the cabinet 46, open the middle drawer 43"
+        - "per task, Object: orange juice 45, ketchup 45, cream cheese 45, bbq sauce 46, alphabet soup 44, milk 45, salad dressing 47, butter 45, tomato sauce 42, chocolate pudding 50"
+        - "per task, LIBERO-10: two mugs on two plates 38, mug and pudding 36, mug in microwave 34, stove and moka pot 41, soup and cream cheese in basket 43, soup and tomato sauce in basket 33, both moka pots 29, cream cheese box and butter in basket 49, bowl in bottom drawer 35, book in caddy 41"
+        - "demonstrations that start from a table shared by several tasks (our count and our reading of which need the sentence): Goal 428 of 428; Spatial pair 35 + 44 = 79 of 432; LIBERO-10 basket pair 33 + 49 = 82 of 379; Object 0 of 454; 589 of 1,693 in all"
+        - "the dataset's 40 task sentences (tasks.jsonl) equal the benchmark's 40 (docs/assets/img/ch3/tasks.json) word for word (our comparison, 2026-11-14)"
+        - "first demonstration per task used in ch3: task 34 between plate & ramekin = ep 1272 (row 221834, 84 frames); task 33 on the stove = ep 1267 (221193, 124); task 39 on the wooden cabinet = ep 1290 (223842, 164); task 35 on the cookie box = ep 1278 (222495, 101); task 32 on the ramekin = ep 1264 (220870, 100)"
+    - key: openvla-regenerate-libero
+      url: https://github.com/openvla/openvla/blob/main/experiments/robot/libero/regenerate_libero_dataset.py (read 2026-11-14)
+      facts:
+        - "docstring: 'We save image observations at 256x256px resolution (instead of 128x128). We filter out transitions with \"no-op\" (zero) actions that do not change the robot's state. We filter out unsuccessful demonstrations. In the LIBERO HDF5 data -> RLDS data conversion (not shown here), we rotate the images by 180 degrees because we observe that the environments return images that are upside down on our platform.'"
+        - "is_noop: all action dimensions except the gripper have norm < 1e-4 and the gripper action equals the previous one"
+        - "each demo: env.set_init_state(orig_states[0]), then 10 steps of the dummy action, then the original actions replayed with no-ops skipped; saved only 'if done' (the replay reached the goal)"
+        - "openvla README: the modified LIBERO datasets (openvla/modified_libero_rlds) were made with this script; openpi's convert_libero_data_to_lerobot.py reads libero_{10,goal,object,spatial}_no_noops (lines 28-33) and writes fps=10"
+    - key: openvla-issue-138
+      url: https://github.com/openvla/openvla/issues/138
+      facts:
+        - "Moo Jin Kim (moojink), 2024-10-17: 'Note that the train sets include less than 500 demos per suite because we filtered out unsuccessful demos.'"
+        - "Moo Jin Kim, 2024-10-28: 'For LIBERO, the initial object/robot positions at test time are different from the ones used at train time. Bo Liu (first author of the LIBERO benchmark) confirmed this...'; 'If you load in the initial object/robot states seen in the training demonstrations, you will observe very high success rates'"
+    - key: libero-issue-2
+      url: https://github.com/Lifelong-Robot-Learning/LIBERO/issues/2#issuecomment-1596101904
+      facts:
+        - "Cranial-XIX (Bo Liu, LIBERO's first author, per Moo Jin Kim above), 2023-06-18: '1 task has 50 demonstrations and 50 initial states, the initial states are not necessarily the same as the initial state in the demonstration, but they are sampled i.i.d from the same initial state distribution. By doing so, we can test the in-distribution generalization.'"
+        - "same thread, 2023-06-18: 'We use 20 for evaluation as it is faster and we empirically found no major difference from using 50.' (LIBERO's own evaluation; openpi uses all 50)"
+    - key: libero-issue-40
+      url: https://github.com/Lifelong-Robot-Learning/LIBERO/issues/40
+      facts: ["zhuyifengzju (Yifeng Zhu, second author), 2024-10-20, on the stored initial states: 'Yes, they are generated differently from the ones in demos.'"]
+    - key: libero-init-files-check
+      url: openpi third_party/libero (commit f78abd6), libero/libero/init_files/libero_spatial/
+      facts:
+        - "Spatial task 0: <task>.init holds 100 states of 92 numbers, <task>.pruned_init 50 (torch.load, 2026-11-14); pruned states 0-4 equal init states 0-4 exactly, the max difference over the first 50 is 0.08, so pruned is not simply init[:50]"
+        - "the stored states vary the robot's joints too: std over the 50 states about 0.018-0.023 rad on joints 1-7, fingers fixed at 0.0208"
+        - "LIBERO issue 27 (Cranial-XIX, 2024-09-07, 'if I remember correctly'): '.init contains 50 of them, .pruned_init is 20 out of the 50'. Our files don't match that (100 and 50); not used on the page"
+    - key: ch3-pixel-checks
+      facts:
+        - "demonstration starts vs stored test starts, Spatial task 0 (our check, 2026-11-14): 42 of the 45 demonstrations' frame 0 (3 failed to download: eps 1567, 1660, 1669), resized 256->224 bilinear, against our 50 renders (docs/assets/img/ch3/states). Mean absolute pixel difference (0-255) to the nearest: demo->nearest test start min 3.66, median 4.93, max 5.99; test->nearest other test start min 3.17, median 3.97, max 5.02; demo->nearest other demo min 3.29, median 3.89, max 4.95. No demo came closer to a test start than test starts come to each other. Caveat: the two pipelines (OpenVLA's replay renders vs our renders) were never compared on a known identical state, so this agrees with the authors' statement but can't prove it alone"
+        - "wrist pictures, Spatial pair (our check of our 2026-11-11 MP4 first frames, 2026-11-14): task 7 vs task 9 at the same state index, mean absolute difference wrist 15.8 / 11.5 / 12.5 / 16.4 (states 0-3), table 4.3 / 4.0 / 4.3 / 4.2; two starts of one task, wrist 11.7 and 13.5 (task 7, s0 vs s1, s2), 13.8 and 10.7 (task 9), table 5.5-6.4"
+    - key: libero-paper-language-ch3
+      url: https://arxiv.org/html/2306.03310v2
+      facts:
+        - "Sec. 5.2, 'Study on Language Embeddings as the Task Identifier (Q4)': BERT, CLIP, GPT-2 and 'the Task-ID embedding. Task-ID embeddings are produced by feeding a string such as \"Task 5\" into a pretrained BERT model.'"
+        - "Table 3 (LIBERO-Long, ResNet-T, ER, three seeds): FWT / NBT / AUC: BERT 0.48 / 0.32 / 0.32; CLIP 0.52 / 0.34 / 0.35; GPT-2 0.46 / 0.34 / 0.30; Task-ID 0.50 / 0.37 / 0.33. 'No statistically significant difference is observed among the different language embeddings.'"
+        - "Findings: 'This, we believe, is due to sentence embeddings functioning as bag-of-words that differentiates different tasks.'"
+        - "correction to the old rail card and MARKS-C: the task ID was not the task's index given directly; it was the string 'Task <ID>' turned into numbers by BERT, and the test was on LIBERO-Long only"
+    - key: libero-pro-ch3
+      url: https://arxiv.org/html/2510.03827v2
+      facts:
+        - "Sec. 2.3: 'for both OpenVLA and pi0, task success collapses once the displacement exceeds 0.2 units, dropping sharply to zero thereafter. Even the stronger pi0.5 model ... only maintains non-trivial performance up to roughly 0.4 units before also degrading to zero.' The unit is not named"
+        - "Sec. 2.3: 'Even small offsets lead the end-effector to move toward the original, memorized location rather than the object's actual position.'"
+        - "Sec. 5.1: 'OpenVLA is assessed using four official checkpoints trained on different LIBERO suites, whereas pi0 and pi0.5 are evaluated with a single official checkpoint'; 50 episodes per task"
+    - key: openpi-no-history-ch3
+      url: openpi commit 215abfb
+      facts:
+        - "src/openpi/policies/libero_policy.py LiberoInputs.__call__ (lines 42-81): takes observation/image and observation/wrist_image (the current ones), observation/state and prompt; nothing from earlier calls"
+        - "src/openpi/policies/policy.py Policy.infer (line 68): the only thing carried from call to call is the random key (line 75, jax.random.split), so each call starts from fresh random numbers. Our reading: the model keeps no memory between calls"
+        - "examples/libero/main.py: the prompt is task.language (line 191), sent as 'prompt' (line 140)"
+    - key: libero-bddl-pair-goal
+      url: openpi third_party/libero (f78abd6), libero/libero/bddl_files/libero_spatial/pick_up_the_black_bowl_on_the_{stove,wooden_cabinet}_and_place_it_on_the_plate.bddl
+      facts: ["(:init) differs only in which bowl is akita_black_bowl_1 (stove: bowl_1 on flat_stove_1_cook_region, bowl_2 on wooden_cabinet_1_top_side; cabinet task the reverse); both goals (lines 131-133) read (And (On akita_black_bowl_1 plate_1)), so the named bowl must reach the plate"]
+    - key: openpi-libero-readme-scores
+      url: openpi examples/libero/README.md line 71 (commit 215abfb)
+      facts: ["'π0.5 @ 30k (finetuned) | 98.8 | 98.2 | 98.0 | 92.4 | 96.85' (rechecked 2026-11-14)"]

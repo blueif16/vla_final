@@ -35,7 +35,7 @@
 <header class="doc-head">
   <h1>LIBERO, the benchmark</h1>
   <p class="subtitle">Our model succeeds in 98% or more of the test runs on three of LIBERO's four suites. This chapter shows what those tasks are, how a run is scored, and why the first picture already gives most of them away.</p>
-  <div class="meta"><span>Chapter 3 of 6</span><span>12 min read</span><span>Needs chapters 1 and 2</span></div>
+  <div class="meta"><span>Chapter 3 of 6</span><span>20 min read, more with the side notes</span><span>Needs chapters 1 and 2</span></div>
   <div class="outcomes">
     <div class="label">After this chapter you can</div>
     <ul>
@@ -58,59 +58,340 @@
 
 <main>
 <div class="prose" style="margin-top:48px">
-  <p>Picture one table in the <button class="term" data-term="libero">LIBERO</button>-Goal <button class="term" data-term="task-suite">suite</button>. On it are a bowl, a plate, a stove, a wine bottle, a cream cheese box and a small cabinet with drawers. The same table, with the same objects in the same places, is used for ten different tasks. Among them are <span class="q">open the middle drawer of the cabinet</span>, <span class="q">put the bowl on the stove</span>, <span class="q">turn on the stove</span> and <span class="q">put the bowl on the plate</span>. When the <button class="term" data-term="episode">episode</button> starts, the picture is the same for all ten. Only the sentence says which one to do.</p>
+  <div class="has-side">
+  <p>Picture one table in the <button class="term" data-term="libero">LIBERO</button>-Goal <button class="term" data-term="task-suite">suite</button>. On it are a bowl, a plate, a stove, a wine bottle, a wine rack, a cream cheese box and a small cabinet with drawers. The same table, with the same objects in the same places, is used for ten different tasks. Among them are <span class="q">open the middle drawer of the cabinet</span>, <span class="q">put the bowl on the stove</span>, <span class="q">turn on the stove</span> and <span class="q">put the bowl on the plate</span>.</p>
+  <p>One try at one of these tasks is called an <button class="term" data-term="episode">episode</button>. During an episode our model is called again and again, and each time it gets two camera pictures and the task's sentence (chapter 2). When an episode starts, both pictures look the same for all ten tasks, apart from objects shifted by a few centimetres. Only the sentence says which task to do.</p>
+  <aside class="side" aria-label="Side note: what the model gets at each call">
+    <div class="label">What the model gets</div>
+    <figure class="side-pic two">
+      <div><img src="../assets/img/libero-ep379/table-000.jpg" alt="The Goal table seen from the front, the robot behind it." width="256" height="256" loading="lazy"><span>table camera</span></div>
+      <div><img src="../assets/img/libero-ep379/wrist-000.jpg" alt="The same table seen from above, from the camera on the robot's hand: plate, bowl, cream cheese box, wine bottle and stove." width="256" height="256" loading="lazy"><span>wrist camera</span></div>
+    </figure>
+    <svg class="side-dg" viewBox="0 0 260 46" role="img" aria-label="Two pictures and the sentence go into pi05_libero, which returns 10 actions."><rect x="1" y="3" width="80" height="40" rx="8" fill="#EEECE4" stroke="#D7CFB6" stroke-width="1.5"/><text class="t11 b" x="41" y="20" text-anchor="middle">2 PICTURES</text><text class="t11 b" x="41" y="35" text-anchor="middle">+ SENTENCE</text><path d="M83 23H96" stroke="#C9A533" stroke-width="3"/><path d="M95 18l7 5-7 5z" fill="#C9A533"/><rect x="104" y="3" width="84" height="40" rx="8" fill="#FBD45B" stroke="#C9A533" stroke-width="1.5"/><text class="t11 b" x="146" y="27" text-anchor="middle">pi05_libero</text><path d="M190 23H201" stroke="#577B37" stroke-width="3"/><path d="M200 18l7 5-7 5z" fill="#577B37"/><rect x="209" y="3" width="50" height="40" rx="8" fill="#9BBC6C" stroke="#577B37" stroke-width="1.5"/><text class="t11 b" x="234" y="20" text-anchor="middle">10</text><text class="t11 b" x="234" y="35" text-anchor="middle">ACTIONS</text></svg>
+    <p>The model gets two fresh pictures and the sentence at every call, and the robot runs the first 5 of the 10 actions. When this chapter says "the first picture", it means the table camera's picture at the start of an episode.</p>
+    <p class="a-src">Pictures: the first step of the left recording in figure 3.1, physical-intelligence/libero, CC BY 4.0, episode 379.</p>
+  </aside>
+  </div>
+
   <p>Figure 3.1 plays three recordings made at that table, each of a person doing a different one of the ten tasks. For the first second the three tables look alike. Then the three arms go three different ways.</p>
 </div>
 
-<figure class="fig">
+<figure class="fig a-col">
   <div class="frame clip"><video data-play="view" controls poster="../assets/video/ch3-goal-three-demos.jpg" src="../assets/video/ch3-goal-three-demos.mp4" preload="none" muted playsinline width="784" height="256" aria-label="Three recorded demonstrations side by side on the same LIBERO-Goal table. Left, the arm lifts the bowl and puts it on the plate. Middle, it reaches to the stove and turns it on, and the burner glows red. Right, it picks up the wine bottle and stands it on top of the cabinet."></video></div>
   <div class="clip-labels" aria-hidden="true"><span class="q">put the bowl on the plate</span><span class="q">turn on the stove</span><span class="q">put the wine bottle on top of the cabinet</span></div>
-  <figcaption><b>Figure 3.1 · One table, three tasks.</b> Three demonstrations from the dataset <code>pi05_libero</code> was trained on, side by side at the speed they were recorded, 10 frames a second. They start from the same arrangement, give or take a few centimetres, and only the task differs. For each task this is the dataset's first demonstration, so none of them was picked for how it looks. As in every picture from this dataset, left and right are swapped compared with the LIBERO paper's figures, because that's how the model receives them. <span class="credit">Video: our cut of physical-intelligence/libero, CC BY 4.0, episodes 379, 388 and 385 (tools/ch3/make_goal_demos_clip.py).</span></figcaption>
+  <figcaption><b>Figure 3.1 · One table, three tasks.</b> Three demonstrations from the dataset <code>pi05_libero</code> was trained on, side by side. They start from the same arrangement, give or take a few centimetres, and only the task differs. For each task this is the dataset's first demonstration, so none of them was picked for how it looks. Each frame is one step of the simulation, which runs 20 steps per simulated second. The clip plays 10 frames a second, half the simulation's speed, and it skips the moments when the person held the mouse still, because those steps were cut from the dataset. Like every picture the model gets, these are mirror images; the side note beside figure 3.4 says why. <span class="credit">Video: our cut of physical-intelligence/libero, CC BY 4.0, episodes 379, 388 and 385 (tools/ch3/make_goal_demos_clip.py).</span></figcaption>
 </figure>
 
 <div class="prose">
+  <div class="has-side">
+  <p>Each of these recordings is one episode. <code>pi05_libero</code>'s training data is made of episodes like them, and a test is an episode too, with the model steering the arm instead of a person. Either way, the episode ends at a point the simulator can check.</p>
+  <aside class="side" aria-label="Side note: what an episode is">
+    <div class="label">What an episode is</div>
+    <figure class="side-pic two">
+      <div><img src="../assets/img/libero-ep379/table-000.jpg" alt="Start: the bowl stands in the middle of the table, the plate in front of it." width="256" height="256" loading="lazy"><span>start · step 0</span></div>
+      <div><img src="../assets/img/libero-ep379/table-111.jpg" alt="End: the gripper has just set the bowl down on the plate." width="256" height="256" loading="lazy"><span>end · step 111</span></div>
+    </figure>
+    <svg class="side-dg" viewBox="0 0 260 150" role="img" aria-label="Two timelines. A test: the model drives, from a stored starting table until the goal holds, a success, or until the step limit, a failure. A recording: a person drives, from a newly set-up table until the goal has held for 10 steps, and the recording is saved."><text class="t11 b" x="0" y="12">A TEST · THE MODEL DRIVES</text><path d="M6 28H254" stroke="#9BBC6C" stroke-width="5" stroke-linecap="round"/><circle cx="6" cy="28" r="5.5" fill="#29271F"/><rect x="248" y="21" width="12" height="14" rx="2" fill="#29271F"/><text class="t11 g2" x="0" y="48">stored start</text><text class="t11" x="260" y="48" text-anchor="end">goal holds → success</text><text class="t11" x="260" y="63" text-anchor="end">step limit → failure</text><text class="t11 b" x="0" y="92">A RECORDING · A PERSON DRIVES</text><path d="M6 108H254" stroke="#9BBC6C" stroke-width="5" stroke-linecap="round"/><circle cx="6" cy="108" r="5.5" fill="#29271F"/><rect x="248" y="101" width="12" height="14" rx="2" fill="#29271F"/><text class="t11 g2" x="0" y="128">table set up</text><text class="t11" x="260" y="128" text-anchor="end">goal held 10 steps</text><text class="t11" x="260" y="143" text-anchor="end">→ recording saved</text></svg>
+    <p>Each saved step of a recording pairs the two pictures with the action the person took at that moment. <code>pi05_libero</code> learned from 1,693 such episodes, all of them successes. A test scores the episodes the model drives itself, and figure 3.9 follows one to its end. <a href="rl-01-learning-from-a-score.html">RL 1</a> calls one scored try an episode too.</p>
+    <p class="a-src">Pictures: the left recording in figure 3.1. LIBERO's collect_demonstration.py, OpenVLA's regenerate_libero_dataset.py, openpi's main.py, read 2026-11-14.</p>
+  </aside>
+  </div>
+
   <h2 id="what">What LIBERO is</h2>
-  <p>LIBERO (Liu et al., 2023) is a set of 130 robot manipulation tasks in <button class="term" data-term="simulator">simulation</button>. It runs on <button class="term" data-term="robosuite">robosuite</button>, which runs on the <button class="term" data-term="mujoco">MuJoCo</button> physics engine, and the robot is a simulated <button class="term" data-term="franka">Franka Panda</button> arm. Each task comes with 50 <button class="term" data-term="demonstration">demonstrations</button> recorded by a person steering the robot with a 3D mouse, like the three in figure 3.1. Research on VLAs mostly reports four suites of ten tasks each, and the suites differ in what stays the same from one task to the next.</p>
+  <p>LIBERO (Liu et al., 2023) is a <button class="term" data-term="benchmark">benchmark</button> of 130 tasks for a robot arm in <button class="term" data-term="simulator">simulation</button>, such as putting a bowl on a plate, opening a drawer or turning on a stove. Its authors grouped the tasks into suites, and VLA papers mostly report four of them, each with ten tasks. <strong class="key"><code>pi05_libero</code> was trained on the 40 tasks of those four suites, and it is tested on the same 40.</strong> The other ninety tasks make up LIBERO-90, which it never trained on (figure 3.2).</p>
+</div>
+
+<figure class="fig a-col">
+  <svg class="dg a-wide" viewBox="0 0 688 392" role="img" aria-labelledby="a130t a130d"><title id="a130t">LIBERO's 130 tasks, one square each</title><desc id="a130d">Four rows of ten gold squares: LIBERO-Spatial, LIBERO-Object, LIBERO-Goal and LIBERO-10, the 40 tasks pi05_libero trained on and is tested on. Below them nine rows of ten beige squares, LIBERO-90, not in pi05_libero's training data. A dashed box around LIBERO-10 and LIBERO-90 marks LIBERO-100.</desc><defs><pattern id="a130-dots" width="16" height="16" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1" fill="#D7CFB6" opacity=".65"/></pattern></defs><rect class="bg" width="688" height="392"/><rect x="4" y="4" width="680" height="384" fill="url(#a130-dots)"/><rect x="40" y="104" width="362" height="269" rx="16" fill="none" stroke="#AAA184" stroke-width="1.5" stroke-dasharray="6 6"/><rect x="54" y="363" width="258" height="18" fill="#F5F4EF"/><text class="lbl-s" x="60" y="377">LIBERO-100 = LIBERO-10 + LIBERO-90</text><text class="lbl-s" x="156" y="42" text-anchor="end">LIBERO-SPATIAL</text><rect class="hot" x="168" y="28" width="18" height="18" rx="3"/><rect class="hot" x="191" y="28" width="18" height="18" rx="3"/><rect class="hot" x="214" y="28" width="18" height="18" rx="3"/><rect class="hot" x="237" y="28" width="18" height="18" rx="3"/><rect class="hot" x="260" y="28" width="18" height="18" rx="3"/><rect class="hot" x="283" y="28" width="18" height="18" rx="3"/><rect class="hot" x="306" y="28" width="18" height="18" rx="3"/><rect class="hot" x="329" y="28" width="18" height="18" rx="3"/><rect class="hot" x="352" y="28" width="18" height="18" rx="3"/><rect class="hot" x="375" y="28" width="18" height="18" rx="3"/><text class="lbl-s" x="156" y="65" text-anchor="end">LIBERO-OBJECT</text><rect class="hot" x="168" y="51" width="18" height="18" rx="3"/><rect class="hot" x="191" y="51" width="18" height="18" rx="3"/><rect class="hot" x="214" y="51" width="18" height="18" rx="3"/><rect class="hot" x="237" y="51" width="18" height="18" rx="3"/><rect class="hot" x="260" y="51" width="18" height="18" rx="3"/><rect class="hot" x="283" y="51" width="18" height="18" rx="3"/><rect class="hot" x="306" y="51" width="18" height="18" rx="3"/><rect class="hot" x="329" y="51" width="18" height="18" rx="3"/><rect class="hot" x="352" y="51" width="18" height="18" rx="3"/><rect class="hot" x="375" y="51" width="18" height="18" rx="3"/><text class="lbl-s" x="156" y="88" text-anchor="end">LIBERO-GOAL</text><rect class="hot" x="168" y="74" width="18" height="18" rx="3"/><rect class="hot" x="191" y="74" width="18" height="18" rx="3"/><rect class="hot" x="214" y="74" width="18" height="18" rx="3"/><rect class="hot" x="237" y="74" width="18" height="18" rx="3"/><rect class="hot" x="260" y="74" width="18" height="18" rx="3"/><rect class="hot" x="283" y="74" width="18" height="18" rx="3"/><rect class="hot" x="306" y="74" width="18" height="18" rx="3"/><rect class="hot" x="329" y="74" width="18" height="18" rx="3"/><rect class="hot" x="352" y="74" width="18" height="18" rx="3"/><rect class="hot" x="375" y="74" width="18" height="18" rx="3"/><text class="lbl-s" x="156" y="129" text-anchor="end">LIBERO-10</text><rect class="hot" x="168" y="115" width="18" height="18" rx="3"/><rect class="hot" x="191" y="115" width="18" height="18" rx="3"/><rect class="hot" x="214" y="115" width="18" height="18" rx="3"/><rect class="hot" x="237" y="115" width="18" height="18" rx="3"/><rect class="hot" x="260" y="115" width="18" height="18" rx="3"/><rect class="hot" x="283" y="115" width="18" height="18" rx="3"/><rect class="hot" x="306" y="115" width="18" height="18" rx="3"/><rect class="hot" x="329" y="115" width="18" height="18" rx="3"/><rect class="hot" x="352" y="115" width="18" height="18" rx="3"/><rect class="hot" x="375" y="115" width="18" height="18" rx="3"/><rect class="box" x="168" y="155" width="18" height="18" rx="3"/><rect class="box" x="191" y="155" width="18" height="18" rx="3"/><rect class="box" x="214" y="155" width="18" height="18" rx="3"/><rect class="box" x="237" y="155" width="18" height="18" rx="3"/><rect class="box" x="260" y="155" width="18" height="18" rx="3"/><rect class="box" x="283" y="155" width="18" height="18" rx="3"/><rect class="box" x="306" y="155" width="18" height="18" rx="3"/><rect class="box" x="329" y="155" width="18" height="18" rx="3"/><rect class="box" x="352" y="155" width="18" height="18" rx="3"/><rect class="box" x="375" y="155" width="18" height="18" rx="3"/><rect class="box" x="168" y="178" width="18" height="18" rx="3"/><rect class="box" x="191" y="178" width="18" height="18" rx="3"/><rect class="box" x="214" y="178" width="18" height="18" rx="3"/><rect class="box" x="237" y="178" width="18" height="18" rx="3"/><rect class="box" x="260" y="178" width="18" height="18" rx="3"/><rect class="box" x="283" y="178" width="18" height="18" rx="3"/><rect class="box" x="306" y="178" width="18" height="18" rx="3"/><rect class="box" x="329" y="178" width="18" height="18" rx="3"/><rect class="box" x="352" y="178" width="18" height="18" rx="3"/><rect class="box" x="375" y="178" width="18" height="18" rx="3"/><rect class="box" x="168" y="201" width="18" height="18" rx="3"/><rect class="box" x="191" y="201" width="18" height="18" rx="3"/><rect class="box" x="214" y="201" width="18" height="18" rx="3"/><rect class="box" x="237" y="201" width="18" height="18" rx="3"/><rect class="box" x="260" y="201" width="18" height="18" rx="3"/><rect class="box" x="283" y="201" width="18" height="18" rx="3"/><rect class="box" x="306" y="201" width="18" height="18" rx="3"/><rect class="box" x="329" y="201" width="18" height="18" rx="3"/><rect class="box" x="352" y="201" width="18" height="18" rx="3"/><rect class="box" x="375" y="201" width="18" height="18" rx="3"/><rect class="box" x="168" y="224" width="18" height="18" rx="3"/><rect class="box" x="191" y="224" width="18" height="18" rx="3"/><rect class="box" x="214" y="224" width="18" height="18" rx="3"/><rect class="box" x="237" y="224" width="18" height="18" rx="3"/><rect class="box" x="260" y="224" width="18" height="18" rx="3"/><rect class="box" x="283" y="224" width="18" height="18" rx="3"/><rect class="box" x="306" y="224" width="18" height="18" rx="3"/><rect class="box" x="329" y="224" width="18" height="18" rx="3"/><rect class="box" x="352" y="224" width="18" height="18" rx="3"/><rect class="box" x="375" y="224" width="18" height="18" rx="3"/><rect class="box" x="168" y="247" width="18" height="18" rx="3"/><rect class="box" x="191" y="247" width="18" height="18" rx="3"/><rect class="box" x="214" y="247" width="18" height="18" rx="3"/><rect class="box" x="237" y="247" width="18" height="18" rx="3"/><rect class="box" x="260" y="247" width="18" height="18" rx="3"/><rect class="box" x="283" y="247" width="18" height="18" rx="3"/><rect class="box" x="306" y="247" width="18" height="18" rx="3"/><rect class="box" x="329" y="247" width="18" height="18" rx="3"/><rect class="box" x="352" y="247" width="18" height="18" rx="3"/><rect class="box" x="375" y="247" width="18" height="18" rx="3"/><rect class="box" x="168" y="270" width="18" height="18" rx="3"/><rect class="box" x="191" y="270" width="18" height="18" rx="3"/><rect class="box" x="214" y="270" width="18" height="18" rx="3"/><rect class="box" x="237" y="270" width="18" height="18" rx="3"/><rect class="box" x="260" y="270" width="18" height="18" rx="3"/><rect class="box" x="283" y="270" width="18" height="18" rx="3"/><rect class="box" x="306" y="270" width="18" height="18" rx="3"/><rect class="box" x="329" y="270" width="18" height="18" rx="3"/><rect class="box" x="352" y="270" width="18" height="18" rx="3"/><rect class="box" x="375" y="270" width="18" height="18" rx="3"/><rect class="box" x="168" y="293" width="18" height="18" rx="3"/><rect class="box" x="191" y="293" width="18" height="18" rx="3"/><rect class="box" x="214" y="293" width="18" height="18" rx="3"/><rect class="box" x="237" y="293" width="18" height="18" rx="3"/><rect class="box" x="260" y="293" width="18" height="18" rx="3"/><rect class="box" x="283" y="293" width="18" height="18" rx="3"/><rect class="box" x="306" y="293" width="18" height="18" rx="3"/><rect class="box" x="329" y="293" width="18" height="18" rx="3"/><rect class="box" x="352" y="293" width="18" height="18" rx="3"/><rect class="box" x="375" y="293" width="18" height="18" rx="3"/><rect class="box" x="168" y="316" width="18" height="18" rx="3"/><rect class="box" x="191" y="316" width="18" height="18" rx="3"/><rect class="box" x="214" y="316" width="18" height="18" rx="3"/><rect class="box" x="237" y="316" width="18" height="18" rx="3"/><rect class="box" x="260" y="316" width="18" height="18" rx="3"/><rect class="box" x="283" y="316" width="18" height="18" rx="3"/><rect class="box" x="306" y="316" width="18" height="18" rx="3"/><rect class="box" x="329" y="316" width="18" height="18" rx="3"/><rect class="box" x="352" y="316" width="18" height="18" rx="3"/><rect class="box" x="375" y="316" width="18" height="18" rx="3"/><rect class="box" x="168" y="339" width="18" height="18" rx="3"/><rect class="box" x="191" y="339" width="18" height="18" rx="3"/><rect class="box" x="214" y="339" width="18" height="18" rx="3"/><rect class="box" x="237" y="339" width="18" height="18" rx="3"/><rect class="box" x="260" y="339" width="18" height="18" rx="3"/><rect class="box" x="283" y="339" width="18" height="18" rx="3"/><rect class="box" x="306" y="339" width="18" height="18" rx="3"/><rect class="box" x="329" y="339" width="18" height="18" rx="3"/><rect class="box" x="352" y="339" width="18" height="18" rx="3"/><rect class="box" x="375" y="339" width="18" height="18" rx="3"/><text class="lbl-s" x="156" y="261" text-anchor="end">LIBERO-90</text><path d="M410 28h8V133h-8" fill="none" stroke="#C9A533" stroke-width="2.5"/><text class="lbl-s" x="430" y="60">40 TASKS</text><text class="sub" x="430" y="80">pi05_libero trained on these</text><text class="sub" x="430" y="97">and is tested on them</text><path d="M410 155h8V357h-8" fill="none" stroke="#AAA184" stroke-width="2.5"/><text class="lbl-s" x="430" y="248">90 TASKS</text><text class="sub" x="430" y="268">not in pi05_libero's</text><text class="sub" x="430" y="285">training data</text></svg>
+  <svg class="dg a-narrow" viewBox="0 0 360 351" role="img" aria-label="LIBERO's 130 tasks, one square each. Four rows of ten gold squares, LIBERO-Spatial, LIBERO-Object, LIBERO-Goal and LIBERO-10: the 40 tasks pi05_libero trained on and is tested on. Nine rows of ten beige squares, LIBERO-90: not in its training data. A dashed box around LIBERO-10 and LIBERO-90 marks LIBERO-100."><defs><pattern id="a130n-dots" width="16" height="16" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1" fill="#D7CFB6" opacity=".65"/></pattern></defs><rect class="bg" width="360" height="351"/><rect x="4" y="4" width="352" height="343" fill="url(#a130n-dots)"/><rect x="6" y="73" width="258" height="188" rx="12" fill="none" stroke="#AAA184" stroke-width="1.5" stroke-dasharray="6 6"/><rect x="16" y="249" width="150" height="18" fill="#F5F4EF"/><text class="tiny" style="font-weight:700;fill:#29271F;font-size:11px" x="20" y="263">LIBERO-100 = 10 + 90</text><text class="tiny" style="font-weight:700;fill:#29271F;font-size:11px" x="100" y="32" text-anchor="end">LIBERO-SPATIAL</text><rect class="hot" x="108" y="22" width="12" height="12" rx="3"/><rect class="hot" x="123" y="22" width="12" height="12" rx="3"/><rect class="hot" x="138" y="22" width="12" height="12" rx="3"/><rect class="hot" x="153" y="22" width="12" height="12" rx="3"/><rect class="hot" x="168" y="22" width="12" height="12" rx="3"/><rect class="hot" x="183" y="22" width="12" height="12" rx="3"/><rect class="hot" x="198" y="22" width="12" height="12" rx="3"/><rect class="hot" x="213" y="22" width="12" height="12" rx="3"/><rect class="hot" x="228" y="22" width="12" height="12" rx="3"/><rect class="hot" x="243" y="22" width="12" height="12" rx="3"/><text class="tiny" style="font-weight:700;fill:#29271F;font-size:11px" x="100" y="47" text-anchor="end">LIBERO-OBJECT</text><rect class="hot" x="108" y="37" width="12" height="12" rx="3"/><rect class="hot" x="123" y="37" width="12" height="12" rx="3"/><rect class="hot" x="138" y="37" width="12" height="12" rx="3"/><rect class="hot" x="153" y="37" width="12" height="12" rx="3"/><rect class="hot" x="168" y="37" width="12" height="12" rx="3"/><rect class="hot" x="183" y="37" width="12" height="12" rx="3"/><rect class="hot" x="198" y="37" width="12" height="12" rx="3"/><rect class="hot" x="213" y="37" width="12" height="12" rx="3"/><rect class="hot" x="228" y="37" width="12" height="12" rx="3"/><rect class="hot" x="243" y="37" width="12" height="12" rx="3"/><text class="tiny" style="font-weight:700;fill:#29271F;font-size:11px" x="100" y="62" text-anchor="end">LIBERO-GOAL</text><rect class="hot" x="108" y="52" width="12" height="12" rx="3"/><rect class="hot" x="123" y="52" width="12" height="12" rx="3"/><rect class="hot" x="138" y="52" width="12" height="12" rx="3"/><rect class="hot" x="153" y="52" width="12" height="12" rx="3"/><rect class="hot" x="168" y="52" width="12" height="12" rx="3"/><rect class="hot" x="183" y="52" width="12" height="12" rx="3"/><rect class="hot" x="198" y="52" width="12" height="12" rx="3"/><rect class="hot" x="213" y="52" width="12" height="12" rx="3"/><rect class="hot" x="228" y="52" width="12" height="12" rx="3"/><rect class="hot" x="243" y="52" width="12" height="12" rx="3"/><text class="tiny" style="font-weight:700;fill:#29271F;font-size:11px" x="100" y="92" text-anchor="end">LIBERO-10</text><rect class="hot" x="108" y="82" width="12" height="12" rx="3"/><rect class="hot" x="123" y="82" width="12" height="12" rx="3"/><rect class="hot" x="138" y="82" width="12" height="12" rx="3"/><rect class="hot" x="153" y="82" width="12" height="12" rx="3"/><rect class="hot" x="168" y="82" width="12" height="12" rx="3"/><rect class="hot" x="183" y="82" width="12" height="12" rx="3"/><rect class="hot" x="198" y="82" width="12" height="12" rx="3"/><rect class="hot" x="213" y="82" width="12" height="12" rx="3"/><rect class="hot" x="228" y="82" width="12" height="12" rx="3"/><rect class="hot" x="243" y="82" width="12" height="12" rx="3"/><rect class="box" x="108" y="112" width="12" height="12" rx="3"/><rect class="box" x="123" y="112" width="12" height="12" rx="3"/><rect class="box" x="138" y="112" width="12" height="12" rx="3"/><rect class="box" x="153" y="112" width="12" height="12" rx="3"/><rect class="box" x="168" y="112" width="12" height="12" rx="3"/><rect class="box" x="183" y="112" width="12" height="12" rx="3"/><rect class="box" x="198" y="112" width="12" height="12" rx="3"/><rect class="box" x="213" y="112" width="12" height="12" rx="3"/><rect class="box" x="228" y="112" width="12" height="12" rx="3"/><rect class="box" x="243" y="112" width="12" height="12" rx="3"/><rect class="box" x="108" y="127" width="12" height="12" rx="3"/><rect class="box" x="123" y="127" width="12" height="12" rx="3"/><rect class="box" x="138" y="127" width="12" height="12" rx="3"/><rect class="box" x="153" y="127" width="12" height="12" rx="3"/><rect class="box" x="168" y="127" width="12" height="12" rx="3"/><rect class="box" x="183" y="127" width="12" height="12" rx="3"/><rect class="box" x="198" y="127" width="12" height="12" rx="3"/><rect class="box" x="213" y="127" width="12" height="12" rx="3"/><rect class="box" x="228" y="127" width="12" height="12" rx="3"/><rect class="box" x="243" y="127" width="12" height="12" rx="3"/><rect class="box" x="108" y="142" width="12" height="12" rx="3"/><rect class="box" x="123" y="142" width="12" height="12" rx="3"/><rect class="box" x="138" y="142" width="12" height="12" rx="3"/><rect class="box" x="153" y="142" width="12" height="12" rx="3"/><rect class="box" x="168" y="142" width="12" height="12" rx="3"/><rect class="box" x="183" y="142" width="12" height="12" rx="3"/><rect class="box" x="198" y="142" width="12" height="12" rx="3"/><rect class="box" x="213" y="142" width="12" height="12" rx="3"/><rect class="box" x="228" y="142" width="12" height="12" rx="3"/><rect class="box" x="243" y="142" width="12" height="12" rx="3"/><rect class="box" x="108" y="157" width="12" height="12" rx="3"/><rect class="box" x="123" y="157" width="12" height="12" rx="3"/><rect class="box" x="138" y="157" width="12" height="12" rx="3"/><rect class="box" x="153" y="157" width="12" height="12" rx="3"/><rect class="box" x="168" y="157" width="12" height="12" rx="3"/><rect class="box" x="183" y="157" width="12" height="12" rx="3"/><rect class="box" x="198" y="157" width="12" height="12" rx="3"/><rect class="box" x="213" y="157" width="12" height="12" rx="3"/><rect class="box" x="228" y="157" width="12" height="12" rx="3"/><rect class="box" x="243" y="157" width="12" height="12" rx="3"/><rect class="box" x="108" y="172" width="12" height="12" rx="3"/><rect class="box" x="123" y="172" width="12" height="12" rx="3"/><rect class="box" x="138" y="172" width="12" height="12" rx="3"/><rect class="box" x="153" y="172" width="12" height="12" rx="3"/><rect class="box" x="168" y="172" width="12" height="12" rx="3"/><rect class="box" x="183" y="172" width="12" height="12" rx="3"/><rect class="box" x="198" y="172" width="12" height="12" rx="3"/><rect class="box" x="213" y="172" width="12" height="12" rx="3"/><rect class="box" x="228" y="172" width="12" height="12" rx="3"/><rect class="box" x="243" y="172" width="12" height="12" rx="3"/><rect class="box" x="108" y="187" width="12" height="12" rx="3"/><rect class="box" x="123" y="187" width="12" height="12" rx="3"/><rect class="box" x="138" y="187" width="12" height="12" rx="3"/><rect class="box" x="153" y="187" width="12" height="12" rx="3"/><rect class="box" x="168" y="187" width="12" height="12" rx="3"/><rect class="box" x="183" y="187" width="12" height="12" rx="3"/><rect class="box" x="198" y="187" width="12" height="12" rx="3"/><rect class="box" x="213" y="187" width="12" height="12" rx="3"/><rect class="box" x="228" y="187" width="12" height="12" rx="3"/><rect class="box" x="243" y="187" width="12" height="12" rx="3"/><rect class="box" x="108" y="202" width="12" height="12" rx="3"/><rect class="box" x="123" y="202" width="12" height="12" rx="3"/><rect class="box" x="138" y="202" width="12" height="12" rx="3"/><rect class="box" x="153" y="202" width="12" height="12" rx="3"/><rect class="box" x="168" y="202" width="12" height="12" rx="3"/><rect class="box" x="183" y="202" width="12" height="12" rx="3"/><rect class="box" x="198" y="202" width="12" height="12" rx="3"/><rect class="box" x="213" y="202" width="12" height="12" rx="3"/><rect class="box" x="228" y="202" width="12" height="12" rx="3"/><rect class="box" x="243" y="202" width="12" height="12" rx="3"/><rect class="box" x="108" y="217" width="12" height="12" rx="3"/><rect class="box" x="123" y="217" width="12" height="12" rx="3"/><rect class="box" x="138" y="217" width="12" height="12" rx="3"/><rect class="box" x="153" y="217" width="12" height="12" rx="3"/><rect class="box" x="168" y="217" width="12" height="12" rx="3"/><rect class="box" x="183" y="217" width="12" height="12" rx="3"/><rect class="box" x="198" y="217" width="12" height="12" rx="3"/><rect class="box" x="213" y="217" width="12" height="12" rx="3"/><rect class="box" x="228" y="217" width="12" height="12" rx="3"/><rect class="box" x="243" y="217" width="12" height="12" rx="3"/><rect class="box" x="108" y="232" width="12" height="12" rx="3"/><rect class="box" x="123" y="232" width="12" height="12" rx="3"/><rect class="box" x="138" y="232" width="12" height="12" rx="3"/><rect class="box" x="153" y="232" width="12" height="12" rx="3"/><rect class="box" x="168" y="232" width="12" height="12" rx="3"/><rect class="box" x="183" y="232" width="12" height="12" rx="3"/><rect class="box" x="198" y="232" width="12" height="12" rx="3"/><rect class="box" x="213" y="232" width="12" height="12" rx="3"/><rect class="box" x="228" y="232" width="12" height="12" rx="3"/><rect class="box" x="243" y="232" width="12" height="12" rx="3"/><text class="tiny" style="font-weight:700;fill:#29271F;font-size:11px" x="100" y="182" text-anchor="end">LIBERO-90</text><rect class="hot" x="16" y="278" width="12" height="12" rx="3"/><text class="sub" x="36" y="289">40 tasks pi05_libero trained on</text><text class="sub" x="36" y="306">and is tested on</text><rect class="box" x="16" y="319" width="12" height="12" rx="3"/><text class="sub" x="36" y="330">90 tasks not in its training data</text></svg>
+  <figcaption><b>Figure 3.2 · LIBERO's 130 tasks, one square each.</b> The four ten-task suites at the top hold the 40 tasks <code>pi05_libero</code> trained on and is tested on. LIBERO-100 is LIBERO-10 and LIBERO-90 together, and LIBERO-90's ninety tasks aren't in <code>pi05_libero</code>'s training data. <span class="credit">Counted by us from LIBERO's task files, one .bddl file per task in five folders, 2026-11-14. LIBERO-100's split: Liu et al. 2023, Section 4.2. The training data: openpi's convert_libero_data_to_lerobot.py.</span></figcaption>
+</figure>
+
+<div class="prose">
+  <div class="has-side">
+  <p>Everything in LIBERO is simulated, and three layers of software share the work (figure 3.3). At the bottom, the <button class="term" data-term="mujoco">MuJoCo</button> physics engine works out how everything moves. <button class="term" data-term="robosuite">robosuite</button> is built on MuJoCo and adds the robot arm, the cameras and the step that applies one action. LIBERO is built on robosuite and adds the scenes, the objects, the task files and the check that a task is done. The model never touches any of this directly. It only receives the pictures and sends back actions.</p>
+  <p>The simulated arm copies a real robot arm, the <button class="term" data-term="franka">Franka Panda</button>. Each task comes with 50 <button class="term" data-term="demonstration">demonstrations</button>, which a person recorded by steering the simulated arm with a 3D mouse, a puck you push, lift and twist. The three in figure 3.1 are among them.</p>
+  <aside class="side" aria-label="Side note: the real arm and the 3D mouse">
+    <div class="label">The real arm and the 3D mouse</div>
+    <figure class="side-pic two">
+      <div><img src="../assets/img/ch3/a/franka.jpg" alt="A white robot arm with seven joints on a table at a trade fair; a man holds its wrist." width="480" height="360" loading="lazy"><span>an arm by Franka Emika</span></div>
+      <div><img src="../assets/img/ch3/a/spacemouse.jpg" alt="A hand rests on a 3D mouse, a black cap on a round silver base." width="480" height="360" loading="lazy"><span>a 3Dconnexion 3D mouse</span></div>
+    </figure>
+    <p>LIBERO's arm is robosuite's model of the Panda, an arm designed by Franka Emika. The left photo shows an arm from the same maker at a trade fair in 2017. The paper says the demonstrations were steered with a 3Dconnexion SpaceMouse, and the right photo shows another 3D mouse from that maker.</p>
+    <p>Pushing the cap moves the robot's hand, twisting it turns the hand, and holding a button closes the gripper. Those are the seven numbers of an <button class="term" data-term="action">action</button>: three to move, three to turn, one for the gripper.</p>
+    <p class="a-src">Photos: "Franka Emika2" by Ims, CC BY-SA 4.0; "3Dconnexion with hand…" by Jiří Sedláček, CC BY-SA 3.0; Wikimedia Commons, cropped. Controls: robosuite's devices/spacemouse.py, read 2026-11-14.</p>
+  </aside>
+  </div>
+</div>
+
+<figure class="fig a-col">
+  <svg class="dg a-wide" viewBox="0 0 688 322" role="img" aria-labelledby="astkt astkd"><title id="astkt">Who does what when a LIBERO task runs</title><desc id="astkd">Three stacked layers inside a dashed box labelled the simulation. Top, LIBERO: the scenes and objects, 130 task files, stored starting tables and the check for success. Middle, robosuite: the Panda arm and its controller, the cameras, and the step that applies one action. Bottom, MuJoCo: the physics. Outside the box, the model pi05_libero gets two pictures from the simulation and the sentence, and sends actions back.</desc><defs><pattern id="astk-dots" width="16" height="16" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1" fill="#D7CFB6" opacity=".65"/></pattern></defs><rect class="bg" width="688" height="322"/><rect x="4" y="4" width="680" height="314" fill="url(#astk-dots)"/><defs><marker id="astk-gold" viewBox="0 0 12 12" refX="8" refY="6" markerWidth="3" markerHeight="3" orient="auto"><path d="M0 0L12 6 0 12z" fill="#FBD45B"/></marker><marker id="astk-green" viewBox="0 0 12 12" refX="8" refY="6" markerWidth="3.4" markerHeight="3.4" orient="auto"><path d="M0 0L12 6 0 12z" fill="#9BBC6C"/></marker></defs><rect x="14" y="22" width="410" height="290" rx="20" fill="none" stroke="#AAA184" stroke-width="1.5" stroke-dasharray="6 6"/><rect x="32" y="13" width="138" height="18" fill="#F5F4EF"/><text class="tiny" style="font-weight:700;fill:#29271F;font-size:11.5px" x="38" y="26">THE SIMULATION</text><rect class="box" x="30" y="40" width="378" height="82" rx="12"/><text class="lbl" x="46" y="70">LIBERO</text><text class="sub" x="152" y="70">the scenes and objects,</text><text class="sub" x="152" y="88">130 task files, stored starting</text><text class="sub" x="152" y="106">tables, the check for success</text><rect class="box" x="30" y="130" width="378" height="82" rx="12"/><text class="lbl" x="46" y="160">ROBOSUITE</text><text class="sub" x="152" y="160">the Panda arm and its controller,</text><text class="sub" x="152" y="178">the cameras, and the step that</text><text class="sub" x="152" y="196">applies one action</text><rect class="box" x="30" y="220" width="378" height="82" rx="12"/><text class="lbl" x="46" y="250">MUJOCO</text><text class="sub" x="152" y="250">the physics: gravity, contact,</text><text class="sub" x="152" y="268">joints, worked out in very small</text><text class="sub" x="152" y="286">time steps</text><rect class="wcard" x="528" y="34" width="132" height="40" rx="12"/><text class="lbl-s" x="594" y="59" text-anchor="middle">THE SENTENCE</text><path class="flow" style="stroke-width:6" d="M594 76V100" marker-end="url(#astk-gold)"/><rect class="hot" x="512" y="108" width="164" height="92" rx="14"/><text class="lbl" x="594" y="146" text-anchor="middle">pi05_libero</text><text class="sub" x="594" y="168" text-anchor="middle">the model</text><path class="flow" style="stroke-width:6" d="M426 136H500" marker-end="url(#astk-gold)"/><text class="tiny" x="466" y="124" text-anchor="middle">2 pictures</text><path class="loop" style="stroke-width:6" d="M510 172H438" marker-end="url(#astk-green)"/><text class="tiny" x="470" y="194" text-anchor="middle">actions</text></svg>
+  <svg class="dg a-narrow" viewBox="0 0 360 512" role="img" aria-label="Who does what when a LIBERO task runs. The model pi05_libero gets the sentence and two pictures from the simulation and sends actions back. The simulation is three stacked layers: LIBERO, with the scenes and objects, 130 task files, starting tables and the check for success; robosuite, with the Panda arm and its controller, the cameras and one action per step; MuJoCo, the physics."><defs><pattern id="astkn-dots" width="16" height="16" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1" fill="#D7CFB6" opacity=".65"/></pattern></defs><rect class="bg" width="360" height="512"/><rect x="4" y="4" width="352" height="504" fill="url(#astkn-dots)"/><defs><marker id="astkn-gold" viewBox="0 0 12 12" refX="8" refY="6" markerWidth="3" markerHeight="3" orient="auto"><path d="M0 0L12 6 0 12z" fill="#FBD45B"/></marker><marker id="astkn-green" viewBox="0 0 12 12" refX="8" refY="6" markerWidth="3.4" markerHeight="3.4" orient="auto"><path d="M0 0L12 6 0 12z" fill="#9BBC6C"/></marker></defs><rect class="wcard" x="114" y="12" width="132" height="36" rx="12"/><text class="lbl-s" x="180" y="35" text-anchor="middle">THE SENTENCE</text><path class="flow" style="stroke-width:6" d="M180 50V66" marker-end="url(#astkn-gold)"/><rect class="hot" x="96" y="74" width="168" height="62" rx="14"/><text class="lbl" x="180" y="102" text-anchor="middle">pi05_libero</text><text class="sub" x="180" y="122" text-anchor="middle">the model</text><path class="loop" style="stroke-width:6" d="M146 138V178" marker-end="url(#astkn-green)"/><text class="sub" x="136" y="164" text-anchor="end">actions</text><path class="flow" style="stroke-width:6" d="M214 186V146" marker-end="url(#astkn-gold)"/><text class="sub" x="224" y="164">2 pictures</text><rect x="8" y="194" width="344" height="306" rx="18" fill="none" stroke="#AAA184" stroke-width="1.5" stroke-dasharray="6 6"/><rect x="24" y="185" width="126" height="18" fill="#F5F4EF"/><text class="tiny" style="font-weight:700;fill:#29271F;font-size:11px" x="30" y="198">THE SIMULATION</text><rect class="box" x="22" y="212" width="316" height="84" rx="12"/><text class="lbl" x="38" y="238">LIBERO</text><text class="sub" x="38" y="262">the scenes and objects, 130 task files,</text><text class="sub" x="38" y="280">starting tables, the check for success</text><rect class="box" x="22" y="306" width="316" height="84" rx="12"/><text class="lbl" x="38" y="332">ROBOSUITE</text><text class="sub" x="38" y="356">the Panda arm and its controller,</text><text class="sub" x="38" y="374">the cameras, one action per step</text><rect class="box" x="22" y="400" width="316" height="84" rx="12"/><text class="lbl" x="38" y="426">MUJOCO</text><text class="sub" x="38" y="450">the physics: gravity, contact, joints,</text><text class="sub" x="38" y="468">worked out in very small time steps</text></svg>
+  <figcaption><b>Figure 3.3 · Who does what when a LIBERO task runs.</b> Each layer is built on the one below it. The model sits outside the simulation, and <button class="term" data-term="openpi">openpi</button>'s evaluation script carries the pictures up to it and its actions back down (the next section follows that loop). <span class="credit">Our reading of LIBERO's code (libero/libero/envs, bddl_files, init_files), robosuite 1.4.1 (environments/base.py, robot_env.py, models/robots) and openpi's examples/libero/main.py, 2026-11-14.</span></figcaption>
+</figure>
+
+<div class="prose">
+  <p><code>pi05_libero</code>'s training data doesn't hold all 50 recordings of every task. It holds 1,693 for its 40 tasks (chapter 2). Before openpi trained on them, the <button class="term" data-term="openvla">OpenVLA</button> team replayed every recording in the simulator to save its pictures at 256 × 256 pixels instead of 128 × 128. They cut out the steps where the person held the mouse still, and they kept only the replays that still ended in success. By our count of the dataset, that left between 29 and 50 recordings per task.</p>
+
+  <div class="has-side">
+  <p>The four ten-task suites differ in what stays the same from one task to the next.</p>
   <div class="tbl-wrap">
   <table class="tbl">
     <thead><tr><th>Suite</th><th>What stays the same</th><th>What changes between tasks</th><th>Example instruction</th></tr></thead>
     <tbody>
-      <tr><td data-l="Suite">LIBERO-Spatial</td><td data-l="What stays the same">the objects (two identical black bowls, a plate, a ramekin and others)</td><td data-l="What changes between tasks">where they are placed, and which bowl is meant</td><td data-l="Example instruction"><span class="q">pick up the black bowl between the plate and the ramekin and place it on the plate</span></td></tr>
-      <tr><td data-l="Suite">LIBERO-Object</td><td data-l="What stays the same">the basket and the task type</td><td data-l="What changes between tasks">which grocery item to pick, and the items on the floor</td><td data-l="Example instruction"><span class="q">pick up the alphabet soup and place it in the basket</span></td></tr>
+      <tr><td data-l="Suite">LIBERO-Spatial</td><td data-l="What stays the same">a plate, a <button class="term" data-term="ramekin">ramekin</button>, a cookie box, a stove and a cabinet, each in its place</td><td data-l="What changes between tasks">where two identical black bowls stand, and which of them is meant</td><td data-l="Example instruction"><span class="q">pick up the black bowl between the plate and the ramekin and place it on the plate</span></td></tr>
+      <tr><td data-l="Suite">LIBERO-Object</td><td data-l="What stays the same">the basket in its place, and the job: pick up one grocery item and put it in the basket</td><td data-l="What changes between tasks">which item to pick, and the other items on the floor around it</td><td data-l="Example instruction"><span class="q">pick up the alphabet soup and place it in the basket</span></td></tr>
       <tr><td data-l="Suite">LIBERO-Goal</td><td data-l="What stays the same">the scene, the objects and their positions</td><td data-l="What changes between tasks">the goal</td><td data-l="Example instruction"><span class="q">put the wine bottle on top of the cabinet</span></td></tr>
-      <tr><td data-l="Suite">LIBERO-10<br><small>also called LIBERO-Long</small></td><td data-l="What stays the same">nothing in particular</td><td data-l="What changes between tasks">scene and goal; each task has two steps</td><td data-l="Example instruction"><span class="q">put both the alphabet soup and the tomato sauce in the basket</span></td></tr>
+      <tr><td data-l="Suite">LIBERO-10<br><small>also called LIBERO-Long</small></td><td data-l="What stays the same">nothing; its ten tasks use nine scenes in kitchens, living rooms and a study</td><td data-l="What changes between tasks">the scene and the goal; nine of the ten sentences ask for two things</td><td data-l="Example instruction"><span class="q">turn on the stove and put the <button class="term" data-term="moka-pot">moka pot</button> on it</span></td></tr>
     </tbody>
   </table>
   </div>
-  <p>Figure 3.2 shows the four suites in the pictures LIBERO's own paper uses for them.</p>
-</div>
-
-<figure class="fig">
-  <div class="quad">
-    <div class="col">
-      <div class="panel"><div class="label">LIBERO-Spatial · <span>the ten starting tables</span></div><img src="../assets/img/ch3/paper-libero-spatial.jpg" alt="Ten views of the same table with a plate, a ramekin, a cookie box and a cabinet. In each, the two black bowls sit somewhere else: in the open top drawer, on the cookie box, next to the plate." width="1137" height="456" loading="lazy"></div>
-      <div class="panel"><div class="label">LIBERO-Object · <span>each task finished</span></div><img src="../assets/img/ch3/paper-libero-object.jpg" alt="Ten views of a wooden floor with a woven basket and a different set of groceries in each: milk, ketchup, sauces, cans and boxes. In several the robot arm is over the basket." width="1137" height="456" loading="lazy"></div>
-      <div class="panel"><div class="label">LIBERO-Goal · <span>each task finished</span></div><img src="../assets/img/libero-goal.jpg" alt="Ten views of the same table with a cabinet, a stove, a wine bottle, a bowl, a plate and a cream cheese box. In each the arm has done something different: opened a drawer, turned on the stove, moved the bottle." width="1137" height="455" loading="lazy"></div>
-    </div>
-    <div class="panel"><div class="label">LIBERO-100 · <span>90 + 10 tasks, each finished</span></div><img src="../assets/img/ch3/paper-libero-100.jpg" alt="A grid of one hundred small views: light kitchen tables, dark living-room tables with baskets and mugs, and a study desk with a caddy and books." width="1137" height="1138" loading="lazy"></div>
+  <aside class="side" aria-label="Side note: what the suites were built for">
+    <div class="label">What the suites were built for</div>
+    <p>LIBERO was made to study <button class="term" data-term="lifelong-learning">lifelong learning</button>, a robot that keeps learning new tasks one after another and carries what it knows from one task to the next. The paper says each ten-task suite tests whether one kind of knowledge carries over: where things are, which objects, or what the goal is.</p>
+    <p>VLA papers use the suites differently. OpenVLA's team trained one model per suite and openpi one on all four, and both report how often the model succeeds.</p>
+    <p class="a-src">Liu et al. 2023, Figure 1; OpenVLA and openpi READMEs, read 2026-11-14.</p>
+  </aside>
   </div>
-  <figcaption><b>Figure 3.2 · The four suites, as the LIBERO paper shows them.</b> In Spatial the objects stay and the two bowls move. In Object the basket stays and the groceries change. In Goal the whole table stays, and each picture is a different task done on it. LIBERO-100 mixes kitchens, living rooms and a study. LIBERO-10 is ten of its tasks, and the paper doesn't mark which tiles those are. The paper shows Spatial's starting tables and every other task at its end (its appendix C.1), with left and right the way the paper draws them. <span class="credit">Images: Liu et al. 2023, LIBERO, Figures 8 to 11, CC BY 4.0.</span></figcaption>
+
+  <div class="has-side">
+  <p>Figure 3.4 shows one task from each suite in the first picture the model gets, with the objects named in its sentence marked. These pictures are mirror images, like the clip at the top of the chapter. The cabinets stand at the right of the table here, while LIBERO's paper shows them at the left. Every picture in <code>pi05_libero</code>'s LIBERO training data was flipped this way, and so is every picture it gets in a test.</p>
+  <aside class="side" aria-label="Side note: why the pictures are mirrored">
+    <div class="label">Why the pictures are mirrored</div>
+    <figure class="side-pic a-three">
+      <div><img src="../assets/img/ch3/a/mirror-sim.jpg" alt="The Goal table upside down: the robot hangs at the bottom." width="256" height="256" loading="lazy"><span>1 · from robosuite</span></div>
+      <div><img src="../assets/img/ch3/a/mirror-camera.jpg" alt="The Goal table the right way up, with the cabinet at the left." width="256" height="256" loading="lazy"><span>2 · the camera's view</span></div>
+      <div><img src="../assets/img/ch3/a/mirror-model.jpg" alt="The Goal table the right way up, with the cabinet at the right." width="256" height="256" loading="lazy"><span>3 · what the model gets</span></div>
+    </figure>
+    <p>robosuite hands back each camera picture upside down (1), because a setting in it keeps the rows in the order the renderer writes them, bottom row first. Flipped top to bottom, it shows the camera's view, which is what LIBERO's paper prints (2).</p>
+    <p>openpi turns each picture half a turn instead (3), because the training pictures got the same half turn. Half a turn flips a picture top to bottom and left to right. The first flip undoes the upside-down picture, and the second is left over as a mirror image.</p>
+    <figure class="side-pic two">
+      <div><img src="../assets/img/ch3/a/milk-model.jpg" alt="A red carton seen from the robot's hand; its white label reads like the word Milk in a mirror." width="152" height="114" loading="lazy"><span>in a training picture</span></div>
+      <div><img src="../assets/img/ch3/a/milk-flipped.jpg" alt="The same carton flipped top to bottom; the label reads Milk." width="152" height="114" loading="lazy"><span>flipped once</span></div>
+      <figcaption>Writing reads backwards in a mirror image, never in a turned one.</figcaption>
+    </figure>
+    <p>Words for sides go through the flip too. In a recording of <span class="q">put the chocolate pudding to the right of the plate</span>, the pudding ends up left of the plate in the model's picture.</p>
+    <p class="a-src">robosuite 1.4.1 macros.py (IMAGE_CONVENTION = "opengl") and robot_env.py; OpenVLA's LIBERO notes and moojink/rlds_dataset_builder; openpi's main.py. Our reading, 2026-11-14. Pictures: physical-intelligence/libero, CC BY 4.0, episodes 379, 851 and 1.</p>
+  </aside>
+  </div>
+</div>
+
+<figure class="fig a-col">
+  <div class="a-tiles"><figure class="a-tile"><div class="label">LIBERO-Spatial</div><svg viewBox="0 0 224 224" role="img" aria-label="The first picture of a LIBERO-Spatial task. At the left of the table stand two identical black bowls and a ramekin, with a plate in front of them. The bowl to take is the one between the plate and the ramekin."><image href="../assets/img/ch3/first/spatial-t00.jpg" width="224" height="224"/><line class="a-ldr" x1="84" y1="132" x2="57" y2="130"/><circle class="a-dot" cx="57" cy="130" r="3"/><g class="a-tag"><rect x="84" y="126" width="57.1" height="13" rx="3"/><text x="88" y="135.6">this bowl</text></g><line class="a-ldr" x1="30" y1="95" x2="31" y2="108"/><circle class="a-dot" cx="31" cy="108" r="3"/><g class="a-tag"><rect x="4" y="82" width="84.3" height="13" rx="3"/><text x="8" y="91.6">identical bowl</text></g><line class="a-ldr" x1="84" y1="106" x2="66" y2="108"/><circle class="a-dot" cx="66" cy="108" r="3"/><g class="a-tag"><rect x="84" y="100" width="46.1" height="13" rx="3"/><text x="88" y="109.6">ramekin</text></g><line class="a-ldr" x1="30" y1="186" x2="46" y2="166"/><circle class="a-dot" cx="46" cy="166" r="3"/><g class="a-tag"><rect x="12" y="186" width="35.2" height="13" rx="3"/><text x="16" y="195.6">plate</text></g></svg><p>pick up the black bowl between the plate and the ramekin and place it on the plate</p></figure><figure class="a-tile"><div class="label">LIBERO-Object</div><svg viewBox="0 0 224 224" role="img" aria-label="The first picture of a LIBERO-Object task: a woven basket on a wooden floor at the left and six grocery items in the middle and at the right. The alphabet soup is the can at the back right."><image href="../assets/img/ch3/first/object-t00.jpg" width="224" height="224"/><line class="a-ldr" x1="172" y1="87" x2="167" y2="99"/><circle class="a-dot" cx="167" cy="99" r="3"/><g class="a-tag"><rect x="140" y="74" width="78.9" height="13" rx="3"/><text x="144" y="83.6">alphabet soup</text></g><line class="a-ldr" x1="38" y1="93" x2="44" y2="98"/><circle class="a-dot" cx="44" cy="98" r="3"/><g class="a-tag"><rect x="20" y="80" width="40.7" height="13" rx="3"/><text x="24" y="89.6">basket</text></g></svg><p>pick up the alphabet soup and place it in the basket</p></figure><figure class="a-tile"><div class="label">LIBERO-Goal</div><svg viewBox="0 0 224 224" role="img" aria-label="The first picture of a LIBERO-Goal task: the Goal table with a stove at the left, a wine bottle and a bowl in the middle, a plate in front and a dark cabinet at the right."><image href="../assets/img/ch3/first/goal-t02.jpg" width="224" height="224"/><line class="a-ldr" x1="110" y1="77" x2="121" y2="92"/><circle class="a-dot" cx="121" cy="92" r="3"/><g class="a-tag"><rect x="64" y="64" width="68.0" height="13" rx="3"/><text x="68" y="73.6">wine bottle</text></g><line class="a-ldr" x1="182" y1="196" x2="196" y2="172"/><circle class="a-dot" cx="196" cy="172" r="3"/><g class="a-tag"><rect x="150" y="196" width="46.1" height="13" rx="3"/><text x="154" y="205.6">cabinet</text></g></svg><p>put the wine bottle on top of the cabinet</p></figure><figure class="a-tile"><div class="label">LIBERO-10</div><svg viewBox="0 0 224 224" role="img" aria-label="The first picture of a LIBERO-10 task in a kitchen: a stove at the left, a moka pot in the middle and a frying pan at the right."><image href="../assets/img/ch3/first/ten-t02.jpg" width="224" height="224"/><line class="a-ldr" x1="46" y1="176" x2="52" y2="152"/><circle class="a-dot" cx="52" cy="152" r="3"/><g class="a-tag"><rect x="30" y="176" width="35.2" height="13" rx="3"/><text x="34" y="185.6">stove</text></g><line class="a-ldr" x1="114" y1="182" x2="112" y2="158"/><circle class="a-dot" cx="112" cy="158" r="3"/><g class="a-tag"><rect x="92" y="182" width="51.6" height="13" rx="3"/><text x="96" y="191.6">moka pot</text></g></svg><p>turn on the stove and put the moka pot on it</p></figure></div>
+  <figcaption><b>Figure 3.4 · One task from each suite, as the model sees it at the start.</b> Each picture is the table camera's first picture at the model's size of 224 pixels, mirrored like every picture the model gets. The marks point at the objects the sentence names. <span class="credit">Rendered by us from each task's stored starting state 0 with openpi's settings (tools/ch3/render_first_frames.py, 2026-11-13); objects found by our reading of each task file, 2026-11-14.</span></figcaption>
 </figure>
 
-<div class="prose">
-  <p>There is also LIBERO-90, the other ninety tasks of LIBERO-100. They are shorter and share kitchen, living-room and study scenes. Several of them use the same scene, which makes LIBERO-90 a possible source of training data where the words matter (chapter 6).</p>
+<section class="rail" aria-label="Go deeper: LIBERO's own pictures of its suites">
+  <div class="rail-head">
+    <div><div class="label">Go deeper</div><p class="rail-title">LIBERO's own pictures of its suites, the camera's way round</p></div>
+    <div class="rail-nav"><button class="rail-prev" type="button" aria-label="Previous">←</button><button class="rail-next" type="button" aria-label="Next">→</button></div>
+  </div>
+  <div class="rail-track">
+    <article class="card">
+      <a class="media pic" href="../assets/img/ch3/paper-libero-spatial.jpg"><img src="../assets/img/ch3/paper-libero-spatial.jpg" alt="Ten views of one table with a plate, a ramekin, a cookie box and a cabinet; in each, the two black bowls stand somewhere else." width="1137" height="456" loading="lazy"></a>
+      <div class="body"><span class="tag">LIBERO-Spatial</span><h4>The ten tasks at their start</h4><p>The paper shows this suite's starting tables, because every task here ends the same way, with a bowl on the plate.</p><p class="src">Liu et al. 2023, Figure 8, CC BY 4.0</p></div>
+    </article>
+    <article class="card">
+      <a class="media pic" href="../assets/img/ch3/paper-libero-object.jpg"><img src="../assets/img/ch3/paper-libero-object.jpg" alt="Ten views of a wooden floor with a woven basket and a different set of groceries in each; in several the arm is over the basket." width="1137" height="456" loading="lazy"></a>
+      <div class="body"><span class="tag">LIBERO-Object</span><h4>The ten tasks finished</h4><p>Each picture is the end of one task, with the named item in the basket.</p><p class="src">Liu et al. 2023, Figure 9, CC BY 4.0</p></div>
+    </article>
+    <article class="card">
+      <a class="media pic" href="../assets/img/libero-goal.jpg"><img src="../assets/img/libero-goal.jpg" alt="Ten views of the Goal table; in each the arm has done something different: opened a drawer, turned on the stove, moved the bottle." width="1137" height="455" loading="lazy"></a>
+      <div class="body"><span class="tag">LIBERO-Goal</span><h4>One table, ten endings</h4><p>The same table as figure 3.1, the camera's way round, with each of the ten tasks done.</p><p class="src">Liu et al. 2023, Figure 10, CC BY 4.0</p></div>
+    </article>
+    <article class="card">
+      <a class="media pic" href="../assets/img/ch3/paper-libero-100.jpg"><img src="../assets/img/ch3/paper-libero-100.jpg" alt="A grid of one hundred small views: light kitchen tables, dark living-room tables with baskets and mugs, and a study desk." width="1137" height="1138" loading="lazy"></a>
+      <div class="body"><span class="tag">LIBERO-100</span><h4>All hundred, finished</h4><p>LIBERO-90 and LIBERO-10 together. The paper doesn't mark which ten tiles are LIBERO-10.</p><p class="src">Liu et al. 2023, Figure 11, CC BY 4.0</p></div>
+    </article>
+  </div>
+</section>
 
+<div class="prose">
+  <div class="has-side">
+  <p>LIBERO-90 holds the other ninety tasks of LIBERO-100. The paper describes them as short tasks and LIBERO-10's as long ones. By our count of the task files, LIBERO-90's tasks start from just 20 tables in kitchens, living rooms and studies, with between 2 and 7 tasks starting from the same arrangement on each table. On those tables, as in LIBERO-Goal, only the sentence says which task to do.</p>
+  <p><code>pi05_libero</code> never trained on LIBERO-90. Using LIBERO-90, or data like it, to train a model that has to read the words is one of the options listed in <a href="https://github.com/blueif16/vla_final/blob/main/docs/learn/06-where-we-stand.md">chapter 6</a>, and nothing about it has been decided.</p>
+  <aside class="side" aria-label="Side note: LIBERO-90's twenty starting tables">
+    <div class="label">LIBERO-90's 20 tables</div>
+    <svg class="side-dg" viewBox="0 0 260 122" role="img" aria-label="LIBERO-90's 20 starting tables as columns of dots, one dot per task. Ten kitchens with 5, 7, 4, 6, 5, 2, 3, 2, 6 and 6 tasks; six living rooms with 4, 5, 5, 5, 4 and 4; four studies with 4, 4, 5 and 4."><circle cx="8" cy="76" r="3.8" fill="#AAA184"/><circle cx="8" cy="66" r="3.8" fill="#AAA184"/><circle cx="8" cy="56" r="3.8" fill="#AAA184"/><circle cx="8" cy="46" r="3.8" fill="#AAA184"/><circle cx="8" cy="36" r="3.8" fill="#AAA184"/><circle cx="19" cy="76" r="3.8" fill="#AAA184"/><circle cx="19" cy="66" r="3.8" fill="#AAA184"/><circle cx="19" cy="56" r="3.8" fill="#AAA184"/><circle cx="19" cy="46" r="3.8" fill="#AAA184"/><circle cx="19" cy="36" r="3.8" fill="#AAA184"/><circle cx="19" cy="26" r="3.8" fill="#AAA184"/><circle cx="19" cy="16" r="3.8" fill="#AAA184"/><circle cx="30" cy="76" r="3.8" fill="#AAA184"/><circle cx="30" cy="66" r="3.8" fill="#AAA184"/><circle cx="30" cy="56" r="3.8" fill="#AAA184"/><circle cx="30" cy="46" r="3.8" fill="#AAA184"/><circle cx="41" cy="76" r="3.8" fill="#AAA184"/><circle cx="41" cy="66" r="3.8" fill="#AAA184"/><circle cx="41" cy="56" r="3.8" fill="#AAA184"/><circle cx="41" cy="46" r="3.8" fill="#AAA184"/><circle cx="41" cy="36" r="3.8" fill="#AAA184"/><circle cx="41" cy="26" r="3.8" fill="#AAA184"/><circle cx="52" cy="76" r="3.8" fill="#AAA184"/><circle cx="52" cy="66" r="3.8" fill="#AAA184"/><circle cx="52" cy="56" r="3.8" fill="#AAA184"/><circle cx="52" cy="46" r="3.8" fill="#AAA184"/><circle cx="52" cy="36" r="3.8" fill="#AAA184"/><circle cx="63" cy="76" r="3.8" fill="#AAA184"/><circle cx="63" cy="66" r="3.8" fill="#AAA184"/><circle cx="74" cy="76" r="3.8" fill="#AAA184"/><circle cx="74" cy="66" r="3.8" fill="#AAA184"/><circle cx="74" cy="56" r="3.8" fill="#AAA184"/><circle cx="85" cy="76" r="3.8" fill="#AAA184"/><circle cx="85" cy="66" r="3.8" fill="#AAA184"/><circle cx="96" cy="76" r="3.8" fill="#AAA184"/><circle cx="96" cy="66" r="3.8" fill="#AAA184"/><circle cx="96" cy="56" r="3.8" fill="#AAA184"/><circle cx="96" cy="46" r="3.8" fill="#AAA184"/><circle cx="96" cy="36" r="3.8" fill="#AAA184"/><circle cx="96" cy="26" r="3.8" fill="#AAA184"/><circle cx="107" cy="76" r="3.8" fill="#AAA184"/><circle cx="107" cy="66" r="3.8" fill="#AAA184"/><circle cx="107" cy="56" r="3.8" fill="#AAA184"/><circle cx="107" cy="46" r="3.8" fill="#AAA184"/><circle cx="107" cy="36" r="3.8" fill="#AAA184"/><circle cx="107" cy="26" r="3.8" fill="#AAA184"/><text class="t11 b" x="57.5" y="98" text-anchor="middle">kitchens</text><text class="t11 g2" x="57.5" y="113" text-anchor="middle">10 tables</text><circle cx="130" cy="76" r="3.8" fill="#AAA184"/><circle cx="130" cy="66" r="3.8" fill="#AAA184"/><circle cx="130" cy="56" r="3.8" fill="#AAA184"/><circle cx="130" cy="46" r="3.8" fill="#AAA184"/><circle cx="141" cy="76" r="3.8" fill="#AAA184"/><circle cx="141" cy="66" r="3.8" fill="#AAA184"/><circle cx="141" cy="56" r="3.8" fill="#AAA184"/><circle cx="141" cy="46" r="3.8" fill="#AAA184"/><circle cx="141" cy="36" r="3.8" fill="#AAA184"/><circle cx="152" cy="76" r="3.8" fill="#AAA184"/><circle cx="152" cy="66" r="3.8" fill="#AAA184"/><circle cx="152" cy="56" r="3.8" fill="#AAA184"/><circle cx="152" cy="46" r="3.8" fill="#AAA184"/><circle cx="152" cy="36" r="3.8" fill="#AAA184"/><circle cx="163" cy="76" r="3.8" fill="#AAA184"/><circle cx="163" cy="66" r="3.8" fill="#AAA184"/><circle cx="163" cy="56" r="3.8" fill="#AAA184"/><circle cx="163" cy="46" r="3.8" fill="#AAA184"/><circle cx="163" cy="36" r="3.8" fill="#AAA184"/><circle cx="174" cy="76" r="3.8" fill="#AAA184"/><circle cx="174" cy="66" r="3.8" fill="#AAA184"/><circle cx="174" cy="56" r="3.8" fill="#AAA184"/><circle cx="174" cy="46" r="3.8" fill="#AAA184"/><circle cx="185" cy="76" r="3.8" fill="#AAA184"/><circle cx="185" cy="66" r="3.8" fill="#AAA184"/><circle cx="185" cy="56" r="3.8" fill="#AAA184"/><circle cx="185" cy="46" r="3.8" fill="#AAA184"/><text class="t11 b" x="157.5" y="98" text-anchor="middle">living rooms</text><text class="t11 g2" x="157.5" y="113" text-anchor="middle">6 tables</text><circle cx="212" cy="76" r="3.8" fill="#AAA184"/><circle cx="212" cy="66" r="3.8" fill="#AAA184"/><circle cx="212" cy="56" r="3.8" fill="#AAA184"/><circle cx="212" cy="46" r="3.8" fill="#AAA184"/><circle cx="223" cy="76" r="3.8" fill="#AAA184"/><circle cx="223" cy="66" r="3.8" fill="#AAA184"/><circle cx="223" cy="56" r="3.8" fill="#AAA184"/><circle cx="223" cy="46" r="3.8" fill="#AAA184"/><circle cx="234" cy="76" r="3.8" fill="#AAA184"/><circle cx="234" cy="66" r="3.8" fill="#AAA184"/><circle cx="234" cy="56" r="3.8" fill="#AAA184"/><circle cx="234" cy="46" r="3.8" fill="#AAA184"/><circle cx="234" cy="36" r="3.8" fill="#AAA184"/><circle cx="245" cy="76" r="3.8" fill="#AAA184"/><circle cx="245" cy="66" r="3.8" fill="#AAA184"/><circle cx="245" cy="56" r="3.8" fill="#AAA184"/><circle cx="245" cy="46" r="3.8" fill="#AAA184"/><text class="t11 b" x="228.5" y="98" text-anchor="middle">studies</text><text class="t11 g2" x="228.5" y="113" text-anchor="middle">4 tables</text></svg>
+    <p>Each column is one starting table, and each dot a task that starts from it.</p>
+    <p class="a-src">Our comparison of LIBERO-90's task files, 2026-11-14.</p>
+  </aside>
+  </div>
+</div>
+<div class="prose">
   <h2 id="evaluation">How a standard evaluation runs</h2>
-  <p>Each task is written down in one text file, its <button class="term" data-term="bddl">task file</button>. The file names the objects, gives each one a small region of the table to start in, and states the goal as a <button class="term" data-term="goal-condition">goal condition</button> the simulator can check, such as "the bowl is on the plate". Figure 3.3 is the paper's drawing of one such file.</p>
+  <div class="has-side">
+  <p>This section follows one task from its file to its score. It's the task from our chapter 2 run, LIBERO-Spatial's <span class="q">pick up the black bowl between the plate and the ramekin and place it on the plate</span>.</p>
+  <p>Each LIBERO task is written down in one text file, its <button class="term" data-term="bddl">task file</button>. The file lists the objects on the table and gives each one a small square of the table to start in. It also states the goal as a <button class="term" data-term="goal-condition">goal condition</button> the simulator can check, which for our task is that the bowl is on the plate. Figure 3.5 shows the real file, cut to those parts, next to the first picture the model got and a map of the squares drawn to scale.</p>
+  <p>The squares are small. Each one is 2 cm on a side, on a table 1.2 m wide, so the file leaves an object very little room to move from one start to the next. The sentence the model gets doesn't come from inside the file. LIBERO's code makes it from the file's name, by turning the underscores into spaces.</p>
+  <aside class="side" aria-label="Side note: why the paper says .pddl and the code says .bddl">
+    <div class="label">PDDL or BDDL?</div>
+    <figure class="side-pic"><a href="../assets/img/ch3/paper-libero-fig2.jpg"><img src="../assets/img/ch3/b/paper-fig2-file.jpg" alt="The LIBERO paper's drawing of a task file in three coloured boxes: the objects and regions, the starting configuration, and the goal, with the start and goal pictures of that task beside them." width="640" height="390" loading="lazy"></a><figcaption>The paper's drawing of another task's file. Liu et al. 2023, Figure 2, cropped, CC BY 4.0.</figcaption></figure>
+    <p>The paper calls these files <code>*.pddl</code>, after PDDL, the language AI planning programs read. In the code they end in <code>.bddl</code>, for the Behavior Domain Definition Language from Stanford's BEHAVIOR benchmark, which borrows PDDL's ideas.</p>
+  </aside>
+  </div>
 </div>
 
 <figure class="fig">
-  <div class="pan"><div class="frame paper wideimg"><img src="../assets/img/ch3/paper-libero-fig2.jpg" alt="The LIBERO paper's drawing of one task file. Box A lists the objects (a black bowl, a plate, a kitchen table, a wooden cabinet) and a bowl region on the table. Box B, the initial configuration, puts the cabinet, the plate and the bowl in their regions. Box C, the goal, reads: the cabinet's top drawer is open, and the bowl is in the top drawer. On the right, a picture of the starting table with the regions outlined, and a picture of the goal, the bowl in the open drawer." width="1600" height="616" loading="lazy"></div></div>
-  <figcaption><b>Figure 3.3 · A LIBERO task is a file.</b> Box A lists the objects and the regions where they may be placed, box B says which object starts in which region, and box C is the goal: the top drawer is open and the bowl is in it, both at once. The two pictures on the right are this task's start and its goal. The left half shows how LIBERO wrote its instructions from templates of everyday human activities, which this chapter doesn't need. The drawing calls the file *.pddl; in LIBERO's code these files end in .bddl. <span class="credit">Image: Liu et al. 2023, LIBERO, Figure 2, CC BY 4.0.</span></figcaption>
+  <div class="b-tf">
+    <div class="b-file">
+      <div class="b-fn">pick_up_the_black_bowl_between_the_plate_and_the_ramekin_and_place_it_on_the_plate.bddl<small>The file's name, with its underscores turned into spaces, is the sentence the model gets.</small></div>
+      <div class="b-blk">
+<pre>(:fixtures
+  main_table - table
+  wooden_cabinet_1 - wooden_cabinet
+  flat_stove_1 - flat_stove
+)
+(:objects
+  akita_black_bowl_1 akita_black_bowl_2 - akita_black_bowl
+  cookies_1 - cookies
+  glazed_rim_porcelain_ramekin_1 - glazed_rim_porcelain_ramekin
+  plate_1 - plate
+)</pre>
+        <div class="b-nt"><div class="label">What's on the table</div><p>Fixtures stay where they're put: the table, a cabinet with three drawers and a stove. The five objects can be moved: two identical black bowls, a cookie box, a ramekin (a small cup) and a plate. Each gets a name, and its kind follows the dash.</p></div>
+      </div>
+      <div class="b-blk">
+<pre>(:regions
+  (plate_region (:target main_table)
+    (:ranges ((0.05 0.19 0.07 0.21))))
+  (between_plate_ramekin_region (:target main_table)
+    (:ranges ((-0.06 0.19 -0.04 0.21))))
+  (cabinet_region (:target main_table)
+    (:ranges ((0.02 -0.28 0.04 -0.26)))
+    (:yaw_rotation ((2.6613777765410678 2.7242096296128633))))
+  <span class="c">… 13 more regions</span>
+)</pre>
+        <div class="b-nt"><div class="label">Where each thing may start</div><p>A region's four numbers are where it starts and ends along the table's two directions, in metres from the middle of the table, so each of these is a square 2 cm on a side. The cabinet's region also lets it turn, within a range 3.6 degrees wide (our conversion from radians). The file lists 16 regions and uses 7. All ten Spatial files carry this same list.</p></div>
+      </div>
+      <div class="b-blk">
+<pre>(:init
+  <span class="b-n">1</span>(On akita_black_bowl_1 main_table_between_plate_ramekin_region)
+  <span class="b-n">2</span>(On akita_black_bowl_2 main_table_next_to_ramekin_region)
+  <span class="b-n">3</span>(On plate_1 main_table_plate_region)
+  <span class="b-n">4</span>(On cookies_1 main_table_box_region)
+  <span class="b-n">5</span>(On glazed_rim_porcelain_ramekin_1 main_table_ramekin_region)
+  <span class="b-n">6</span>(On wooden_cabinet_1 main_table_cabinet_region)
+  <span class="b-n">7</span>(On flat_stove_1 main_table_stove_region)
+)</pre>
+        <div class="b-nt"><div class="label">Where each thing does start</div><p>One line per thing, naming the region it starts in. The numbers match the picture and the map below. The ten Spatial tasks differ here, in which regions the two bowls start in.</p></div>
+      </div>
+      <div class="b-blk">
+<pre>(:goal
+  (And (On akita_black_bowl_1 plate_1))
+)</pre>
+        <div class="b-nt"><div class="label">What counts as done</div><p>Bowl <span class="b-n">1</span> on the plate <span class="b-n">3</span>. All ten Spatial tasks have this same goal line.</p></div>
+      </div>
+    </div>
+    <div class="b-panel">
+      <div class="label">The first picture, starting state 0</div>
+      <div class="b-pic"><div class="b-pic-in">
+        <img src="../assets/img/ch3/states/spatial-t00-s00.jpg" alt="The first picture the model got: the arm at the back, a black bowl and the ramekin at the back left, a second black bowl just behind the plate at the front left, the cookie box at the front middle, the stove at the back right and the dark cabinet at the right." width="224" height="224" loading="lazy">
+        <span class="b-n" style="left:21%;top:53%">1</span>
+        <span class="b-n" style="left:9%;top:44%">2</span>
+        <span class="b-n" style="left:15%;top:69%">3</span>
+        <span class="b-n" style="left:42%;top:66%">4</span>
+        <span class="b-n" style="left:36%;top:46%">5</span>
+        <span class="b-n" style="left:80%;top:47%">6</span>
+        <span class="b-n" style="left:57%;top:40%">7</span>
+      </div></div>
+    </div>
+    <div class="b-panel">
+      <div class="label">The start squares from above, to scale</div>
+      <div class="b-map">
+        <svg class="dg" viewBox="0 0 320 300" role="img" aria-label="A map of the 1.2 by 1.0 metre table seen from above, robot side at the top and camera side at the bottom, laid out like the model's picture. Seven tiny squares, each 2 cm on a side, mark where things start: the ramekin, bowl 1 and the plate in a column at the left, bowl 2 further left at the back, the cookie box in the front middle, the cabinet at the right and the stove at the back right. A 10 cm scale bar is about five squares long.">
+          <defs><pattern id="b-map-dots" width="16" height="16" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1" fill="#D7CFB6" opacity=".65"/></pattern></defs>
+          <rect class="bg" width="320" height="300"/><rect width="320" height="300" fill="url(#b-map-dots)"/>
+          <text class="tiny" x="160" y="22" text-anchor="middle">ROBOT SIDE</text>
+          <rect x="22" y="34" width="276" height="230" rx="6" fill="#EEECE4" stroke="#D7CFB6" stroke-width="1.5"/>
+          <text class="sub" x="32" y="52">table, 1.2 m × 1.0 m</text>
+          <g fill="#29271F">
+            <rect x="111.7" y="135.2" width="4.6" height="4.6"/>
+            <rect x="84.1" y="105.3" width="4.6" height="4.6"/>
+            <rect x="111.7" y="160.5" width="4.6" height="4.6"/>
+            <rect x="150.8" y="162.8" width="4.6" height="4.6"/>
+            <rect x="111.7" y="100.7" width="4.6" height="4.6"/>
+            <rect x="219.8" y="153.6" width="4.6" height="4.6"/>
+            <rect x="189.9" y="52.4" width="4.6" height="4.6"/>
+          </g>
+          <g font-family="IBM Plex Mono, monospace" font-size="10.5" font-weight="600" text-anchor="middle">
+            <circle cx="128" cy="137.5" r="8" fill="#29271F"/><text x="128" y="141.3" style="fill:#F5F4EF">1</text>
+            <circle cx="72" cy="107.6" r="8" fill="#29271F"/><text x="72" y="111.4" style="fill:#F5F4EF">2</text>
+            <circle cx="128" cy="162.8" r="8" fill="#29271F"/><text x="128" y="166.6" style="fill:#F5F4EF">3</text>
+            <circle cx="167" cy="165.1" r="8" fill="#29271F"/><text x="167" y="168.9" style="fill:#F5F4EF">4</text>
+            <circle cx="128" cy="103" r="8" fill="#29271F"/><text x="128" y="106.8" style="fill:#F5F4EF">5</text>
+            <circle cx="236" cy="155.9" r="8" fill="#29271F"/><text x="236" y="159.7" style="fill:#F5F4EF">6</text>
+            <circle cx="206" cy="54.7" r="8" fill="#29271F"/><text x="206" y="58.5" style="fill:#F5F4EF">7</text>
+          </g>
+          <path d="M244 246h23" stroke="#29271F" stroke-width="2"/><path d="M244 242v8M267 242v8" stroke="#29271F" stroke-width="1.5"/>
+          <text class="sub" x="255.5" y="236" text-anchor="middle">10 cm</text>
+          <text class="tiny" x="160" y="284" text-anchor="middle">CAMERA SIDE</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+  <figcaption><b>Figure 3.5 · A task file and the table it makes.</b> The task file of our task, cut to its four parts with its line breaks tightened, beside the first picture the model got and a map of the start squares. The badges 1 to 7 tie each line of <code>(:init)</code> to its thing in the picture and its square on the map. The map is drawn from above to scale, with left and right as in the model's picture, which is mirrored (see the side note “Why the pictures are mirrored” in the first section). We read a region's four numbers as x from, y from, x to and y to, from LIBERO's code (<code>envs/utils.py</code>, <code>rectangle2xyrange</code>). The file's own <code>(:language …)</code> line, which says "Pick the akita black bowl…", is cut here because LIBERO never sends it to the model. <span class="credit">Task file: LIBERO, <code>libero/libero/bddl_files/libero_spatial/</code>, at the commit openpi pins (f78abd6), MIT licence. Picture: rendered by us from stored state 0. Map: drawn by us from the file (tools/ch3/stored_state_numbers.py). Checked 2026-11-14.</span></figcaption>
 </figure>
 
 <div class="prose">
-  <p>Each task has 50 fixed starting arrangements, its <button class="term" data-term="initial-state">starting states</button>, stored with the benchmark. LIBERO's README says they were fixed for benchmarking, so every model is tested from the same ones. <strong class="key">An evaluation runs one episode from each starting state, so a task gets 50 trials and a suite gets 500.</strong> Figure 3.4 shows all 50 for the task of our run in chapter 2.</p>
+  <p>Each task also comes with 50 fixed starting arrangements, its <button class="term" data-term="initial-state">starting states</button>. LIBERO's authors made them once, inside the task file's squares, and saved all 50 in one file per task that ships with LIBERO's code. The program that made them isn't in LIBERO's repository, so we can't say exactly how they were drawn. Figure 3.6 follows one of them to the first picture the model sees.</p>
+</div>
+
+<figure class="fig">
+  <div class="b-chain" role="group" aria-label="Five steps from the task file to the first picture">
+    <div class="b-step">
+      <div class="b-k"><i>1</i>Task file</div>
+      <div class="b-vis"><svg viewBox="0 0 120 92" aria-hidden="true"><path d="M38 6h34l14 14v66H38z" fill="#fff" stroke="#746D58" stroke-width="1.5" stroke-linejoin="round"/><path d="M72 6v14h14" fill="none" stroke="#746D58" stroke-width="1.5" stroke-linejoin="round"/><path d="M45 32h32M45 42h28M45 52h32M45 62h22" stroke="#AAA184" stroke-width="3" stroke-linecap="round"/><path d="M45 74h26" stroke="#29271F" stroke-width="3" stroke-linecap="round"/></svg></div>
+      <p>Gives each object its 2&nbsp;cm square and states the goal.</p>
+    </div>
+    <div class="b-arr" aria-hidden="true"><svg viewBox="0 0 18 18"><path d="M2 9h11M9 4l5 5-5 5" fill="none" stroke="#C9A533" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="b-step">
+      <div class="b-k"><i>2</i>50 stored states</div>
+      <div class="b-vis"><svg viewBox="0 0 120 92" aria-hidden="true"><g fill="#fff" stroke="#AAA184" stroke-width="1"><rect x="17" y="21" width="8" height="8"/><rect x="27" y="21" width="8" height="8"/><rect x="37" y="21" width="8" height="8"/><rect x="47" y="21" width="8" height="8"/><rect x="57" y="21" width="8" height="8"/><rect x="67" y="21" width="8" height="8"/><rect x="77" y="21" width="8" height="8"/><rect x="87" y="21" width="8" height="8"/><rect x="97" y="21" width="8" height="8"/><rect x="17" y="31" width="8" height="8"/><rect x="27" y="31" width="8" height="8"/><rect x="37" y="31" width="8" height="8"/><rect x="47" y="31" width="8" height="8"/><rect x="57" y="31" width="8" height="8"/><rect x="67" y="31" width="8" height="8"/><rect x="77" y="31" width="8" height="8"/><rect x="87" y="31" width="8" height="8"/><rect x="97" y="31" width="8" height="8"/><rect x="7" y="31" width="8" height="8"/><rect x="7" y="41" width="8" height="8"/><rect x="17" y="41" width="8" height="8"/><rect x="27" y="41" width="8" height="8"/><rect x="37" y="41" width="8" height="8"/><rect x="47" y="41" width="8" height="8"/><rect x="57" y="41" width="8" height="8"/><rect x="67" y="41" width="8" height="8"/><rect x="77" y="41" width="8" height="8"/><rect x="87" y="41" width="8" height="8"/><rect x="97" y="41" width="8" height="8"/><rect x="7" y="51" width="8" height="8"/><rect x="17" y="51" width="8" height="8"/><rect x="27" y="51" width="8" height="8"/><rect x="37" y="51" width="8" height="8"/><rect x="47" y="51" width="8" height="8"/><rect x="57" y="51" width="8" height="8"/><rect x="67" y="51" width="8" height="8"/><rect x="77" y="51" width="8" height="8"/><rect x="87" y="51" width="8" height="8"/><rect x="97" y="51" width="8" height="8"/><rect x="7" y="61" width="8" height="8"/><rect x="17" y="61" width="8" height="8"/><rect x="27" y="61" width="8" height="8"/><rect x="37" y="61" width="8" height="8"/><rect x="47" y="61" width="8" height="8"/><rect x="57" y="61" width="8" height="8"/><rect x="67" y="61" width="8" height="8"/><rect x="77" y="61" width="8" height="8"/><rect x="87" y="61" width="8" height="8"/><rect x="97" y="61" width="8" height="8"/></g><rect x="7" y="21" width="8" height="8" fill="#29271F"/></svg></div>
+      <p>Saved once by LIBERO's authors and shipped with its code, 92 numbers each.</p>
+    </div>
+    <div class="b-arr" aria-hidden="true"><svg viewBox="0 0 18 18"><path d="M2 9h11M9 4l5 5-5 5" fill="none" stroke="#C9A533" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="b-step">
+      <div class="b-k"><i>3</i>Build and load</div>
+      <div class="b-vis"><svg viewBox="0 0 120 92" aria-hidden="true"><rect x="12" y="6" width="96" height="80" rx="4" fill="#EEECE4" stroke="#AAA184" stroke-width="1.5"/><g fill="#29271F"><rect x="42.5" y="40.5" width="3" height="3"/><rect x="33" y="30" width="3" height="3"/><rect x="42.5" y="49.3" width="3" height="3"/><rect x="56" y="50" width="3" height="3"/><rect x="42.5" y="28.5" width="3" height="3"/><rect x="80" y="47" width="3" height="3"/><rect x="69.7" y="11.7" width="3" height="3"/></g></svg></div>
+      <p>The script builds the table, then puts the arm and the five loose objects where one stored state says.</p>
+    </div>
+    <div class="b-arr" aria-hidden="true"><svg viewBox="0 0 18 18"><path d="M2 9h11M9 4l5 5-5 5" fill="none" stroke="#C9A533" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="b-step">
+      <div class="b-k"><i>4</i>Settle, 10 steps</div>
+      <div class="b-vis"><svg viewBox="0 0 120 92" aria-hidden="true"><path d="M14 74h92" stroke="#AAA184" stroke-width="2.5"/><path d="M40 52q0 20 20 20t20-20z" fill="none" stroke="#746D58" stroke-width="1.5" stroke-dasharray="4 3"/><path d="M40 14q0 20 20 20t20-20z" fill="#3B382F" stroke="#29271F" stroke-width="1.5"/><path d="M60 38v8" stroke="#AAA184" stroke-width="2.5"/><path d="M55 44l5 6 5-6z" fill="#AAA184"/></svg></div>
+      <p>A do-nothing action, sent 10 times while the objects fall into place. These steps aren't counted.</p>
+    </div>
+    <div class="b-arr" aria-hidden="true"><svg viewBox="0 0 18 18"><path d="M2 9h11M9 4l5 5-5 5" fill="none" stroke="#C9A533" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="b-step in">
+      <div class="b-k"><i>5</i>First picture</div>
+      <div class="b-vis"><img src="../assets/img/ch3/states/spatial-t00-s00.jpg" alt="The first picture of starting state 0." width="224" height="224" loading="lazy"></div>
+      <p>Turned 180 degrees and shrunk to 224 × 224 pixels, it goes to the model at step 0.</p>
+    </div>
+  </div>
+  <figcaption><b>Figure 3.6 · From the task file to the first picture.</b> Steps 1 and 2 were done once, by LIBERO's authors. Steps 3 to 5 happen at the start of every episode, in openpi's evaluation script, before the model has done anything. The first picture goes to the model together with the wrist camera's picture and the sentence. <span class="credit">Our reading of LIBERO's code (<code>benchmark/__init__.py</code>, <code>envs/env_wrapper.py</code>) and openpi's <code>examples/libero/main.py</code>, checked 2026-11-14. Picture: rendered by us from stored state 0.</span></figcaption>
+</figure>
+
+<div class="prose">
+  <div class="has-side">
+  <p>Every episode starts the same way in <button class="term" data-term="openpi">openpi</button>'s evaluation script, the program Physical Intelligence published to run LIBERO against the model. Our own runs use a copy of it. The script builds the table from the task file and then loads one stored state, which puts the arm and the five loose objects where that state says.</p>
+  <p>Every loose object is stored at the same height, 0.97 m, whatever its shape, and a comment in openpi's script says the simulator drops the objects. So the script sends a do-nothing action for 10 steps while they fall. Only then does it take the first picture, turn it 180 degrees and shrink it to 224 × 224 pixels for the model. None of those 10 steps counts toward the episode's length.</p>
+  <p>LIBERO's README says the starting states are fixed for benchmarking. If every run drew new arrangements, two models could be tested on different tables. With stored ones, every model gets the same 50 for each task, apart from the cabinet's and the stove's exact place (figure 3.7). <strong class="key">An evaluation runs one episode from each starting state, so a task gets 50 trials and a suite gets 500.</strong> A trial is what openpi's script calls one of these episodes. Running all 50 turns a task's single yes or no into a rate. Figure 3.7 shows the 50 starting states of our task.</p>
+  <aside class="side" aria-label="Side note: what one stored state holds">
+    <div class="label">What one stored state holds</div>
+    <p>A row of 92 numbers: the arm's joints, where each loose object is and which way it faces, the drawers and the stove's knob, and the speeds, which are all zero.</p>
+    <svg class="side-dg dg" viewBox="0 32 260 226" role="img" aria-label="Bowl 1's centre in the 50 stored states, seen from above: 50 dots scattered over about 3 by 3 centimetres, around and a little beyond the 2 centimetre square the task file gives it.">
+      <rect class="bg" x="0" y="32" width="260" height="226"/>
+      <g stroke="#D7CFB6" stroke-width="1"><path d="M90 40v160M130 40v160M170 40v160M50 80h160M50 120h160M50 160h160"/></g>
+      <rect x="50" y="40" width="160" height="160" fill="none" stroke="#AAA184" stroke-width="1.5"/>
+      <rect x="90" y="80" width="80" height="80" fill="none" stroke="#29271F" stroke-width="1.5" stroke-dasharray="5 4"/>
+      <g fill="#29271F"><circle cx="121.7" cy="66.1" r="3"/><circle cx="142.1" cy="62.7" r="3"/><circle cx="132.2" cy="131.1" r="3"/><circle cx="125.5" cy="131.2" r="3"/><circle cx="185.9" cy="158.1" r="3"/><circle cx="73.1" cy="148.2" r="3"/><circle cx="185.0" cy="119.0" r="3"/><circle cx="185.4" cy="130.8" r="3"/><circle cx="125.7" cy="72.7" r="3"/><circle cx="125.6" cy="137.2" r="3"/><circle cx="108.1" cy="99.4" r="3"/><circle cx="87.0" cy="88.3" r="3"/><circle cx="175.4" cy="97.8" r="3"/><circle cx="93.0" cy="135.8" r="3"/><circle cx="161.7" cy="144.1" r="3"/><circle cx="168.2" cy="121.6" r="3"/><circle cx="138.4" cy="109.6" r="3"/><circle cx="94.5" cy="110.4" r="3"/><circle cx="179.7" cy="176.2" r="3"/><circle cx="185.9" cy="178.5" r="3"/><circle cx="70.8" cy="124.1" r="3"/><circle cx="121.4" cy="100.1" r="3"/><circle cx="100.8" cy="103.1" r="3"/><circle cx="134.9" cy="68.8" r="3"/><circle cx="120.4" cy="94.3" r="3"/><circle cx="122.6" cy="135.8" r="3"/><circle cx="140.8" cy="163.8" r="3"/><circle cx="177.3" cy="131.9" r="3"/><circle cx="115.3" cy="84.7" r="3"/><circle cx="108.4" cy="139.4" r="3"/><circle cx="101.3" cy="118.8" r="3"/><circle cx="126.8" cy="127.8" r="3"/><circle cx="137.1" cy="103.5" r="3"/><circle cx="79.5" cy="116.2" r="3"/><circle cx="101.5" cy="71.0" r="3"/><circle cx="97.5" cy="107.5" r="3"/><circle cx="78.1" cy="104.9" r="3"/><circle cx="143.5" cy="107.2" r="3"/><circle cx="79.9" cy="75.6" r="3"/><circle cx="134.1" cy="62.4" r="3"/><circle cx="79.0" cy="68.1" r="3"/><circle cx="187.9" cy="73.7" r="3"/><circle cx="152.2" cy="174.7" r="3"/><circle cx="120.5" cy="65.0" r="3"/><circle cx="129.6" cy="114.8" r="3"/><circle cx="173.1" cy="90.2" r="3"/><circle cx="186.2" cy="85.7" r="3"/><circle cx="94.8" cy="145.7" r="3"/><circle cx="83.4" cy="75.2" r="3"/><circle cx="178.6" cy="77.0" r="3"/></g>
+      <text class="sub" x="10" y="218">grid lines 1 cm apart</text>
+      <text class="sub" x="10" y="234">dashed: the file's 2 cm square</text>
+      <text class="sub" x="10" y="250">dots: bowl 1 in the 50 states</text>
+    </svg>
+    <p>By our reading of the stored file, each loose object's centre moves over about 3 cm each way across the 50 (2.59 to 2.99 cm), a little more than its square. The arm's joints differ by up to 0.1009 radians, about 6 degrees.</p>
+  </aside>
+  </div>
 </div>
 
 <figure class="fig">
@@ -166,57 +447,231 @@
     <div><img src="../assets/img/ch3/states/spatial-t00-s48.jpg" alt="Starting state 48" width="224" height="224" loading="lazy"></div>
     <div><img src="../assets/img/ch3/states/spatial-t00-s49.jpg" alt="Starting state 49" width="224" height="224" loading="lazy"></div>
   </div>
-  <figcaption><b>Figure 3.4 · All 50 starting states of one task</b>, LIBERO-Spatial's <span class="q">pick up the black bowl between the plate and the ramekin and place it on the plate</span>, left to right and top to bottom. Each is the first picture the model receives from that state. The objects shift by a few centimetres and the cabinet turns a little, but the bowl to take always sits between the plate and the ramekin. By our reading of the task file, each object may start anywhere in a square 2 cm on a side, and the cabinet's turn varies over 3.6 degrees. State 0, outlined, is where our chapter 2 run began, and our render of it matches the picture the model got at that run's first call. <span class="credit">Rendered by us from LIBERO's stored starting states with openpi's settings: 10 steps for the objects to settle, then the picture turned 180 degrees and shrunk to 224 pixels (tools/ch3/render_first_frames.py). No model was run.</span></figcaption>
+  <figcaption><b>Figure 3.7 · All 50 starting states of one task,</b> left to right and top to bottom, each as the first picture the model gets from it. The bowl to take always sits between the plate and the ramekin. From picture to picture the loose objects shift by up to about 3 cm. The cabinet also stands at a slightly different angle, because LIBERO doesn't store the cabinet and the stove. It places them again, inside their squares, at every reset, a fact openpi's script notes in a comment beside its random seed. State 0, outlined, is where our chapter 2 run began, and our render of it matches the picture the model got at that run's first call. Like every picture the model gets, these are turned 180 degrees and so mirrored (see the side note “Why the pictures are mirrored” in the first section). <span class="credit">Rendered by us from LIBERO's stored starting states with openpi's settings (tools/ch3/render_first_frames.py). No model was run.</span></figcaption>
 </figure>
 
 <div class="prose">
-  <p>The simulator checks the goal condition after every step. The episode ends as soon as the condition holds, or when a step limit runs out. In <button class="term" data-term="openpi">openpi</button>'s evaluation script the limits are 220, 280, 300 and 520 steps for Spatial, Object, Goal and LIBERO-10. The script's comments give the longest training demonstration in each suite as 193, 254, 270 and 505 steps, so each limit sits a little above it. Figure 3.5 follows our chapter 2 run to its end.</p>
+  <div class="has-side">
+  <p>Once the first picture is taken, the episode moves in steps. In each <button class="term" data-term="step">step</button> the simulator applies one <button class="term" data-term="action">action</button>, the seven numbers the model sent, for 1/20 of a simulated second. The model is called once every 5 steps, as in chapter 2, so our run's 104 steps took 21 calls and 5.2 seconds of simulated time (our arithmetic). Between two calls the model sees nothing new. The robot runs the 5 actions it was given, and the next pictures arrive with the next call. Simulated seconds aren't clock seconds. In our own runs a successful LIBERO-Spatial episode took 11.7 seconds on the clock, on average.</p>
+  <p>After every step, the simulator checks the goal condition. The episode ends as soon as the condition holds, or when a step limit runs out. For our task the condition is <code>(On akita_black_bowl_1 plate_1)</code>, and figure 3.8 shows the three tests LIBERO's code runs to decide it.</p>
+  <aside class="side" aria-label="Side note: what a step is">
+    <div class="label">What a step is</div>
+    <svg class="side-dg dg" viewBox="0 0 260 100" role="img" aria-label="Two real wrist-camera pictures from our run: call 7 at step 35, 1.75 simulated seconds in, and call 8 at step 40, 2.00 seconds in. Between them, five steps numbered 35 to 39. In the second picture the plate looks larger, because the hand has moved down.">
+      <rect class="bg" width="260" height="100"/>
+      <text class="sub" x="30" y="12" text-anchor="middle">call 7</text><text class="sub" x="230" y="12" text-anchor="middle">call 8</text>
+      <image href="../assets/img/pi05-run/call-07-wrist.jpg" x="0" y="18" width="60" height="60" preserveAspectRatio="none"/>
+      <image href="../assets/img/pi05-run/call-08-wrist.jpg" x="200" y="18" width="60" height="60" preserveAspectRatio="none"/>
+      <rect x="0" y="18" width="60" height="60" rx="3" fill="none" stroke="#C9A533" stroke-width="2"/><rect x="200" y="18" width="60" height="60" rx="3" fill="none" stroke="#C9A533" stroke-width="2"/>
+      <g fill="#E4EDD6" stroke="#9BBC6C" stroke-width="1.5"><rect x="66" y="36" width="23" height="24" rx="3"/><rect x="92" y="36" width="23" height="24" rx="3"/><rect x="118" y="36" width="23" height="24" rx="3"/><rect x="144" y="36" width="23" height="24" rx="3"/><rect x="170" y="36" width="23" height="24" rx="3"/></g>
+      <g class="sub" text-anchor="middle"><text x="77.5" y="52">35</text><text x="103.5" y="52">36</text><text x="129.5" y="52">37</text><text x="155.5" y="52">38</text><text x="181.5" y="52">39</text></g>
+      <text class="sub" x="129.5" y="30" text-anchor="middle">5 steps</text>
+      <text class="sub" x="30" y="94" text-anchor="middle">1.75 s</text><text class="sub" x="230" y="94" text-anchor="middle">2.00 s</text>
+    </svg>
+    <p>MuJoCo computes each step in 25 small updates of 0.002 s. These two calls in a row from our run are a quarter of a second apart, and between them the hand moved down and the gripper closed on the bowl.</p>
+  </aside>
+  </div>
+</div>
+
+<figure class="fig">
+  <div class="b-gc">
+    <svg class="dg" viewBox="0 0 300 284" role="img" aria-label="Panel 1, not yet: the gripper holds the bowl a few centimetres above the middle of the plate. Their centres line up and the bowl is above the plate, but they don't touch.">
+      <defs><pattern id="b-gc-dots-1" width="16" height="16" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1" fill="#D7CFB6" opacity=".65"/></pattern></defs>
+      <rect class="bg" width="300" height="284"/><rect width="300" height="200" fill="url(#b-gc-dots-1)"/>
+      <text class="lbl-s" x="16" y="26">HELD ABOVE</text><text class="lbl-s" x="284" y="26" text-anchor="end">not yet</text>
+      <path d="M16 178h268" stroke="#AAA184" stroke-width="2"/>
+      <path d="M94 163q10 5 22 5h68q12 0 22-5v3q-10 6-22 6h-10l-2 4h-44l-2-4h-10q-12 0-22-6z" fill="#fff" stroke="#625C4B" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M108 86q0 40 42 40t42-40z" fill="#3B382F" stroke="#29271F" stroke-width="1.5"/><ellipse cx="150" cy="86" rx="42" ry="4.5" fill="#5A564A" stroke="#29271F" stroke-width="1"/>
+      <g fill="#EEECE4" stroke="#746D58" stroke-width="1.5"><rect x="135" y="30" width="30" height="24" rx="4"/><rect x="100" y="52" width="100" height="11" rx="3"/><rect x="100" y="62" width="7" height="40" rx="2"/><rect x="193" y="62" width="7" height="40" rx="2"/></g>
+      <path d="M150 96v94" stroke="#29271F" stroke-width="1" stroke-dasharray="3 3"/>
+      <circle cx="150" cy="106" r="3.5" fill="#fff" stroke="#29271F" stroke-width="1.5"/><circle cx="150" cy="169" r="3.5" fill="#29271F"/>
+      <text class="sub" x="158" y="196">centres line up</text>
+      <g transform="translate(16 214)"><circle cx="9" cy="0" r="8" fill="#fff" stroke="#29271F" stroke-width="1.5"/><path d="M5.5-3.5l7 7M12.5-3.5l-7 7" stroke="#29271F" stroke-width="1.8"/><text class="sub" x="26" y="4">they touch</text></g>
+      <g transform="translate(16 238)"><circle cx="9" cy="0" r="8" fill="#29271F"/><path d="M5 0l3 3 5-6" fill="none" stroke="#fff" stroke-width="1.8"/><text class="sub" x="26" y="4">the bowl isn't below the plate</text></g>
+      <g transform="translate(16 262)"><circle cx="9" cy="0" r="8" fill="#29271F"/><path d="M5 0l3 3 5-6" fill="none" stroke="#fff" stroke-width="1.8"/><text class="sub" x="26" y="4">centres under 3 cm apart</text></g>
+    </svg>
+    <svg class="dg" viewBox="0 0 300 284" role="img" aria-label="Panel 2, not yet: a bowl dropped on the plate's edge, tilted. It touches the plate and sits above it, but its centre is more than 3 centimetres from the plate's centre.">
+      <defs><pattern id="b-gc-dots-2" width="16" height="16" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1" fill="#D7CFB6" opacity=".65"/></pattern></defs>
+      <rect class="bg" width="300" height="284"/><rect width="300" height="200" fill="url(#b-gc-dots-2)"/>
+      <text class="lbl-s" x="16" y="26">OFF-CENTRE</text><text class="lbl-s" x="284" y="26" text-anchor="end">not yet</text>
+      <path d="M16 178h268" stroke="#AAA184" stroke-width="2"/>
+      <path d="M94 163q10 5 22 5h68q12 0 22-5v3q-10 6-22 6h-10l-2 4h-44l-2-4h-10q-12 0-22-6z" fill="#fff" stroke="#625C4B" stroke-width="1.5" stroke-linejoin="round"/>
+      <g transform="rotate(-9 196 164)"><path d="M154 124q0 40 42 40t42-40z" fill="#3B382F" stroke="#29271F" stroke-width="1.5"/><ellipse cx="196" cy="124" rx="42" ry="4.5" fill="#5A564A" stroke="#29271F" stroke-width="1"/></g>
+      <path d="M150 160v34M193 140v54" stroke="#29271F" stroke-width="1" stroke-dasharray="3 3"/>
+      <circle cx="193" cy="143" r="3.5" fill="#fff" stroke="#29271F" stroke-width="1.5"/><circle cx="150" cy="169" r="3.5" fill="#29271F"/>
+      <path d="M152 190h39M156 186l-4 4 4 4M187 186l4 4-4 4" fill="none" stroke="#29271F" stroke-width="1.5"/>
+      <text class="sub" x="145" y="196" text-anchor="end">more than 3 cm</text>
+      <g transform="translate(16 214)"><circle cx="9" cy="0" r="8" fill="#29271F"/><path d="M5 0l3 3 5-6" fill="none" stroke="#fff" stroke-width="1.8"/><text class="sub" x="26" y="4">they touch</text></g>
+      <g transform="translate(16 238)"><circle cx="9" cy="0" r="8" fill="#29271F"/><path d="M5 0l3 3 5-6" fill="none" stroke="#fff" stroke-width="1.8"/><text class="sub" x="26" y="4">the bowl isn't below the plate</text></g>
+      <g transform="translate(16 262)"><circle cx="9" cy="0" r="8" fill="#fff" stroke="#29271F" stroke-width="1.5"/><path d="M5.5-3.5l7 7M12.5-3.5l-7 7" stroke="#29271F" stroke-width="1.8"/><text class="sub" x="26" y="4">centres under 3 cm apart</text></g>
+    </svg>
+    <svg class="dg" viewBox="0 0 300 284" role="img" aria-label="Panel 3, done: the bowl rests in the middle of the plate, still held by the gripper. All three tests pass.">
+      <defs><pattern id="b-gc-dots-3" width="16" height="16" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1" fill="#D7CFB6" opacity=".65"/></pattern></defs>
+      <rect class="bg" width="300" height="284"/><rect width="300" height="200" fill="url(#b-gc-dots-3)"/>
+      <text class="lbl-s" x="16" y="26">RESTING ON IT</text><text class="lbl-s" x="284" y="26" text-anchor="end">done</text>
+      <path d="M16 178h268" stroke="#AAA184" stroke-width="2"/>
+      <path d="M94 163q10 5 22 5h68q12 0 22-5v3q-10 6-22 6h-10l-2 4h-44l-2-4h-10q-12 0-22-6z" fill="#fff" stroke="#625C4B" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M108 128q0 40 42 40t42-40z" fill="#3B382F" stroke="#29271F" stroke-width="1.5"/><ellipse cx="150" cy="128" rx="42" ry="4.5" fill="#5A564A" stroke="#29271F" stroke-width="1"/>
+      <g fill="#EEECE4" stroke="#746D58" stroke-width="1.5"><rect x="135" y="72" width="30" height="24" rx="4"/><rect x="100" y="94" width="100" height="11" rx="3"/><rect x="100" y="104" width="7" height="40" rx="2"/><rect x="193" y="104" width="7" height="40" rx="2"/></g>
+      <path d="M150 140v50" stroke="#29271F" stroke-width="1" stroke-dasharray="3 3"/>
+      <circle cx="150" cy="148" r="3.5" fill="#fff" stroke="#29271F" stroke-width="1.5"/><circle cx="150" cy="169" r="3.5" fill="#29271F"/>
+      <text class="sub" x="158" y="196">centres line up</text>
+      <g transform="translate(16 214)"><circle cx="9" cy="0" r="8" fill="#29271F"/><path d="M5 0l3 3 5-6" fill="none" stroke="#fff" stroke-width="1.8"/><text class="sub" x="26" y="4">they touch</text></g>
+      <g transform="translate(16 238)"><circle cx="9" cy="0" r="8" fill="#29271F"/><path d="M5 0l3 3 5-6" fill="none" stroke="#fff" stroke-width="1.8"/><text class="sub" x="26" y="4">the bowl isn't below the plate</text></g>
+      <g transform="translate(16 262)"><circle cx="9" cy="0" r="8" fill="#29271F"/><path d="M5 0l3 3 5-6" fill="none" stroke="#fff" stroke-width="1.8"/><text class="sub" x="26" y="4">centres under 3 cm apart</text></g>
+    </svg>
+  </div>
+  <figcaption><b>Figure 3.8 · How the simulator decides that the bowl is on the plate.</b> A sketch from the side, not to scale. After every step LIBERO runs three tests on the two objects. They must touch, the plate's position must not be higher than the bowl's, and seen from above the two positions must be less than 3 cm apart. An object's position is the one point the simulator keeps for it, which for the bowl and the plate sits at their centre seen from above (our reading of their model files). The goal holds only at a step where all three pass. On the left the hand holds the bowl above the plate, much as at step 100 of our run, and the two don't touch yet. In the middle a bowl dropped on the plate's edge touches it, but its centre is too far off. On the right it rests in the middle, and the hand can still be holding it. <span class="credit">Our reading of LIBERO's code at the commit openpi pins: <code>envs/predicates/base_predicates.py</code> (<code>On</code>), <code>envs/object_states/base_object_states.py</code> (<code>check_ontop</code>) and the two objects' model files. Checked 2026-11-14.</span></figcaption>
+</figure>
+
+<div class="prose">
+  <p>When a goal has several parts, such as <span class="q">the top drawer is open</span> and <span class="q">the bowl is in it</span>, the simulator runs every part's test, and the goal holds only at a step where all of them pass. No test asks whether the robot has let go of the bowl, either. In our run, the model's last actions all still said to keep the gripper closed when the goal held after step 104.</p>
+  <div class="has-side">
+  <p>In openpi's evaluation script the step limits are 220, 280, 300 and 520 steps for Spatial, Object, Goal and LIBERO-10. The comments beside them give the longest training demonstration in each suite as 193, 254, 270 and 505 steps, and we counted the same four numbers in the training dataset. So each limit sits a little above the longest time a person took on that suite. By our reading, a limit is there so that an episode that never reaches its goal still ends. Such an episode runs to the limit, which for Spatial is 220 steps, or 11 simulated seconds.</p>
+  <p>Figure 3.9 puts the whole of our chapter 2 run on one ruler, from the moment the stored state was loaded to the step the goal held.</p>
+  <aside class="side" aria-label="Side note: step limits and the longest demonstrations">
+    <div class="label">Step limits</div>
+    <svg class="side-dg dg" viewBox="0 0 260 190" role="img" aria-label="Four bars to the same scale. Spatial: longest demonstration 193 steps, limit 220, and our run 104. Object: 254 and 280. Goal: 270 and 300. LIBERO-10: 505 and 520.">
+      <rect class="bg" width="260" height="190"/>
+      <g class="lbl-s"><text x="8" y="16">SPATIAL</text><text x="8" y="74">OBJECT</text><text x="8" y="120">GOAL</text><text x="8" y="166">LIBERO-10</text></g>
+      <g class="sub" text-anchor="end"><text x="252" y="16">193 / 220</text><text x="252" y="74">254 / 280</text><text x="252" y="120">270 / 300</text><text x="252" y="166">505 / 520</text></g>
+      <g fill="#F5F4EF" stroke="#D7CFB6" stroke-width="1"><rect x="8" y="24" width="244" height="12" rx="2"/><rect x="8" y="82" width="244" height="12" rx="2"/><rect x="8" y="128" width="244" height="12" rx="2"/><rect x="8" y="174" width="244" height="12" rx="2"/></g>
+      <g fill="#AAA184"><rect x="8" y="24" width="90.6" height="12" rx="2"/><rect x="8" y="82" width="119.2" height="12" rx="2"/><rect x="8" y="128" width="126.7" height="12" rx="2"/><rect x="8" y="174" width="237.0" height="12" rx="2"/></g>
+      <g stroke="#29271F" stroke-width="2"><path d="M111.2 20v20M139.4 78v20M148.8 124v20M252 170v20"/></g>
+      <path d="M56.8 20v20" stroke="#577B37" stroke-width="2.5"/>
+      <text class="sub" x="52" y="54" text-anchor="middle">our run, 104</text>
+    </svg>
+    <p>Each bar is a suite's longest demonstration and each tick its limit, to one scale.</p>
+  </aside>
+  </div>
 </div>
 
 <figure class="fig">
   <div class="strip">
     <div class="frames">
-      <figure><img src="../assets/img/pi05-run/call-00-table.jpg" alt="The starting table: the arm high above, two black bowls and the ramekin at the left, the plate in front." width="224" height="224" loading="lazy"><figcaption><b>step 0</b>the first picture</figcaption></figure>
-      <figure><img src="../assets/img/pi05-run/call-07-table.jpg" alt="The gripper has come down over the bowls at the left of the table." width="224" height="224" loading="lazy"><figcaption><b>step 35</b>hand over the bowls</figcaption></figure>
-      <figure><img src="../assets/img/pi05-run/call-14-table.jpg" alt="The gripper holds a bowl just above the table." width="224" height="224" loading="lazy"><figcaption><b>step 70</b>bowl in the gripper</figcaption></figure>
-      <figure><img src="../assets/img/pi05-run/call-20-table.jpg" alt="The gripper lowers the bowl onto the plate." width="224" height="224" loading="lazy"><figcaption><b>step 100</b>bowl over the plate</figcaption></figure>
+      <figure><img src="../assets/img/pi05-run/call-00-table.jpg" alt="The starting table: the arm high above, two black bowls and the ramekin at the left, the plate in front." width="224" height="224" loading="lazy"><figcaption><b>step 0 · 0 s</b>the first picture</figcaption></figure>
+      <figure><img src="../assets/img/pi05-run/call-07-table.jpg" alt="The gripper has come down over the bowls at the left of the table." width="224" height="224" loading="lazy"><figcaption><b>step 35 · 1.75 s</b>hand over the bowls</figcaption></figure>
+      <figure><img src="../assets/img/pi05-run/call-14-table.jpg" alt="The gripper holds a bowl just above the table." width="224" height="224" loading="lazy"><figcaption><b>step 70 · 3.5 s</b>bowl in the gripper</figcaption></figure>
+      <figure><img src="../assets/img/pi05-run/call-20-table.jpg" alt="The gripper lowers the bowl onto the plate." width="224" height="224" loading="lazy"><figcaption><b>step 100 · 5 s</b>bowl over the plate</figcaption></figure>
     </div>
-    <div class="steps" role="img" aria-label="The steps of the episode to scale on a ruler from 0 to 220: a green bar from step 0 to step 104, where the goal held, and a dashed mark at step 220, the step limit.">
-      <span class="run" style="width:47.27%"></span>
-      <span class="dot" style="left:0%"></span><span class="dot" style="left:15.91%"></span><span class="dot" style="left:31.82%"></span><span class="dot" style="left:45.45%"></span>
-      <span class="mark" style="left:100%"></span>
-      <span class="t up" style="left:47.27%;transform:translateX(-50%)"><b>step 104</b> · bowl on the plate: success</span>
-      <span class="t down" style="left:0"><b>0</b></span>
-      <span class="t down right"><b>220</b> · step limit</span>
+    <div class="b-ruler" role="img" aria-label="The episode to scale. It starts when stored state 0 is loaded, followed by 10 settling steps that aren't counted. From step 0 the model is called every 5 steps, 21 times. The goal held after step 104, at 5.2 simulated seconds, and the episode ended as a success. The limit, step 220 or 11 simulated seconds, is where it would have ended as a failure.">
+      <div class="b-r ev"><span></span><div class="b-t">
+        <div class="b-ev l"><b>start</b>state 0 loaded, objects settle</div>
+        <div class="b-ev c"><b>end · step 104</b>goal held: success</div>
+        <div class="b-ev r"><b>limit · step 220</b>goal never held: failure</div>
+      </div></div>
+      <div class="b-r calls"><span>calls</span><div class="b-t">
+        <i class="b-call" style="left:4.348%"></i><i class="b-call" style="left:6.522%"></i><i class="b-call" style="left:8.696%"></i><i class="b-call" style="left:10.870%"></i><i class="b-call" style="left:13.043%"></i><i class="b-call" style="left:15.217%"></i><i class="b-call" style="left:17.391%"></i><i class="b-call" style="left:19.565%"></i><i class="b-call" style="left:21.739%"></i><i class="b-call" style="left:23.913%"></i><i class="b-call" style="left:26.087%"></i><i class="b-call" style="left:28.261%"></i><i class="b-call" style="left:30.435%"></i><i class="b-call" style="left:32.609%"></i><i class="b-call" style="left:34.783%"></i><i class="b-call" style="left:36.957%"></i><i class="b-call" style="left:39.130%"></i><i class="b-call" style="left:41.304%"></i><i class="b-call" style="left:43.478%"></i><i class="b-call" style="left:45.652%"></i><i class="b-call" style="left:47.826%"></i>
+      </div></div>
+      <div class="b-r bar"><span>episode</span><div class="b-t">
+        <i class="b-grid" style="left:13.043%"></i><i class="b-grid" style="left:21.739%"></i><i class="b-grid" style="left:30.435%"></i><i class="b-grid" style="left:39.130%"></i><i class="b-grid" style="left:47.826%"></i><i class="b-grid" style="left:56.522%"></i><i class="b-grid" style="left:65.217%"></i><i class="b-grid" style="left:73.913%"></i><i class="b-grid" style="left:82.609%"></i><i class="b-grid" style="left:91.304%"></i>
+        <i class="b-settle"></i><i class="b-run"></i><i class="b-limit"></i>
+        <i class="b-dot" style="left:4.348%"></i><i class="b-dot" style="left:19.565%"></i><i class="b-dot" style="left:34.783%"></i><i class="b-dot" style="left:47.826%"></i>
+      </div></div>
+      <div class="b-r ax"><span>steps</span><div class="b-t">
+        <span class="b-tick" style="left:4.348%">0</span><span class="b-tick odd" style="left:13.043%">20</span><span class="b-tick" style="left:21.739%">40</span><span class="b-tick odd" style="left:30.435%">60</span><span class="b-tick" style="left:39.130%">80</span><span class="b-tick odd" style="left:47.826%">100</span><span class="b-tick" style="left:56.522%">120</span><span class="b-tick odd" style="left:65.217%">140</span><span class="b-tick" style="left:73.913%">160</span><span class="b-tick odd" style="left:82.609%">180</span><span class="b-tick odd" style="left:91.304%">200</span><span class="b-tick end" style="left:100%">220</span>
+      </div></div>
+      <div class="b-r sec"><span>seconds</span><div class="b-t">
+        <span class="b-tick" style="left:4.348%">0</span><span class="b-tick odd" style="left:13.043%">1</span><span class="b-tick" style="left:21.739%">2</span><span class="b-tick odd" style="left:30.435%">3</span><span class="b-tick" style="left:39.130%">4</span><span class="b-tick odd" style="left:47.826%">5</span><span class="b-tick" style="left:56.522%">6</span><span class="b-tick odd" style="left:65.217%">7</span><span class="b-tick" style="left:73.913%">8</span><span class="b-tick odd" style="left:82.609%">9</span><span class="b-tick odd" style="left:91.304%">10</span><span class="b-tick end" style="left:100%">11</span>
+      </div></div>
     </div>
   </div>
-  <figcaption><b>Figure 3.5 · One episode, start to end.</b> Four table-camera pictures from our chapter 2 run, as the model received them, above the steps it ran, to scale. This task's goal condition is <code>(On akita_black_bowl_1 plate_1)</code>, the bowl on the plate. It held at step 104, so the episode stopped there and counted as a success. If it had never held, the episode would have stopped at step 220 and counted as a failure. The white dots mark the four pictures, and the ruler's ticks are 10 steps apart. <span class="credit">Recording: our run of openpi's pi05_libero checkpoint, 2026-11-11.</span></figcaption>
+  <figcaption><b>Figure 3.9 · One episode, start to end.</b> Four table-camera pictures from our chapter 2 run, as the model received them, above the whole episode drawn to scale. The episode starts when the script loads stored state 0, and the objects then settle for 10 steps (hatched) that aren't counted. Step 0 is the first call to the model. From there the model is called every 5 steps, 21 times in all (gold ticks), and each step is 1/20 of a simulated second (bottom row). The goal condition, <code>(On akita_black_bowl_1 plate_1)</code>, first held after step 104, 5.2 simulated seconds in, so the episode stopped there and counted as a success. Had it never held, the episode would have run to step 220 and counted as a failure. The white dots mark the four pictures. Our run's 104 steps were an ordinary length, since this task's 45 demonstrations in the training data took 75 to 168 steps. openpi's script also stops an episode if the simulator raises an error, and counts it as a failure. <span class="credit">Recording: our run of openpi's pi05_libero checkpoint, 2026-11-11 (stage1/runs/recorded-call-spatial0). Seconds: our arithmetic from robosuite's 20 steps a second.</span></figcaption>
 </figure>
 
 <div class="prose">
-  <div class="has-side">
-  <p>The <button class="term" data-term="success-rate">success rate</button> is the share of episodes that met the goal. One run of the four-prompt plan we submitted (chapter 6) therefore comes to 4 prompts × 4 suites × 10 tasks × 50 trials = 8,000 episodes.</p>
-  <aside class="side" aria-label="Side note: how 8,000 episodes add up">
-    <div class="label">How 8,000 adds up</div>
-    <ol class="side-pts">
-      <li>A task gets one episode from each of its 50 starting states.</li>
-      <li>A suite of ten tasks gets 500.</li>
-      <li>Four suites make 2,000 for one prompt.</li>
-      <li>Four prompts make 8,000.</li>
-    </ol>
+  <div class="has-side b-roomy">
+  <p>The <button class="term" data-term="success-rate">success rate</button> is the share of episodes in which the goal held. Each task is a tenth of its suite's episodes, so a task the model always failed would cost the suite's rate 10 points. A rate from few episodes is also rough. Near 50%, one task's 50 episodes pin its rate down only to within about 14 points either way, and a suite's 500 narrow that to about 4.4 (our arithmetic, at 95% confidence).</p>
+  <p>openpi's README reports 98.8% on LIBERO-Spatial for <code>pi05_libero</code>, but it doesn't say how many episodes or runs stand behind that number. So we don't turn the percentage into a count of episodes. The script runs 500 per suite by default.</p>
+  <p>Not every group counts the same way, either. LIBERO's own paper tested its policies with 20 episodes per task, each allowed up to 600 steps, so before comparing two scores, check how each one was counted.</p>
+  <aside class="side" aria-label="Side note: would a second run give the same score?">
+    <div class="label">Same score on a rerun?</div>
+    <table class="side-tbl">
+      <tr><th>the 50 starts</th><td>stored, so the same</td></tr>
+      <tr><th>cabinet, stove</th><td>drawn with <button class="term" data-term="random-seed">seed</button> 7, so the same</td></tr>
+      <tr><th>model's noise</th><td>the same only on a just-started server</td></tr>
+    </table>
+    <p>The model starts every call from random noise (chapter 2). openpi's <button class="term" data-term="policy-server">policy server</button> draws it from a random key that restarts with the server and moves on at every call. That's our reading of the code; we haven't tested a rerun.</p>
   </aside>
   </div>
-
-  <h2 id="why">Why a high score doesn't prove the words were read</h2>
-  <div class="predict">
-    <div class="label">Predict first</div>
-    <p>Before you look at figure 3.6: in which of the four suites could you name the task from its first picture alone, without the sentence?</p>
-    <textarea aria-label="Your guess" placeholder="Write a guess in a few words. Nothing is saved."></textarea>
-  </div>
-  <p>In LIBERO-Spatial, LIBERO-Object and LIBERO-10, almost every task starts from its own arrangement of objects, so the picture at the first step is usually enough to tell which task this is. <strong class="key">A model can reach a high score by learning "this arrangement means this motion" and never looking at the sentence.</strong> Figure 3.6 puts the first picture of all 40 tasks side by side.</p>
 </div>
 
-<figure class="fig">
+<div class="prose">
+  <div class="has-side">
+  <p>The plan we submitted for the course asks how the score changes with the words. It would run every task under four prompts: its own instruction, a paraphrase of it, a blank prompt, and the instruction of a different task on the same table. Run in full, that comes to 4 prompts × 4 suites × 10 tasks × 50 trials = 8,000 episodes. The plan is a proposal we submitted, not a decision. <a href="https://github.com/blueif16/vla_final/blob/main/docs/learn/06-where-we-stand.md">Chapter 6</a> keeps the list of what the team has decided, and which experiments we run is still open.</p>
+  <aside class="side" aria-label="Side note: how 8,000 episodes add up">
+    <div class="label">How 8,000 adds up</div>
+    <svg class="side-dg dg" viewBox="0 0 260 142" role="img" aria-label="Four rows, one per prompt, each of four blocks, one per suite. Each block is ten thin strips, one per task, of 50 episodes each, so 500 episodes. Sixteen blocks make 8,000.">
+      <rect class="bg" width="260" height="142"/>
+      <g class="sub"><text x="0" y="27">own sentence</text><text x="0" y="57">paraphrase</text><text x="0" y="87">blank</text><text x="0" y="117">other task</text></g>
+      <g fill="#EEECE4" stroke="#746D58" stroke-width="1">
+        <rect x="96" y="12" width="38" height="22" rx="3"/><rect x="137" y="12" width="38" height="22" rx="3"/><rect x="178" y="12" width="38" height="22" rx="3"/><rect x="219" y="12" width="38" height="22" rx="3"/>
+        <rect x="96" y="42" width="38" height="22" rx="3"/><rect x="137" y="42" width="38" height="22" rx="3"/><rect x="178" y="42" width="38" height="22" rx="3"/><rect x="219" y="42" width="38" height="22" rx="3"/>
+        <rect x="96" y="72" width="38" height="22" rx="3"/><rect x="137" y="72" width="38" height="22" rx="3"/><rect x="178" y="72" width="38" height="22" rx="3"/><rect x="219" y="72" width="38" height="22" rx="3"/>
+        <rect x="96" y="102" width="38" height="22" rx="3"/><rect x="137" y="102" width="38" height="22" rx="3"/><rect x="178" y="102" width="38" height="22" rx="3"/><rect x="219" y="102" width="38" height="22" rx="3"/>
+      </g>
+      <g stroke="#D7CFB6" stroke-width="1"><path d="M99.8 13v20M103.6 13v20M107.4 13v20M111.2 13v20M115 13v20M118.8 13v20M122.6 13v20M126.4 13v20M130.2 13v20"/></g>
+      <rect x="96" y="12" width="38" height="22" rx="3" fill="none" stroke="#29271F" stroke-width="2"/>
+      <text class="sub" x="0" y="138">outlined: 1 suite × 1 prompt = 500</text>
+    </svg>
+    <p>Each row is one prompt, and its four blocks are the four suites. A block is ten thin strips, one per task, of 50 episodes each.</p>
+  </aside>
+  </div>
+</div>
+<div class="prose">
+  <h2 id="why">Why a high score doesn't prove the words were read</h2>
+  <div class="has-side">
+  <p>Start with what <code>pi05_libero</code> learned from. Chapter 2 said openpi <button class="term" data-term="fine-tuning">fine-tuned</button> it on 1,693 demonstrations of LIBERO's 40 tasks. Those are the same 40 tasks the benchmark tests it on. Each demonstration comes with its task's sentence, word for word the sentence the test sends, and starts from that task's table.</p>
+  <p>So the tasks, the sentences and the tables in the test are all ones the model has practised, each task in 29 to 50 demonstrations. The only new thing is the exact starting position of each object and of the arm. LIBERO's 50 stored starting states aren't the demonstrations' own starts. LIBERO's authors drew them separately, at random in the same way as the demonstrations' starts, so a test start differs from a training start by the same few-centimetre shifts that figure 3.7 shows between test starts. Figure 3.10 puts three of each side by side for one task.</p>
+  <aside class="side" aria-label="Side note: why the dataset has 1,693 demonstrations and not 2,000">
+    <div class="label">Why 1,693 and not 2,000</div>
+    <p>LIBERO's authors recorded 50 demonstrations of every task, 2,000 for these 40. The first section told why fewer reached openpi's dataset: the OpenVLA team replayed each one and kept only the replays that still reached the goal. This is what was left in each suite.</p>
+    <table class="side-tbl c-count" aria-label="Demonstrations per suite, out of 500">
+      <tr><th>Spatial</th><td><span class="bar"><i style="--v:86.4%"></i></span><b>432</b></td></tr>
+      <tr><th>Object</th><td><span class="bar"><i style="--v:90.8%"></i></span><b>454</b></td></tr>
+      <tr><th>Goal</th><td><span class="bar"><i style="--v:85.6%"></i></span><b>428</b></td></tr>
+      <tr><th>LIBERO-10</th><td><span class="bar"><i style="--v:75.8%"></i></span><b>379</b></td></tr>
+    </table>
+    <p>Each bar is out of 500. A single task keeps between 29 and 50.</p>
+    <p class="c-src">Our count of the dataset's episode list, 2026-11-14. The reason is from OpenVLA's regeneration script and from Moo Jin Kim of the OpenVLA team on GitHub, 2024-10-17.</p>
+  </aside>
+  </div>
+</div>
+
+<figure class="fig narrow" data-fig="c-train-test">
+  <div class="c-tt">
+    <div class="c-tt-sent"><span class="q">pick up the black bowl between the plate and the ramekin and place it on the plate</span></div>
+    <div class="c-tt-panels">
+      <div class="c-tt-panel">
+        <div class="label">In training · <span>a demonstration's first picture</span></div>
+        <ol class="c-tt-pics">
+          <li><img src="../assets/img/ch3/c/train-ep1272.jpg" alt="Training: the LIBERO-Spatial table with two black bowls and the ramekin at the left, the plate in front, the cookie box, the stove and the cabinet." width="256" height="256" loading="lazy"><span>episode 1272</span></li>
+          <li><img src="../assets/img/ch3/c/train-ep1273.jpg" alt="Training: the same table, the objects a little further left." width="256" height="256" loading="lazy"><span>episode 1273</span></li>
+          <li><img src="../assets/img/ch3/c/train-ep1275.jpg" alt="Training: the same table again, the cabinet turned slightly." width="256" height="256" loading="lazy"><span>episode 1275</span></li>
+        </ol>
+      </div>
+      <div class="c-tt-panel">
+        <div class="label">In the test · <span>a stored starting state</span></div>
+        <ol class="c-tt-pics">
+          <li><img src="../assets/img/ch3/states/spatial-t00-s00.jpg" alt="Test: the same table from stored starting state 0." width="224" height="224" loading="lazy"><span>state 0</span></li>
+          <li><img src="../assets/img/ch3/states/spatial-t00-s01.jpg" alt="Test: the same table from stored starting state 1." width="224" height="224" loading="lazy"><span>state 1</span></li>
+          <li><img src="../assets/img/ch3/states/spatial-t00-s02.jpg" alt="Test: the same table from stored starting state 2." width="224" height="224" loading="lazy"><span>state 2</span></li>
+        </ol>
+      </div>
+    </div>
+  </div>
+  <figcaption><b>Figure 3.10 · The same task in training and in the test.</b> The top row is the first picture of the dataset's first three demonstrations of this LIBERO-Spatial task, which is what the model learned from. The bottom row is the first picture from stored starting states 0, 1 and 2, which is what it's tested from. All six show the same objects in the same places, with the bowl to take between the plate and the ramekin. They differ only by a few centimetres. LIBERO's authors say the stored states were drawn separately from the demonstrations' starts. Our own pixel comparison of 42 of this task's 45 demonstrations with all 50 stored states agrees (2026-11-14). <span class="credit">Top: physical-intelligence/libero, CC BY 4.0, episodes 1272, 1273 and 1275, frame 0. Bottom: our renders (tools/ch3/render_first_frames.py). Drawn separately: Bo Liu, LIBERO's first author, on LIBERO's GitHub (issue 2, 2023-06-18).</span></figcaption>
+</figure>
+
+<div class="prose">
+  <div class="predict">
+    <div class="label">Predict first</div>
+    <p>Before you look at figure 3.11: in which of the four suites could you name the task from its first picture alone, without the sentence?</p>
+    <textarea aria-label="Your guess" placeholder="Write a guess in a few words. Nothing is saved."></textarea>
+  </div>
+  <p>A task's starting table means the objects on the table and where each one starts, as the task file's <code>(:init)</code> block lays them out (figure 3.5). In LIBERO-Spatial, LIBERO-Object and LIBERO-10, almost every task has a starting table of its own, so its first picture is enough to name the task. In LIBERO-Goal no first picture can, because all ten tasks share one table. <strong class="key">A model can reach a high score by learning "this starting table means this motion" and never looking at the sentence.</strong> Figure 3.11 puts the first picture of all 40 tasks side by side.</p>
+</div>
+
+<figure class="fig" data-fig="forty-firsts">
   <div class="suites">
     <div class="srow">
       <div class="shead"><b>LIBERO-Spatial</b><span>pick up the black bowl … and place it on the plate</span><span class="count">9 starting tables for 10 tasks</span></div>
@@ -277,14 +732,26 @@
       </ol>
     </div>
   </div>
-  <figcaption><b>Figure 3.6 · The first picture of every task, one row per suite.</b> Each is what the model receives at its first call, from starting state 0, made the same way as figure 3.4. In the Spatial, Object and LIBERO-10 rows the pictures differ, so the picture alone names the task. The exceptions are the two boxed pairs, which we moved to the end of their rows so they sit side by side. In the Goal row all ten pictures show one table, apart from the few-centimetre shifts every start has. The labels are shortened from LIBERO's task sentences, and the counts of starting tables come from our comparison of the task files (2026-11-11). <span class="credit">Rendered by us from LIBERO's stored starting states; no model was run.</span></figcaption>
+  <figcaption><b>Figure 3.11 · The first picture of every task, one row per suite.</b> Each is what the model receives at its first call, from starting state 0, made the same way as figure 3.7. In the Spatial, Object and LIBERO-10 rows the pictures differ, so the picture alone names the task. The exceptions are the two boxed pairs, which we moved to the end of their rows so they sit side by side. In the Goal row all ten pictures show one table, apart from the few-centimetre shifts every start has. The labels are shortened from LIBERO's task sentences, and the counts of starting tables come from our comparison of the task files (2026-11-11). <span class="credit">Rendered by us from LIBERO's stored starting states; no model was run.</span></figcaption>
 </figure>
 
 <div class="prose">
-  <p>We checked each task's starting layout in LIBERO's task files and found those two exceptions. In LIBERO-Spatial, <span class="q">pick up the black bowl on the stove</span> and <span class="q">pick up the black bowl on the wooden cabinet</span> start from the same table. One black bowl sits on the stove and an identical one sits on the cabinet, so the picture can't say which one to take. In LIBERO-10, <span class="q">put both the alphabet soup and the tomato sauce in the basket</span> and <span class="q">put both the cream cheese box and the butter in the basket</span> also start from the same table. For each of these pairs, only the sentence tells the two tasks apart. Figure 3.7 shows both pairs at full size.</p>
+  <div class="has-side">
+  <p>We compared the starting tables in LIBERO's task files and found those two exceptions. In LIBERO-Spatial, <span class="q">pick up the black bowl on the stove</span> and <span class="q">pick up the black bowl on the wooden cabinet</span> start from the same table. One black bowl sits on the stove and an identical one sits on the cabinet, so the picture can't say which one to take. The goal check names one particular bowl, though, so carrying the other one to the plate counts as a failure. In LIBERO-10, <span class="q">put both the alphabet soup and the tomato sauce in the basket</span> and <span class="q">put both the cream cheese box and the butter in the basket</span> also start from the same table. For each of these pairs, only the sentence tells the two tasks apart. Figure 3.12 shows both pairs at full size.</p>
+  <p>It's the first picture that matters here, because the model keeps nothing from one call to the next. Each call gets only the two pictures of that moment and the sentence. So in a pair, the first actions come from two pictures that look the same for both tasks, and from the sentence. Once the arm has started toward one bowl, every later picture shows it on its way to that bowl.</p>
+  <aside class="side" aria-label="Side note: the wrist camera at the first step of the shared Spatial pair">
+    <div class="label">The wrist camera sees the same</div>
+    <figure class="side-pic two">
+      <div><img src="../assets/img/ch3/c/wrist-t7-s0.jpg" alt="Wrist camera at the first call of “on the stove”: looking down at the stove with a black bowl on it, the ramekin, the plate and the cookie box, with a corner of the dark cabinet." width="224" height="224" loading="lazy"><span>on the stove</span></div>
+      <div><img src="../assets/img/ch3/c/wrist-t9-s0.jpg" alt="Wrist camera at the first call of “on the wooden cabinet”: the same view, the same objects in the same places." width="224" height="224" loading="lazy"><span>on the wooden cabinet</span></div>
+      <figcaption>First call, starting state 0 of each task, from our run of 2026-11-11.</figcaption>
+    </figure>
+    <p>The model's second picture comes from a camera on its wrist. At the first step that camera looks down on the same objects in the same places in both tasks. By our pixel check, the two wrist pictures differ about as much as the wrist pictures of two starts of one task do.</p>
+  </aside>
+  </div>
 </div>
 
-<figure class="fig">
+<figure class="fig" data-fig="shared-pairs">
   <div class="pairs">
     <div>
       <div class="label">LIBERO-Spatial</div>
@@ -301,30 +768,123 @@
       </div>
     </div>
   </div>
-  <figcaption><b>Figure 3.7 · Two tasks, one table, twice.</b> At the first step the model gets the same picture for both tasks of a pair, and only the sentence differs. In the Spatial pair, one black bowl sits on the stove and an identical one on top of the cabinet. <a href="04-the-grounding-question.html">Chapter 4</a> runs our model on this pair with and without the sentence. <span class="credit">Rendered by us from starting state 0 of each task.</span></figcaption>
+  <figcaption><b>Figure 3.12 · Two tasks, one table, twice.</b> At the first step the model gets the same picture for both tasks of a pair, and only the sentence differs. In the Spatial pair, one black bowl sits on the stove and an identical one on top of the cabinet. <a href="04-the-grounding-question.html">Chapter 4</a> runs our model on this pair with and without the sentence. <span class="credit">Rendered by us from starting state 0 of each task.</span></figcaption>
 </figure>
 
 <div class="prose">
-  <p>LIBERO-Goal is the exception. All ten tasks share one picture, so a model that ignores the sentence has to guess. If it picked one of the ten tasks at random, it would succeed about one time in ten. This is our own arithmetic; chapter 5 shows a published number that matches it.</p>
+  <div class="has-side">
+  <p>Why would training let a model skip the words? Training scores it on one thing. At each moment of a demonstration the model proposes its next actions, and its error is how far they are from what the person did next. That is the <button class="term" data-term="flow-matching">flow-matching</button> error of <a href="02-pi0-and-pi05.html#insulation">chapter 2</a>, and nothing in it asks whether the sentence was used. As <a href="01-what-a-vla-is.html#shortcut">chapter 1</a> put it, imitation only learns what helps it copy.</p>
+  <p>In Spatial, Object and LIBERO-10, the starting table already says which task this is, so it already says what the person did next. On the table with a bowl on the cookie box, the person always picked up that bowl. A model that went by the picture alone would make the same small error as one that read the sentence, so training has no reason to prefer the reader. In Goal the table is the same for all ten tasks, as figure 3.1 showed, so only the sentence says what the person did next. A model that ignored it would keep mixing up ten different motions, and its error would stay larger.</p>
+  <p>By our reading, then, training asked for the words only in Goal and in the two pairs. That is a reading of how the training works, not a measurement. Whether <code>pi05_libero</code> actually goes without the words elsewhere is what chapter 4 tests.</p>
+  <aside class="side" aria-label="Side note: LIBERO's own experiment with a task label instead of the sentence">
+    <div class="label">LIBERO's authors saw this too</div>
+    <div class="route c-tan">
+      <div class="row"><span class="chip in">the task's sentence</span><span class="chip in">"Task 5"</span></div>
+      <span class="down"><svg viewBox="0 0 12 22" aria-hidden="true"><path d="M6 1v12"/><path d="M1 12l5 9 5-9z"/></svg>turned into numbers by a language model</span>
+      <span class="chip">a small policy learning LIBERO-10</span>
+      <span class="down"><svg viewBox="0 0 12 22" aria-hidden="true"><path d="M6 1v12"/><path d="M1 12l5 9 5-9z"/></svg></span>
+      <span class="chip">learned about equally well</span>
+    </div>
+    <p>The numbers a language model makes from a sentence are its <button class="term" data-term="language-embedding">language embedding</button>. "Task 5" is a <button class="term" data-term="task-id">task ID</button>, which says nothing about what to do, and the <button class="term" data-term="policy">policy</button> did no worse with it. The authors' explanation is that the sentence's numbers only worked as a label for the task.</p>
+    <p class="c-src">Liu et al. 2023, Section 5.2 and Table 3, and finding 3 in Section 1.</p>
+  </aside>
+  </div>
+
+  <p>The two shared pairs are the places outside Goal where training did reward reading. The demonstrations of <span class="q">pick up the black bowl on the stove</span> and of <span class="q">pick up the black bowl on the wooden cabinet</span> start from the same table, but the person took a different bowl in each. Only the sentence could tell the model which bowl the person took, so on those two tasks a model that skipped the words would have kept a larger error. The same goes for the two basket tasks in LIBERO-10. Counted in the training data, the Spatial pair has 79 of the suite's 432 demonstrations and the basket pair 82 of LIBERO-10's 379. In Goal all 428 start from the one shared table, and in Object none do (our count). This is our reading too, and it makes the Spatial pair a good place to test the model, which chapter 4 does.</p>
+
+  <div class="has-side">
+  <p>LIBERO-Goal works the other way. All ten of its tasks start from one table, so a model that ignored the sentence would get the same first pictures in all ten. It would make the same kind of motion each time, apart from the random numbers each call starts from. That one motion can finish one of the ten goals, maybe two, and it misses the rest. Averaged over the ten tasks, that comes to about one success in ten. This is our own arithmetic, and <a href="05-what-others-found.html#closest">chapter 5</a> shows a published number that matches it.</p>
+  <p><code>pi05_libero</code> succeeds in 98.0% of Goal episodes, far above one in ten. At the first step Goal's ten tasks differ only in their sentence, apart from the few-centimetre shifts, which are drawn the same way for every task and so say nothing about which one it is. The model must be using the sentence in Goal. What this chapter can't settle is whether it also uses the sentence where the picture already names the task, in Spatial, Object and LIBERO-10, because a high score there would come out the same either way. Figure 3.13 sets each suite's score next to its count of starting tables.</p>
+  <aside class="side" aria-label="Side note: one motion checked against the ten Goal tasks">
+    <div class="label">One motion, ten goal checks</div>
+    <svg class="side-dg c-goal" viewBox="0 0 260 328" role="img" aria-label="One picture of the Goal table leads to one motion, the bowl carried to the plate. Checked against the ten Goal tasks, it finishes only “bowl on the plate”.">
+      <defs><clipPath id="c-goal-clip"><rect width="78" height="78" rx="6"/></clipPath>
+        <marker id="c-goal-g" viewBox="0 0 12 12" refX="8" refY="6" markerWidth="4" markerHeight="4" orient="auto"><path d="M0 0L12 6 0 12z" fill="#577B37"/></marker>
+        <marker id="c-goal-t" viewBox="0 0 12 12" refX="8" refY="6" markerWidth="4" markerHeight="4" orient="auto"><path d="M0 0L12 6 0 12z" fill="#AAA184"/></marker></defs>
+      <image href="../assets/img/ch3/first/goal-t00.jpg" x="0" y="0" width="78" height="78" clip-path="url(#c-goal-clip)"/>
+      <text class="s" x="92" y="24">The same first</text>
+      <text class="s" x="92" y="42">picture in all</text>
+      <text class="s" x="92" y="60">ten Goal tasks</text>
+      <path d="M39 82V102" stroke="#577B37" stroke-width="3" fill="none" marker-end="url(#c-goal-g)"/>
+      <rect x="0" y="108" width="260" height="34" rx="10" fill="#E4EDD6" stroke="#9BBC6C" stroke-width="1.5"/>
+      <text class="b" x="12" y="130">one motion · bowl to the plate</text>
+      <path d="M39 146V164" stroke="#AAA184" stroke-width="3" fill="none" marker-end="url(#c-goal-t)"/>
+      <text class="s" x="54" y="161">checked against each goal</text>
+      <rect x="0" y="294" width="260" height="17" rx="4" fill="#E4EDD6"/>
+      <text class="no" x="6" y="186">✕</text><text class="k" x="26" y="186">middle drawer open</text>
+      <text class="no" x="6" y="201">✕</text><text class="k" x="26" y="201">bowl on the stove</text>
+      <text class="no" x="6" y="216">✕</text><text class="k" x="26" y="216">wine bottle on the cabinet</text>
+      <text class="no" x="6" y="231">✕</text><text class="k" x="26" y="231">bowl in the top drawer</text>
+      <text class="no" x="6" y="246">✕</text><text class="k" x="26" y="246">bowl on the cabinet</text>
+      <text class="no" x="6" y="261">✕</text><text class="k" x="26" y="261">plate at the stove's front</text>
+      <text class="no" x="6" y="276">✕</text><text class="k" x="26" y="276">cream cheese in the bowl</text>
+      <text class="no" x="6" y="291">✕</text><text class="k" x="26" y="291">stove turned on</text>
+      <text class="yes" x="6" y="306">✓</text><text class="k" x="26" y="306">bowl on the plate</text>
+      <text class="no" x="6" y="321">✕</text><text class="k" x="26" y="321">wine bottle on the rack</text>
+    </svg>
+    <p>Say the motion carries the bowl to the plate. Then one task in ten succeeds, and every other motion does about as badly. The motion is our example.</p>
+  </aside>
+  </div>
+</div>
+
+<figure class="fig narrow" data-fig="c-scores">
+  <div class="c-scores">
+    <div class="c-shead" aria-hidden="true"><span>Suite · tasks and tables</span><span>Success</span><span>What the score can show</span></div>
+    <div class="c-srow">
+      <div class="c-sname"><b>LIBERO-Spatial</b>
+        <svg class="c-tiles" viewBox="0 0 136 16" role="img" aria-label="Ten tasks on nine tables: one pair shares a table"><rect class="j" x="106" y="0.75" width="29" height="14.5" rx="3"/><rect class="t" x="2.5" y="2.5" width="11" height="11" rx="1.5"/><rect class="t" x="15.7" y="2.5" width="11" height="11" rx="1.5"/><rect class="t" x="28.9" y="2.5" width="11" height="11" rx="1.5"/><rect class="t" x="42.1" y="2.5" width="11" height="11" rx="1.5"/><rect class="t" x="55.3" y="2.5" width="11" height="11" rx="1.5"/><rect class="t" x="68.5" y="2.5" width="11" height="11" rx="1.5"/><rect class="t" x="81.7" y="2.5" width="11" height="11" rx="1.5"/><rect class="t" x="94.9" y="2.5" width="11" height="11" rx="1.5"/><rect class="t" x="108.1" y="2.5" width="11" height="11" rx="1.5"/><rect class="t" x="121.3" y="2.5" width="11" height="11" rx="1.5"/></svg>
+        <span>9 tables for 10 tasks</span></div>
+      <div class="c-snum">98.8<small>%</small></div>
+      <p>It can't show whether the model reads. Eight tasks have a table of their own. The stove and cabinet pair, where reading is needed, is two tasks of the ten inside this average.</p>
+    </div>
+    <div class="c-srow">
+      <div class="c-sname"><b>LIBERO-Object</b>
+        <svg class="c-tiles" viewBox="0 0 136 16" role="img" aria-label="Ten tasks on ten tables"><rect class="t" x="2.5" y="2.5" width="11" height="11" rx="1.5"/><rect class="t" x="15.7" y="2.5" width="11" height="11" rx="1.5"/><rect class="t" x="28.9" y="2.5" width="11" height="11" rx="1.5"/><rect class="t" x="42.1" y="2.5" width="11" height="11" rx="1.5"/><rect class="t" x="55.3" y="2.5" width="11" height="11" rx="1.5"/><rect class="t" x="68.5" y="2.5" width="11" height="11" rx="1.5"/><rect class="t" x="81.7" y="2.5" width="11" height="11" rx="1.5"/><rect class="t" x="94.9" y="2.5" width="11" height="11" rx="1.5"/><rect class="t" x="108.1" y="2.5" width="11" height="11" rx="1.5"/><rect class="t" x="121.3" y="2.5" width="11" height="11" rx="1.5"/></svg>
+        <span>10 tables for 10 tasks</span></div>
+      <div class="c-snum">98.2<small>%</small></div>
+      <p>It can't show whether the model reads. Every task has a table of its own, so the picture could have done all the work.</p>
+    </div>
+    <div class="c-srow c-reads">
+      <div class="c-sname"><b>LIBERO-Goal</b>
+        <svg class="c-tiles" viewBox="0 0 136 16" role="img" aria-label="Ten tasks, all on one table"><rect class="j" x="0.75" y="0.75" width="134.5" height="14.5" rx="3"/><rect class="t" x="2.5" y="2.5" width="11" height="11" rx="1.5"/><rect class="t" x="15.7" y="2.5" width="11" height="11" rx="1.5"/><rect class="t" x="28.9" y="2.5" width="11" height="11" rx="1.5"/><rect class="t" x="42.1" y="2.5" width="11" height="11" rx="1.5"/><rect class="t" x="55.3" y="2.5" width="11" height="11" rx="1.5"/><rect class="t" x="68.5" y="2.5" width="11" height="11" rx="1.5"/><rect class="t" x="81.7" y="2.5" width="11" height="11" rx="1.5"/><rect class="t" x="94.9" y="2.5" width="11" height="11" rx="1.5"/><rect class="t" x="108.1" y="2.5" width="11" height="11" rx="1.5"/><rect class="t" x="121.3" y="2.5" width="11" height="11" rx="1.5"/></svg>
+        <span>1 table for 10 tasks</span></div>
+      <div class="c-snum">98.0<small>%</small></div>
+      <p>It shows that the model uses the sentence here. All ten tasks share one table, so no picture could pick the right one, and a model without the words would land near one in ten.</p>
+    </div>
+    <div class="c-srow">
+      <div class="c-sname"><b>LIBERO-10</b>
+        <svg class="c-tiles" viewBox="0 0 136 16" role="img" aria-label="Ten tasks on nine tables: one pair shares a table"><rect class="j" x="106" y="0.75" width="29" height="14.5" rx="3"/><rect class="t" x="2.5" y="2.5" width="11" height="11" rx="1.5"/><rect class="t" x="15.7" y="2.5" width="11" height="11" rx="1.5"/><rect class="t" x="28.9" y="2.5" width="11" height="11" rx="1.5"/><rect class="t" x="42.1" y="2.5" width="11" height="11" rx="1.5"/><rect class="t" x="55.3" y="2.5" width="11" height="11" rx="1.5"/><rect class="t" x="68.5" y="2.5" width="11" height="11" rx="1.5"/><rect class="t" x="81.7" y="2.5" width="11" height="11" rx="1.5"/><rect class="t" x="94.9" y="2.5" width="11" height="11" rx="1.5"/><rect class="t" x="108.1" y="2.5" width="11" height="11" rx="1.5"/><rect class="t" x="121.3" y="2.5" width="11" height="11" rx="1.5"/></svg>
+        <span>9 tables for 10 tasks</span></div>
+      <div class="c-snum">92.4<small>%</small></div>
+      <p>It can't show whether the model reads. Eight tasks have a table of their own, and the two basket tasks that share one are two of the ten inside this average.</p>
+    </div>
+  </div>
+  <figcaption><b>Figure 3.13 · What each suite's score can and can't show.</b> Each square is one task, and a dashed band joins tasks that start from the same table, like the boxes in figure 3.11. Only Goal's score needs the sentence, because only there does the picture leave the task open. The scores are <code>pi05_libero</code>'s from openpi's LIBERO README, the counts of tables are from our comparison of the task files (2026-11-11), and the sentences on what each score can show are our reading. <span class="credit">Scores: openpi examples/libero/README.md, commit 215abfb, as in chapter 2.</span></figcaption>
+</figure>
+
+<div class="prose">
   <div class="note">
     <div class="label">A common wrong belief</div>
     <p>“98% on LIBERO-Spatial means the model understands spatial words like <em>between</em>.”</p>
   </div>
-  <p>Figure 3.6 shows why that doesn't follow. The model only has to tell ten arrangements apart, and the pictures differ. In eight of the ten Spatial tasks the starting table belongs to that task alone, so the picture points to the right bowl as clearly as <span class="q">between the plate and the ramekin</span> does. The stove and cabinet pair is the one place in the suite where the words have to do the work.</p>
+  <p>Figure 3.11 shows why that doesn't follow. In eight of the ten Spatial tasks the starting table belongs to that task alone, and in training the person always took the same bowl from it. So the picture points to the right bowl as clearly as <span class="q">between the plate and the ramekin</span> does, and a model could reach 98.8% with the words or without them. The stove and cabinet pair is the one place in the suite where the words have to do the work. The opposite conclusion goes too far as well. The score doesn't show that the model ignores <em>between</em> either, because a score this high would come out the same both ways. Chapter 4 tests it.</p>
 </div>
 
 <section class="rail" aria-label="Go deeper">
   <div class="rail-head">
-    <div><div class="label">Go deeper</div><p class="rail-title">The words as a task number, our check, and LIBERO's own reel</p></div>
+    <div><div class="label">Go deeper</div><p class="rail-title">Objects moved further than LIBERO moves them, our check, and LIBERO's own reel</p></div>
     <div class="rail-nav"><button class="rail-prev" type="button" aria-label="Previous">←</button><button class="rail-next" type="button" aria-label="Next">→</button></div>
   </div>
   <div class="rail-track">
-    <article class="card text"><div class="body">
-      <span class="tag">LIBERO's own finding</span>
-      <h4>The words worked like a task number</h4>
-      <p>LIBERO's authors trained their own, much smaller policies on these suites. Giving each policy the task's sentence as a language embedding did no better than giving it a bare task number. By our reading this is the same shortcut seen from the other side: a policy only needs to know which task it's on, and a number tells it that as well as a sentence.</p>
-      <p class="src">Liu et al. 2023, Section 1, finding 3 · <a href="https://arxiv.org/abs/2306.03310">arXiv 2306.03310</a></p>
-    </div></article>
+    <article class="card">
+      <div class="media pic"><img src="../assets/img/ch3/c/libero-pro-fig4.jpg" alt="LIBERO-PRO's Figure 4: a LIBERO-Object table with the alphabet soup's start marked and arrows for the X and Y shifts, then three heat maps of success against the shift for OpenVLA, π0 and π0.5. Success is bright only near no shift; π0.5's bright area reaches furthest." width="701" height="614" loading="lazy"></div>
+      <div class="body">
+        <span class="tag">Another group's test</span>
+        <h4>Move the object further and success falls away</h4>
+        <p>LIBERO-PRO moved the object the robot has to pick up away from where LIBERO starts it. For OpenVLA and π0, success collapsed once the shift passed 0.2, and π0.5 kept some success up to about 0.4, in units the paper doesn't name. The authors write that even small shifts sent the arm toward the object's usual spot instead of where it now stood, and they read that as memorised positions. They also replaced the instructions with meaningless strings, which chapter 5 covers.</p>
+        <p class="src">Zhou et al. 2025, LIBERO-PRO, Section 2.3 and Figure 4, CC BY 4.0 · <a href="https://arxiv.org/abs/2510.03827">arXiv 2510.03827</a> · <a href="05-what-others-found.html#others">chapter 5</a></p>
+      </div>
+    </article>
     <article class="card text"><div class="body">
       <span class="tag">Our check</span>
       <h4>How we counted the starting tables</h4>
@@ -342,8 +902,10 @@
 
 <div class="prose">
   <h2 id="for-us">What this means for our project</h2>
-  <p>The plan we submitted (chapter 6) compares suites. LIBERO-Goal is the one suite where the benchmark forces the model to read, and the other three let it get away without reading, apart from the two pairs in figure 3.7. The interesting results sit in the gap between them. <a href="04-the-grounding-question.html">Chapter 4</a> turns this into tests.</p>
+  <p>Goal's 98.0% already shows that <code>pi05_libero</code> uses the sentence when the picture can't name the task. Whether it also uses the sentence when the picture can, in Spatial, Object and LIBERO-10, is still open, and those suites' scores can't answer it. Inside those suites, the two shared pairs are the tasks that can answer it, because there the picture can't decide. The plan we submitted with the course sign-up compares the four suites under different prompts, and this chapter says what such a comparison can and can't show. That plan is a proposal, not a decision, and chapter 6 lists what the team has decided. <a href="04-the-grounding-question.html">Chapter 4</a> turns the open question into tests.</p>
+</div>
 
+<div class="prose">
   <h2 id="check">Check yourself</h2>
   <ol class="quiz">
     <li><p>In which suite must a model read the instruction to succeed, and why?</p>
@@ -352,39 +914,67 @@
       <details><summary>Show answer</summary><p>500 (10 tasks × 50 trials).</p></details></li>
     <li><p>A model scores 98% on LIBERO-Spatial. Explain why that doesn't show it understands <span class="q">between the plate and the ramekin</span>.</p>
       <details><summary>Show answer</summary><p>The "between the plate and the ramekin" task starts from its own arrangement of objects, so the picture alone identifies the task. The model can map arrangements to motions without using the words.</p></details></li>
+    <li><p>Every training demonstration comes with its sentence. Why can training still leave a model that never reads the sentence in LIBERO-Spatial?</p>
+  <details><summary>Show answer</summary><p>Training scores only the model's actions against what the person did next. In eight of the ten Spatial tasks the starting table already says which bowl the person took, so going by the picture alone gives the same small error as reading the sentence, and nothing pushes the model to read. Only in the stove and cabinet pair does the error depend on the sentence.</p></details></li>
+    <li><p>Why does openpi's script send a do-nothing action for 10 steps before it takes the first picture, and why don't those steps count toward the 220-step limit?</p>
+      <details><summary>Show answer</summary><p>LIBERO stores every loose object at the same height, 0.97 m, and the script's comment says the simulator drops the objects, so the script waits for them to fall before the model sees anything. The model doesn't act during those steps, so they aren't part of its episode. In the code the loop runs for the step limit plus the 10 waiting steps (`while t < max_steps + num_steps_wait`), so the model still gets all 220 of its own steps.</p></details></li>
   </ol>
 
-  <p class="quiz-intro">In questions 4 to 8, pick the answer you think is right. The option opens and says whether it's right and why, and you can open the others afterwards to see what's wrong with them.</p>
-  <ol class="quiz" style="counter-reset: q 3">
-    <li class="mcq"><p><code>pi05_libero</code> succeeds in 98.8% of LIBERO-Spatial episodes. What does that show about the word <em>between</em>?</p>
-      <ol class="mcq-opts">
-        <li><details class="mcq-opt" name="mcq-4"><summary>The model understands it, because the Spatial sentences pick the bowl by where it is.</summary><p>No, and this is the wrong belief the chapter names. Eight of the ten Spatial tasks start from a table no other task uses, so the picture picks the bowl as well as the sentence does. The score can't tell which of the two the model went by.</p></details></li>
-        <li><details class="mcq-opt right" name="mcq-4"><summary>Nothing either way, because the picture already says which bowl to take in almost every Spatial task.</summary><p>Right. A model can score high by learning each starting table's motion. Only the stove and cabinet pair needs the words, and a score over all ten tasks hides how the model did on those two.</p></details></li>
-        <li><details class="mcq-opt" name="mcq-4"><summary>It ignores the words, since the picture is enough.</summary><p>No, that goes too far the other way. The score shows only that the model doesn't need the words for most of these tasks, not that it never uses them. Chapter 4 tests that.</p></details></li>
-      </ol></li>
+  <p class="quiz-intro">In questions 6 to 14, pick the answer you think is right. The option opens and says whether it's right and why, and you can open the others afterwards to see what's wrong with them.</p>
+  <ol class="quiz" style="counter-reset: q 5">
     <li class="mcq"><p>Which suite starts all ten of its tasks from the same table?</p>
       <ol class="mcq-opts">
-        <li><details class="mcq-opt" name="mcq-5"><summary>LIBERO-Spatial, since its ten tasks use the same objects.</summary><p>No. The objects are the same, but the two black bowls start in different places in each task, so the tables differ (figure 3.6, top row).</p></details></li>
-        <li><details class="mcq-opt" name="mcq-5"><summary>LIBERO-Object, since every task puts something in the same basket.</summary><p>No. The basket stays, but each task has its own set of groceries on the floor, in its own places.</p></details></li>
-        <li><details class="mcq-opt right" name="mcq-5"><summary>LIBERO-Goal.</summary><p>Right. All ten tasks start from one arrangement of the bowl, plate, stove, wine bottle, cream cheese and cabinet, so only the sentence says which task it is.</p></details></li>
+        <li><details class="mcq-opt" name="mcq-6"><summary>LIBERO-Spatial, since its ten tasks use the same objects.</summary><p>No. The objects are the same, but the two black bowls start in different places in each task, so the tables differ (figure 3.11, top row).</p></details></li>
+        <li><details class="mcq-opt" name="mcq-6"><summary>LIBERO-Object, since every task puts something in the same basket.</summary><p>No. The basket stays, but each task has its own set of groceries on the floor, in its own places.</p></details></li>
+        <li><details class="mcq-opt right" name="mcq-6"><summary>LIBERO-Goal.</summary><p>Right. All ten tasks start from one arrangement of the bowl, plate, stove, wine bottle, cream cheese and cabinet, so only the sentence says which task it is.</p></details></li>
+      </ol></li>
+    <li class="mcq"><p>How does an episode in <code>pi05_libero</code>'s training data end?</p>
+  <ol class="mcq-opts">
+    <li><details class="mcq-opt right" name="mcq-7"><summary>Just after the goal is met, so every episode in the training data ends in success.</summary><p>Right. The recording stops once the goal has held for 10 steps, and recordings whose replay didn't end in success were dropped, so all 1,693 end with the task done.</p></details></li>
+    <li><details class="mcq-opt" name="mcq-7"><summary>When the step limit runs out, as in a test.</summary><p>No. The step limit ends a test episode that never reached its goal. The recordings ran until the person had done the task, and any that didn't end in success were left out.</p></details></li>
+    <li><details class="mcq-opt" name="mcq-7"><summary>Wherever the person stopped recording, so some episodes end with the task half done.</summary><p>No. LIBERO's recording script stops by itself once the goal has held for 10 steps, and the OpenVLA team kept only the replays that still ended in success.</p></details></li>
+  </ol></li>
+    <li class="mcq"><p>What are the 50 trials of one task?</p>
+      <ol class="mcq-opts">
+        <li><details class="mcq-opt" name="mcq-8"><summary>50 different tables, each with its own objects.</summary><p>No. All 50 use the same objects in the same arrangement, and only small shifts differ (figure 3.7).</p></details></li>
+        <li><details class="mcq-opt" name="mcq-8"><summary>50 new random arrangements, drawn fresh for every evaluation.</summary><p>No. The 50 starting states are stored with the benchmark, so every model and every run starts from the same 50.</p></details></li>
+        <li><details class="mcq-opt right" name="mcq-8"><summary>The same arrangement 50 times, with the objects shifted by a few centimetres each time, stored with the benchmark.</summary><p>Right. One episode runs from each stored state, so a task gets 50 trials and a suite gets 500.</p></details></li>
       </ol></li>
     <li class="mcq"><p>A LIBERO-Spatial episode has run for 150 steps, and the bowl still isn't on the plate. When does the episode end?</p>
       <ol class="mcq-opts">
-        <li><details class="mcq-opt right" name="mcq-6"><summary>When the bowl reaches the plate, or at step 220 if it never does.</summary><p>Right. The simulator checks the goal condition after every step. If it holds, the episode ends as a success, and if it still doesn't hold at the 220-step limit, the episode ends as a failure.</p></details></li>
-        <li><details class="mcq-opt" name="mcq-6"><summary>When the model decides the task is done and stops sending actions.</summary><p>No. The model has no way to stop an episode. Its actions only move the hand and open or close the gripper, and the simulator decides when the episode is over by checking the goal condition.</p></details></li>
-        <li><details class="mcq-opt" name="mcq-6"><summary>At step 104, the length of our run.</summary><p>No. 104 is when the goal happened to hold in our run. A Spatial episode that hasn't reached its goal keeps going until step 220.</p></details></li>
+        <li><details class="mcq-opt right" name="mcq-9"><summary>When the bowl reaches the plate, or at step 220 if it never does.</summary><p>Right. The simulator checks the goal condition after every step. If it holds, the episode ends as a success, and if it still doesn't hold at the 220-step limit, the episode ends as a failure.</p></details></li>
+        <li><details class="mcq-opt" name="mcq-9"><summary>When the model decides the task is done and stops sending actions.</summary><p>No. The model has no way to stop an episode. Its actions only move the hand and open or close the gripper, and the simulator decides when the episode is over by checking the goal condition.</p></details></li>
+        <li><details class="mcq-opt" name="mcq-9"><summary>At step 104, the length of our run.</summary><p>No. 104 is when the goal happened to hold in our run. A Spatial episode that hasn't reached its goal keeps going until step 220.</p></details></li>
       </ol></li>
-    <li class="mcq"><p>What are the 50 trials of one task?</p>
+    <li class="mcq"><p>In our run, the bowl reached the middle of the plate after step 104 while the model was still telling the gripper to stay closed. What did the simulator do?</p>
       <ol class="mcq-opts">
-        <li><details class="mcq-opt" name="mcq-7"><summary>50 different tables, each with its own objects.</summary><p>No. All 50 use the same objects in the same arrangement, and only small shifts differ (figure 3.4).</p></details></li>
-        <li><details class="mcq-opt" name="mcq-7"><summary>50 new random arrangements, drawn fresh for every evaluation.</summary><p>No. The 50 starting states are stored with the benchmark, so every model and every run starts from the same 50.</p></details></li>
-        <li><details class="mcq-opt right" name="mcq-7"><summary>The same arrangement 50 times, with the objects shifted by a few centimetres each time, stored with the benchmark.</summary><p>Right. One episode runs from each stored state, so a task gets 50 trials and a suite gets 500.</p></details></li>
+        <li><details class="mcq-opt" name="mcq-10"><summary>It kept going, because the bowl only counts as on the plate once the gripper lets go.</summary><p>No. None of LIBERO's three tests asks about the gripper. The bowl and the plate touched, the plate wasn't higher than the bowl, and their centres were less than 3 cm apart, so the goal held.</p></details></li>
+        <li><details class="mcq-opt right" name="mcq-10"><summary>It ended the episode as a success, because all three tests passed at that step.</summary><p>Right. After every step LIBERO checks that the two objects touch, that the plate isn't higher than the bowl, and that their centres are under 3 cm apart from above. All three held after step 104, while the gripper was still told to stay closed.</p></details></li>
+        <li><details class="mcq-opt" name="mcq-10"><summary>It kept going, because the simulator checks the goal only when the step limit runs out.</summary><p>No. The goal is checked after every single step, and the episode ends at the first step where it holds. The limit, 220 steps for Spatial, only ends episodes that never reach the goal.</p></details></li>
       </ol></li>
-    <li class="mcq"><p>Why do the two shared pairs in figure 3.7 matter for our question?</p>
+    <li class="mcq"><p>What is new to <code>pi05_libero</code> when it is tested on LIBERO-Spatial?</p>
+  <ol class="mcq-opts">
+    <li><details class="mcq-opt" name="mcq-11"><summary>The ten tasks, since a benchmark keeps its test tasks out of training.</summary><p>No. openpi trained <code>pi05_libero</code> on demonstrations of the same 40 tasks the benchmark tests, with the same sentences and the same starting tables. LIBERO tests tasks the model has practised.</p></details></li>
+    <li><details class="mcq-opt right" name="mcq-11"><summary>Only the exact start: each object and the arm stand a few centimetres away from where any training demonstration began.</summary><p>Right. LIBERO's authors drew the 50 stored starting states separately from the demonstrations' starts, but in the same way, so the tables, the objects and the sentences are all familiar and only the small shifts are new.</p></details></li>
+    <li><details class="mcq-opt" name="mcq-11"><summary>The sentences, since the test sends instructions written for the benchmark.</summary><p>No. Each demonstration in the training data carries its task's sentence, and all 40 match the benchmark's sentences word for word.</p></details></li>
+  </ol></li>
+    <li class="mcq"><p><code>pi05_libero</code> succeeds in 98.8% of LIBERO-Spatial episodes. What does that show about the word <em>between</em>?</p>
       <ol class="mcq-opts">
-        <li><details class="mcq-opt right" name="mcq-8"><summary>Outside LIBERO-Goal, they are the only tasks whose first picture can't say which task it is, so the words have to.</summary><p>Right. In suites where the picture usually gives the task away, these four tasks can only be told apart by reading. Chapter 4 runs our model on the Spatial pair.</p></details></li>
-        <li><details class="mcq-opt" name="mcq-8"><summary>They show a mistake in the benchmark that makes those tasks impossible.</summary><p>No. Every task in a pair can be done. The sentence says which bowl, or which two groceries, to take, so a model that reads it can succeed.</p></details></li>
-        <li><details class="mcq-opt" name="mcq-8"><summary>They make LIBERO-Spatial as hard to guess as LIBERO-Goal.</summary><p>No. One pair among ten tasks still leaves eight Spatial tasks with a table of their own. In Goal, all ten share one.</p></details></li>
+        <li><details class="mcq-opt" name="mcq-12"><summary>The model understands it, because the Spatial sentences pick the bowl by where it is.</summary><p>No, and this is the wrong belief the chapter names. Eight of the ten Spatial tasks start from a table no other task uses, so the picture picks the bowl as well as the sentence does. The score can't tell which of the two the model went by.</p></details></li>
+        <li><details class="mcq-opt right" name="mcq-12"><summary>Nothing either way, because the picture already says which bowl to take in almost every Spatial task.</summary><p>Right. A model can score high by learning each starting table's motion. Only the stove and cabinet pair needs the words, and a score over all ten tasks hides how the model did on those two.</p></details></li>
+        <li><details class="mcq-opt" name="mcq-12"><summary>It ignores the words, since the picture is enough.</summary><p>No, that goes too far the other way. The score shows only that the model doesn't need the words for most of these tasks, not that it never uses them. Chapter 4 tests that.</p></details></li>
+      </ol></li>
+    <li class="mcq"><p><code>pi05_libero</code> succeeds in 98.0% of LIBERO-Goal episodes. What does that show?</p>
+  <ol class="mcq-opts">
+    <li><details class="mcq-opt" name="mcq-13"><summary>That it reads the words in every suite, because one model handles all four.</summary><p>No, that goes too far. Goal shows the model uses the sentence where the picture can't name the task. In Spatial, Object and LIBERO-10 the picture could have done the work, so their scores can't say, and chapter 4 tests it.</p></details></li>
+    <li><details class="mcq-opt" name="mcq-13"><summary>Nothing, because a high score never shows whether the words were read.</summary><p>No. Where the picture already names the task, a high score can't tell. In Goal all ten tasks start from one table, so a model without the words would land near one success in ten, and 98.0% is far above that.</p></details></li>
+    <li><details class="mcq-opt right" name="mcq-13"><summary>That it uses the sentence in Goal, because all ten Goal tasks start from the same table.</summary><p>Right. At the first step Goal's ten tasks differ only in their sentence, so the sentence must be what sends the arm to the right goal there.</p></details></li>
+  </ol></li>
+    <li class="mcq"><p>Why do the two shared pairs in figure 3.12 matter for our question?</p>
+      <ol class="mcq-opts">
+        <li><details class="mcq-opt right" name="mcq-14"><summary>Outside LIBERO-Goal, they are the only tasks whose first picture can't say which task it is, so the words have to.</summary><p>Right. In suites where the picture usually gives the task away, these four tasks can only be told apart by reading. Chapter 4 runs our model on the Spatial pair.</p></details></li>
+        <li><details class="mcq-opt" name="mcq-14"><summary>They show a mistake in the benchmark that makes those tasks impossible.</summary><p>No. Every task in a pair can be done. The sentence says which bowl, or which two groceries, to take, so a model that reads it can succeed.</p></details></li>
+        <li><details class="mcq-opt" name="mcq-14"><summary>They make LIBERO-Spatial as hard to guess as LIBERO-Goal.</summary><p>No. One pair among ten tasks still leaves eight Spatial tasks with a table of their own. In Goal, all ten share one.</p></details></li>
       </ol></li>
   </ol>
 
@@ -398,6 +988,30 @@
     <li>Our renders of LIBERO's stored starting states, 2026-11-13, with <code>tools/ch3/render_first_frames.py</code> in this repo. Our render of LIBERO-Spatial task 0 from state 0 differs from the picture the model received in that run by 1.2 on average per pixel value (out of 255, about what JPEG compression leaves), against 5.3 for state 1.</li>
     <li>Our run of openpi's <code>pi05_libero</code> checkpoint on 2026-11-11: LIBERO-Spatial task 0, first starting state, success at step 104. Kept in the repo under <code>stage1/runs/recorded-call-spatial0/</code>.</li>
     <li>Zhou et al. (2025), LIBERO-PRO. <a href="https://arxiv.org/abs/2510.03827">arXiv 2510.03827</a> (the argument that LIBERO rewards memorising layouts)</li>
+    <li>Liu et al. (2023), LIBERO: Benchmarking Knowledge Transfer for Lifelong Robot Learning, <a href="https://arxiv.org/abs/2306.03310">arXiv 2306.03310</a>, CC BY 4.0. Read again 2026-11-14: Figure 1's caption on what each suite tests (spatial relationships, objects, task goals); Section 4.2, LIBERO-100 split into 90 short-horizon and 10 long-horizon tasks; Section 4.3, demonstrations by teleoperation with a 3Dconnexion SpaceMouse. Figures 8 to 11 reused under CC BY 4.0 in the "go deeper" rail.</li>
+    <li>LIBERO's code at the commit openpi pins: <code>scripts/collect_demonstration.py</code> (a recording stops once the goal has held for 10 steps; SpaceMouse by default), <code>scripts/create_dataset.py</code>, <code>libero/libero/envs/bddl_base_domain.py</code> (a new arrangement is sampled from the task file's regions on reset), and the task files in <code>libero/libero/bddl_files/</code>, read 2026-11-14. <a href="https://github.com/Lifelong-Robot-Learning/LIBERO">github.com/Lifelong-Robot-Learning/LIBERO</a></li>
+    <li>Our comparison of LIBERO's task files, 2026-11-14: 130 files in five folders; in LIBERO-Spatial only the two black bowls change place; nine of LIBERO-10's ten goals ask for two things; LIBERO-90's 90 tasks share 20 starting arrangements, 2 to 7 per scene.</li>
+    <li>robosuite 1.4.1 (the version in openpi's LIBERO environment), read 2026-11-14: <code>macros.py</code> (<code>IMAGE_CONVENTION = "opengl"</code>), <code>environments/robot_env.py</code> (camera pictures), <code>environments/base.py</code> (one action per step), <code>models/robots/manipulators/panda_robot.py</code> (the Panda, "designed by Franka"), <code>devices/spacemouse.py</code> (the 3D mouse's controls). <a href="https://github.com/ARISE-Initiative/robosuite">github.com/ARISE-Initiative/robosuite</a></li>
+    <li>OpenVLA (Kim et al. 2024): <code>experiments/robot/libero/regenerate_libero_dataset.py</code> (pictures re-recorded at 256 × 256, still steps removed, failed replays dropped, and the note that the RLDS conversion turns pictures 180 degrees) and <code>libero_utils.py</code>, and the README's LIBERO section, read 2026-11-14. <a href="https://github.com/openvla/openvla">github.com/openvla/openvla</a></li>
+    <li>Moo Jin Kim, <code>rlds_dataset_builder</code> (MIT), the LIBERO builders that turn both pictures with <code>[::-1,::-1]</code>, linked from OpenVLA's README, read 2026-11-14. <a href="https://github.com/moojink/rlds_dataset_builder">github.com/moojink/rlds_dataset_builder</a></li>
+    <li>physical-intelligence/libero, CC BY 4.0: <code>meta/episodes.jsonl</code> and <code>meta/info.json</code> (1,693 episodes, 10 fps, longest episodes 193, 254, 270 and 505 steps, 29 to 50 episodes per task, our count), and frames of episodes 379, 851 and 1, read through the Hugging Face datasets-server on 2026-11-14. <a href="https://huggingface.co/datasets/physical-intelligence/libero">huggingface.co/datasets/physical-intelligence/libero</a></li>
+    <li>Photos from Wikimedia Commons: "Franka Emika2" by Ims (CeBIT 2017), CC BY-SA 4.0, <a href="https://commons.wikimedia.org/wiki/File:Franka_Emika2.jpg">commons.wikimedia.org/wiki/File:Franka_Emika2.jpg</a>; "3Dconnexion with hand at Institute of Geography of Masaryk University in Brno" by Jiří Sedláček, CC BY-SA 3.0, <a href="https://commons.wikimedia.org/wiki/File:3Dconnexion_with_hand_at_Institute_of_Geography_of_Masaryk_University_in_Brno,_Brno-City_District.jpg">Wikimedia Commons</a>. Licences checked through the Commons API, 2026-11-14. Both cropped.</li>
+    <li>Liu et al. (2023), LIBERO: Benchmarking Knowledge Transfer for Lifelong Robot Learning, <a href="https://arxiv.org/abs/2306.03310">https://arxiv.org/abs/2306.03310</a> (HTML v2), CC BY 4.0. Read 2026-11-14: Figure 2 (cropped for the side note "PDDL or BDDL?"), Appendix C.2 (the task file called a "PDDL-based Scene Description File"), Appendix D (their own policies evaluated over 20 test episodes per task, of at most 600 steps).</li>
+    <li>LIBERO's code at the commit openpi pins (f78abd6, 2023-12-24), <a href="https://github.com/Lifelong-Robot-Learning/LIBERO">https://github.com/Lifelong-Robot-Learning/LIBERO</a>, MIT licence. Read 2026-11-14: the task file <code>libero/libero/bddl_files/libero_spatial/pick_up_the_black_bowl_between_the_plate_and_the_ramekin_and_place_it_on_the_plate.bddl</code> and the other nine Spatial files (same regions, same goal); <code>benchmark/__init__.py</code> (the sentence comes from the file name; stored states loaded from <code>.pruned_init</code>); <code>envs/utils.py</code> (<code>rectangle2xyrange</code>, how a region's four numbers are read); <code>envs/bddl_base_domain.py</code> (<code>control_freq=20</code>, line 63; placement of fixtures and objects; <code>_reset_internal</code>, which places the cabinet and the stove again at every reset; <code>step</code>, which checks the goal after every step); <code>envs/problems/libero_tabletop_manipulation.py</code> (<code>_check_success</code> ANDs the goal's parts; the table's size and height); <code>envs/predicates/base_predicates.py</code> (<code>On</code>) and <code>envs/object_states/base_object_states.py</code> (<code>check_ontop</code>, the three tests); the bowl's and plate's model files; the cabinet's and stove's joints; <code>envs/env_wrapper.py</code> (<code>set_init_state</code>); the README's note that the starting states are fixed for benchmarking.</li>
+    <li>LIBERO's stored starting states for Spatial task 0 (<code>init_files/libero_spatial/…pruned_init</code>), loaded with numpy and torch on 2026-11-14 by <code>tools/ch3/stored_state_numbers.py</code> (no simulator): 50 rows of 92 numbers, the objects' spread, the arm's spread.</li>
+    <li>BDDL, the Behavior Domain Definition Language (Stanford Vision and Learning Lab, BEHAVIOR benchmark), <a href="https://github.com/StanfordVL/bddl">https://github.com/StanfordVL/bddl</a>; README of the installed package (bddl 1.0.1) read 2026-11-14.</li>
+    <li>robosuite 1.4.1 (the version in openpi's LIBERO environment), <a href="https://github.com/ARISE-Initiative/robosuite">https://github.com/ARISE-Initiative/robosuite</a>. Read 2026-11-14: <code>robosuite/environments/base.py</code> (what <code>control_freq</code> means, how many physics updates a step runs) and <code>robosuite/macros.py</code> (<code>SIMULATION_TIMESTEP = 0.002</code>).</li>
+    <li>openpi, <a href="https://github.com/Physical-Intelligence/openpi">https://github.com/Physical-Intelligence/openpi</a> (local checkout 215abfb). Read 2026-11-14: <code>examples/libero/main.py</code> (step limits and the longest-demonstration comments, lines 60-67; seed 7 and the comment that the seed "seems to affect object positions even when using fixed initial state", lines 45, 50 and 195; the 10 waiting steps outside the limit, line 104; an error ends an episode, lines 160-162); <code>src/openpi/policies/policy.py</code> (the random key starts at <code>jax.random.key(0)</code> and is split at every call, lines 65 and 75); <code>examples/libero/README.md</code> (the 98.8 / 98.2 / 98.0 / 92.4 table, with no episode count).</li>
+    <li>physical-intelligence/libero on Hugging Face, <code>meta/episodes.jsonl</code>, <code>meta/tasks.jsonl</code> and <code>meta/info.json</code>, <a href="https://huggingface.co/datasets/physical-intelligence/libero">Hugging Face</a> (CC BY 4.0), fetched 2026-11-14: our count of each suite's longest demonstration (193, 254, 270, 505) and of Spatial task 0's 45 demonstrations (75 to 168 steps).</li>
+    <li>Our recorded run, <code>stage1/runs/recorded-call-spatial0/calls.json</code> (2026-11-11): 104 steps, 21 calls, the gripper commands at the end; our 60 episodes in <code>stage1/results/exp1-shared-table.md</code> (2026-11-11): 11.7 s per successful episode in our runs.</li>
+    <li>The plan we submitted, quoted in chapter 6, <a href="https://github.com/blueif16/vla_final/blob/main/docs/learn/06-where-we-stand.md">our repository on GitHub</a> (the four prompts).</li>
+    <li>physical-intelligence/libero, CC BY 4.0, <code>meta/episodes.jsonl</code>, <code>tasks.jsonl</code> and <code>info.json</code>, read 2026-11-14: 1,693 demonstrations, 432 Spatial, 454 Object, 428 Goal and 379 LIBERO-10, between 29 and 50 per task (our count); its 40 task sentences match the benchmark's word for word (our comparison); demonstrations 1272, 1273 and 1275 (frame 0) in figure 3.10. <a href="https://huggingface.co/datasets/physical-intelligence/libero">huggingface.co/datasets/physical-intelligence/libero</a></li>
+    <li>OpenVLA's <code>experiments/robot/libero/regenerate_libero_dataset.py</code> and README (read 2026-11-14): each LIBERO demonstration replayed with the do-nothing commands removed, and only the replays that reached the goal kept. Moo Jin Kim on GitHub, 2024-10-17: "the train sets include less than 500 demos per suite because we filtered out unsuccessful demos". <a href="https://github.com/openvla/openvla/blob/main/experiments/robot/libero/regenerate_libero_dataset.py">the script</a> · <a href="https://github.com/openvla/openvla/issues/138">openvla issue 138</a></li>
+    <li>Bo Liu, LIBERO's first author, on LIBERO's GitHub, 2023-06-18: the 50 stored starting states "are not necessarily the same as the initial state in the demonstration, but they are sampled i.i.d from the same initial state distribution". Yifeng Zhu, 2024-10-20: "they are generated differently from the ones in demos". Read 2026-11-14. <a href="https://github.com/Lifelong-Robot-Learning/LIBERO/issues/2#issuecomment-1596101904">LIBERO issue 2</a> · <a href="https://github.com/Lifelong-Robot-Learning/LIBERO/issues/40">LIBERO issue 40</a></li>
+    <li>Liu et al. (2023), LIBERO, Section 5.2 and Table 3 (read 2026-11-14): on LIBERO-Long, a ResNet-T policy given the task as BERT, CLIP or GPT-2 embeddings of its sentence, or as BERT's embedding of "Task" plus its number, showed no statistically significant difference. <a href="https://arxiv.org/abs/2306.03310">arXiv 2306.03310</a></li>
+    <li>openpi at commit 215abfb (read 2026-11-14): <code>src/openpi/policies/libero_policy.py</code> (each call takes the current table and wrist pictures, the state and the prompt) and <code>src/openpi/policies/policy.py</code> (only the random key carries over between calls); <code>examples/libero/main.py</code> sends <code>task.language</code> as the prompt; <code>examples/libero/README.md</code> for the scores 98.8, 98.2, 98.0 and 92.4. <a href="https://github.com/Physical-Intelligence/openpi">github.com/Physical-Intelligence/openpi</a></li>
+    <li>Zhou et al. (2025), LIBERO-PRO, Section 2.3 and Figure 4 (object position shifts; CC BY 4.0, figure reused in the rail) and Section 5.1 (one official checkpoint each for π0 and π0.5), read 2026-11-14. <a href="https://arxiv.org/abs/2510.03827">arXiv 2510.03827</a></li>
+    <li>Our checks, 2026-11-14: the first pictures of 42 of the 45 demonstrations of LIBERO-Spatial task 0 against our renders of its 50 stored starting states (no demonstration came closer to a stored state than two stored states come to each other), and the first wrist pictures of the stove and cabinet pair from our 2026-11-11 run (they differ about as much as two starts of one task).</li>
   </ul>
 </div>
 </main>

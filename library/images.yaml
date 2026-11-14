@@ -296,3 +296,98 @@ ch4_web_2026_11_13:   # chapter 4 web page (docs/learn/04-the-grounding-question
     - { what: "figure 4.4's four ending drawings (inline SVG, ch4.css .mini) and the margin note's tasks-per-table squares", by: us }
   not_used:
     - { what: "LIBERO-CF Figure 2 (grasp heatmaps under training-task, counterfactual and empty instructions)", note: "CC BY 4.0 and a good picture of biased behaviour, but chapter 5 already holds it (docs/assets/img/ch5/libero-cf-fig2-vision-shortcuts.jpg); chapter 4 points forward instead" }
+
+# ---- chapter 3 web page, round 2 (2026-11-14): sections A, B and C (merged by the lead) ----
+
+ch3_v2_A_2026_11_14_images:
+  images:   # -> library/images.yaml
+    - files: docs/assets/img/ch3/a/mirror-{sim,camera,model}.jpg
+      made_from: docs/assets/img/libero-ep379/table-000.jpg (physical-intelligence/libero, CC BY 4.0, episode 379, frame 0, table camera, 256x256)
+      how: "ffmpeg -map_metadata -1 -q:v 3; model = the frame as stored (already turned 180 degrees in the dataset); camera = hflip; sim = hflip,vflip (the half turn undone)"
+      shows: "the Goal table three ways: as robosuite returns it (upside down), the camera's view (cabinet at the left, as in the paper's Figure 10), what the model gets (cabinet at the right)"
+      license: CC BY 4.0 (credit physical-intelligence/libero)
+      used: [ch3 section A, side note "Why the pictures are mirrored"]
+    - files: docs/assets/img/ch3/a/milk-{model,flipped}.jpg
+      source: "physical-intelligence/libero rows API, row 160045 = episode 851 'pick up the milk and place it in the basket', frame 70, column wrist_image (256x256)"
+      how: "crop=152:114:52:104; flipped adds vflip; -map_metadata -1"
+      shows: "the milk carton's label reads backwards in the model's picture ('W!IK'); flipped once it reads 'Milk', proof that the pictures are mirror images (a turn never reverses writing)"
+      license: CC BY 4.0
+      used: [ch3 section A, mirror side note]
+    - file: docs/assets/img/ch3/a/franka.jpg
+      source: https://commons.wikimedia.org/wiki/File:Franka_Emika2.jpg (960 px thumbnail of 6000x4000)
+      author: Ims
+      license: CC BY-SA 4.0 (checked through the Commons API 2026-11-14)
+      date: 2017-03-23; Commons category "CeBIT 2017"; description "Roboterarm Franka Emika der Firma KBee, Seitenansicht"
+      how: "crop=852:639:40:0, scale 480x360, -map_metadata -1"
+      note: "the photo's own description says 'Franka Emika' arm, not 'Panda'; captioned as 'an arm by Franka Emika'. Siblings Franka_Emika1.jpg and Franka_Emika3.jpg (same author, licence) unused"
+      used: [ch3 section A, side note "The real arm and the 3D mouse"]
+    - file: docs/assets/img/ch3/a/spacemouse.jpg
+      source: "https://commons.wikimedia.org/wiki/File:3Dconnexion_with_hand_at_Institute_of_Geography_of_Masaryk_University_in_Brno,_Brno-City_District.jpg (960 px thumbnail)"
+      author: Jiří Sedláček (Frettie)
+      license: CC BY-SA 3.0 (Commons API, 2026-11-14)
+      date: 2010-09-24
+      how: "crop=760:570:130:30, scale 480x360, -map_metadata -1"
+      note: "the device is a 3Dconnexion SpaceNavigator, not the SpaceMouse the LIBERO paper names; captioned as 'another 3D mouse from that maker'. Unused alternatives: File:CreativeTools.se_-_PackshotCreator_-_3DConnexion_SpaceNavigator_(4300648116).jpg (CC BY 2.0), File:Space-Navigator.jpg (CC BY-SA 3.0)"
+      used: [ch3 section A, same side note]
+    - reused: "libero-ep379/{table-000,wrist-000,table-111}.jpg (side notes 'What the model gets', 'What an episode is'); ch3/first/{spatial-t00,object-t00,goal-t02,ten-t02}.jpg (figure a-suites, with labels drawn as SVG on top); paper-libero-{spatial,object,100}.jpg and libero-goal.jpg (moved from the old figure 3.2 into a 'go deeper' rail)"
+    - looked_at_not_published: "physical-intelligence/libero episode 1 ('put the white mug on the plate and put the chocolate pudding to the right of the plate', rows 214 and 497 = frames 0 and 283), episode 851 frames 0-90 every 10 (table and wrist), wrist frame 0 of episodes 388 and 385"
+
+ch3_v2_B_2026_11_14_images:
+  images_yaml:
+    downloaded:
+      - files: docs/assets/img/ch3/b/paper-fig2-file.jpg
+        source: "crop of docs/assets/img/ch3/paper-libero-fig2.jpg (already recorded under ch3_web_2026_11_13), itself from https://arxiv.org/html/2306.03310v2/figures/libero_fig2.png"
+        paper: "LIBERO (Liu et al. 2023), Figure 2: the task file's three boxes (objects and regions, init configuration, goal) and the task's start and goal pictures; the left half (scenes and Ego4D templates) cut off"
+        license: CC BY 4.0 (arXiv abstract page, rechecked 2026-11-13)
+        converted: "ffmpeg crop=1010:616:590:0, scale=640:-2, -map_metadata -1, q:v 3 -> 640x390"
+        credit: "Liu et al. 2023, Figure 2, cropped, CC BY 4.0"
+        used: ["ch3 side note PDDL or BDDL? (links to the full image)"]
+    reused_without_change:
+      - { files: "docs/assets/img/ch3/states/spatial-t00-s00.jpg", used: [ch3 figure b-taskfile (with badges 1-7), ch3 figure b-chain (step 5)] }
+      - { files: "docs/assets/img/pi05-run/call-07-wrist.jpg, call-08-wrist.jpg", used: ["ch3 side note 'What a step is' (inside its SVG): two calls in a row, steps 35 and 40"] }
+      - { files: "docs/assets/img/pi05-run/call-{00,07,14,20}-table.jpg", used: ["ch3 figure episode-run, unchanged frames with seconds added to their labels"] }
+    drawn_by_us:
+      - { what: "map of Spatial task 0's start squares, to scale, mirrored like the model's picture (inline SVG)", data: "tools/ch3/stored_state_numbers.py, part 2", used: [ch3 figure b-taskfile] }
+      - { what: "bowl 1's 50 stored centres against its 2 cm square (inline SVG)", data: "tools/ch3/stored_state_numbers.py, part 3", used: [ch3 side note "What one stored state holds"] }
+      - { what: "side view of the goal check, three cases (inline SVG, a sketch, not to scale)", used: [ch3 figure b-goal-check] }
+
+ch3_v2_C_2026_11_14_images:
+  images_yaml:
+    - files: docs/assets/img/ch3/c/train-ep{1272,1273,1275}.jpg
+      source: Hugging Face datasets-server rows API, dataset physical-intelligence/libero (CC BY 4.0), frame_index 0 of
+        episodes 1272 (row 221834), 1273 (row 221918) and 1275 (row 222116); fetched 2026-11-14 from the API's
+        cached-assets JPEGs, re-encoded with ffmpeg -map_metadata -1 -q:v 3, 256x256
+      license: CC BY 4.0
+      shows: first table-camera frame of the dataset's first three demonstrations of task_index 34, "pick up the black
+        bowl between the plate and the ramekin and place it on the plate" (= LIBERO-Spatial benchmark task 0). Turned
+        180 degrees like every frame in this dataset
+      used: [ch3 figure c-train-test (top row)]
+    - files: docs/assets/img/ch3/c/wrist-t{7,9}-s0.jpg
+      source: ours. Right half (the wrist view, x 224-447) of the first frame of
+        stage1/runs/exp1-shared-table/videos/original_t7_trial00_success.mp4 and original_t9_trial00_success.mp4 (our
+        run of pi05_libero, 2026-11-11; the first frame is the first picture the model received, after the 10
+        settling steps, per stage1/run_libero.py lines 107-120). Cropped with ffmpeg, metadata stripped, 224x224
+      shows: the wrist camera at the first call of LIBERO-Spatial task 7 ("on the stove") and task 9 ("on the wooden
+        cabinet"), starting state 0 of each, showing the stove with a black bowl on it, the ramekin, the plate, the cookie box
+        and a corner of the cabinet, the same in both
+      used: ["ch3 side note: The wrist camera sees the same"]
+    - file: docs/assets/img/ch3/c/libero-pro-fig4.jpg
+      source: https://arxiv.org/html/2510.03827v2/perburtation.png (LIBERO-PRO v2, Figure 4), converted to JPG,
+        metadata stripped, 701x614
+      license: CC BY 4.0 (arXiv abstract page, rechecked 2026-11-14)
+      shows: >-
+        The paper's caption "Success rates of OpenVLA, pi0, and pi0.5 under object position perturbations" - a
+        LIBERO-Object table with the alphabet soup's start marked and X/Y arrows, then three success heat maps over X
+        and Y shifts of 0 to 0.5
+      used: ["ch3 rail card: Move the object further and success falls away"]
+    - reused: { files: "docs/assets/img/ch3/states/spatial-t00-s0{0,1,2}.jpg", used: ["ch3 figure c-train-test (bottom row)"] }
+    - reused: { file: docs/assets/img/ch3/first/goal-t00.jpg, used: ["ch3 side note: One motion, ten goal checks (as an SVG image)"] }
+    - fetched_not_used:   # all physical-intelligence/libero, CC BY 4.0, frame = frame_index; kept only in the session scratchpad
+        - "ep 1267 (task 33 'on the stove', row 221193, 124 frames): f0, f60 (gripper lifts the bowl off the stove), f123 (bowl on the plate, stove empty)"
+        - "ep 1290 (task 39 'on the wooden cabinet', row 223842, 164 frames): f0, f80 (gripper lifts the bowl off the cabinet top), f163 (bowl on the plate)"
+        - "ep 1278 (task 35 'on the cookie box', row 222495, 101 frames): f0, f40, f55 (bowl lifted off the cookie box)"
+        - "ep 1264 (task 32 'on the ramekin', row 220870, 100 frames): f40, f55 (bowl lifted off the ramekin)"
+        - "ep 1272 (task 34): f35, f48 (bowl lifted from between the plate and the ramekin)"
+        - "ep 379 f0/f111, ep 388 f0/f89 (stove glowing red), ep 385 f0/f89 (wine bottle on top of the cabinet)"
+        - "note: f60 of 1267 and f80 of 1290 make a good 'same start, different bowl' pair, but at 120 px wide the two look alike; crop to the stove and cabinet if reused"
+    - available_cc_by: { paper: "LIBERO-PRO v2", base: "https://arxiv.org/html/2510.03827v2/", note: "perburtation.png is now used (above)" }

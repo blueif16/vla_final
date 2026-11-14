@@ -10,3 +10,7 @@ wandb/
 
 # stage 1 run outputs: videos stay local; episodes.jsonl files are small and kept
 stage1/runs/**/videos/
+
+# staging for parallel page work, deleted after merging
+.stage/
+docs/learn/_preview-*.html
