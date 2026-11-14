@@ -117,6 +117,13 @@ the right" as one option. The design below was built from that and from the evid
   apart. The label gives the number and the count first ("1 of 2 changes"), then the item's topic in its own words.
 - **Points to keep (`ol.points`)**: where a paragraph runs several take-aways together. Whole sentences, each starting
   with different words, no bold lead-ins.
+- **Supplements on the side (user, 2026-11-14, open until they judge chapter 3):** "create visuals on the side +
+  more inline, have diagrams … have great chunk of supplement materials on the side that helps learning … have the
+  images on the side". This replaces the one-note-per-section limit below for supplements: every spot where a newcomer
+  would ask "what's that?" or "why?" gets a note with a real picture or a small diagram (`.side-pic`, `svg.side-dg` in
+  the VLA repo's `ch3.css`). One note per `.has-side` wrapper; check note-against-note overlap at 1240 px, where the
+  margin is narrowest. Chapter 3 (commit 3df4583) has 16, built by three section agents from one brief and a list of
+  marks per section.
 - **Margin notes (`aside.side`)**: at most one per h2 section, for a relationship that spans paragraphs or a figure: a
   route, a proportion to scale, a few cases compared, a preview of a set. About 40 words or fewer plus an optional
   mini-diagram in the figure colours, written as plain sentences; a short label on a chip is fine, a row of
