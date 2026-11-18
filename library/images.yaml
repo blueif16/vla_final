@@ -391,3 +391,32 @@ ch3_v2_C_2026_11_14_images:
         - "ep 379 f0/f111, ep 388 f0/f89 (stove glowing red), ep 385 f0/f89 (wine bottle on top of the cabinet)"
         - "note: f60 of 1267 and f80 of 1290 make a good 'same start, different bowl' pair, but at 120 px wide the two look alike; crop to the stove and cabinet if reused"
     - available_cc_by: { paper: "LIBERO-PRO v2", base: "https://arxiv.org/html/2510.03827v2/", note: "perburtation.png is now used (above)" }
+
+# ---- progress.md, the presentation summary (2026-11-18) ----
+progress_2026_11_18:
+  our_footage:   # made with ffmpeg from our own published files; ours to reuse
+    - file: docs/assets/img/progress/stage1-what-it-sees.jpg
+      made_from: docs/assets/img/pi05-run/call-07-{table,wrist}.jpg (our run, 2026-11-11), each scaled 2x to 448x448 (lanczos), side by side with an 8 px white gap
+      used: [progress.md figure 1]
+    - file: docs/assets/img/progress/stage1-shared-table.jpg
+      made_from: docs/assets/video/ch4-same-start.jpg, left half (448x448), = LIBERO-Spatial task 9 starting state 2, first frame
+      used: [progress.md figure 2]
+    - file: docs/assets/img/progress/stage1-blank-cookie.jpg
+      made_from: docs/assets/img/ch4/ending-cookie.jpg (task 7, state 15, frame 105, blank instruction), scaled 2x to 448x448
+      used: [progress.md figure 3]
+    - file: docs/assets/img/progress/stage2-hand-camera-off.jpg
+      made_from: docs/assets/img/pi05-run/call-07-table.jpg scaled 2x, next to a 448x448 black square
+      shows: an illustration of the blacked-out hand camera condition, not a run
+      used: [progress.md figure 4]
+  cc_by:
+    - files: docs/assets/img/progress/stage3-{garments,folding}.jpg
+      source: arXiv source of 2606.27163 (Larchenko 2026, "Learning to Fold: prizewinning solution at LeHome Challenge 2026
+        (1st place online, 2nd offline)"), media/fig_sim_garment_types.png (Figure 1, converted to JPG) and
+        media/fig_dense_reward.png (Figure 7, top row of five overhead frames cropped at x 150-1830, y 100-350, labels removed)
+      license: CC BY 4.0 (arXiv abstract page, checked 2026-11-18)
+      shows: "garments = the four garment types (long-sleeve top, short-sleeve top, long pants, shorts) from the overhead camera
+        of the organizers' simulation dataset; folding = a successful long-sleeve-top episode at t = 0.0, 3.0, 5.9, 7.9 and 9.9 s"
+      used: [progress.md figures 6 and 7]
+    - reused: { file: docs/assets/img/ch3/c/libero-pro-fig4.jpg, used: [progress.md figure 5] }
+  fetched_not_used:
+    - "2606.27163 media/fig_debug_overlay.png (Figure 4, the three camera views with the author's debug overlay); CC BY 4.0; kept only in the session scratchpad"
